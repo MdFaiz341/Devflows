@@ -37,7 +37,7 @@ interface CanvasType{
     canvasCard : Record<number, CanvasCardFormat>,
     setCanvasCard : (id :number, data:CanvasCardFormat)=>void,
 
-    canvasRoomData : Record<number, CanvasData>,
+    canvasRoomData : Record<number, CanvasData>,    // pageNo, shapes
     setCanvasRoomData : (roomId:number, data:any)=>void,
 }
 
@@ -48,10 +48,10 @@ export const useCanvasStore = create<CanvasType>(
         canvasCard : {},
         canvasRoomData : {},
 
-        setCanvasRoomData : (roomId, data)=>set((state)=>({
+        setCanvasRoomData : (pageNo, data)=>set((state)=>({
             canvasRoomData : {
                 ...state.canvasRoomData,
-                [roomId] : data
+                [pageNo] : data,
             }
         })),
 
