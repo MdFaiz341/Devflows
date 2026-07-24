@@ -1,0 +1,154 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                    String         @id @default(uuid())
+  email                 String      @unique
+  password              String
+  firstname             String
+  lastname              String
+  createdAt             DateTime    @default(now())
+  image                 String
+  contents              Content[]
+  // canvasrooms           CanvasRoom[]
+  canvasmember          CanvasMember[]             
+  shapes                Shape[]
+  messages              Message[]
+  memberships           ConversationMember[]
+}
+
+
+model Content {
+  id                    String      @id @default(uuid())
+  title                 String
+  link                  String
+  type                  String
+  createdAt             DateTime    @default(now())
+  userId                String
+  user                  User        @relation(fields: [userId], references: [id])
+}
+
+model CanvasMember {
+  id                    Int         @id  @default(autoincrement())
+  userId                String
+  role                  CanvasUser
+  roomId                Int
+  user                  User        @relation(fields: [userId], references: [id])
+  room                  CanvasRoom  @relation(fields: [roomId], references: [id])
+  joinedAt              DateTime    @default(now())
+  @@index([userId])
+  @@unique([roomId, userId])
+}
+
+model CanvasRoom {
+  id                    Int         @id @default(autoincrement())
+  name                  String      @unique
+  image                 String
+  // adminId               String
+  createdAt             DateTime    @default(now())
+  // pages                 Page[]
+  // admin                 User        @relation(fields: [adminId], references: [id])
+  members               CanvasMember[]
+  @@index([createdAt])
+}
+
+model LinkDuration{
+  id                    Int           @id @default(autoincrement())
+  userId                String        @unique
+  roomId                Int
+  linkVal               String        @unique
+  createdAt             DateTime      @default(now())
+  @@unique([userId, roomId])
+}
+
+model Page {
+  id                    Int         @id @default(autoincrement())
+  pageNo                Int
+  roomId                Int
+  // room                  CanvasRoom        @relation(fields: [roomId], references: [id])
+  shapes                Shape[]
+
+  @@unique([roomId, pageNo])
+}
+
+model Shape {
+  id                    String      @id @default(uuid())
+  type                  String
+  data                  String
+  pageId                Int
+  page                  Page        @relation(fields: [pageId], references: [id])
+  userId                String
+  user                  User        @relation(fields: [userId], references: [id])
+}
+
+
+model Conversation {
+  id                    Int                 @id  @default(autoincrement())
+  type                  ConversationType
+
+  // only for group
+  name                  String?             @unique
+  image                 String?
+
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+
+  members               ConversationMember[]
+  messages              Message[]
+
+  @@index([updatedAt])
+}
+
+model ConversationMember {
+  id                    Int                 @id  @default(autoincrement())
+  userId                String
+  conversationId        Int                 //Joined WHAT? -> Group?, DM?  -> which room?
+
+  unreadCount           Int?                @default(0)
+
+  user                  User                @relation(fields: [userId], references: [id])
+  conversation          Conversation        @relation(fields: [conversationId], references: [id])
+
+  joinedAt              DateTime            @default(now())
+
+  @@index([userId])
+  @@unique([conversationId, userId])
+}
+
+model Message {
+  id                    Int                 @id  @default(autoincrement())
+
+  text                  String
+  createdAt             DateTime            @default(now())
+
+  senderId              String
+  conversationId        Int
+
+  sender                User                @relation(fields: [senderId], references: [id])
+  conversation          Conversation        @relation(fields: [conversationId], references: [id])
+
+  @@index([conversationId, createdAt])
+}
+
+
+enum CanvasUser{
+  ADMIN
+  MEMBER
+}
+
+enum ConversationType{
+  DM
+  Group
+}
