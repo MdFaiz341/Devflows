@@ -14,6 +14,10 @@ export class CanvasStore{
 
     subscribe(listener : ()=>void){
         this.listeners.add(listener);
+
+        return ()=>{
+            this.listeners.delete(listener);
+        }
     }
 
     unsubscribe(listener: () => void) {

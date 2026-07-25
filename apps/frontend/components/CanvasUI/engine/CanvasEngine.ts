@@ -2,6 +2,7 @@ import rough from "roughjs";
 import { useSocket } from "../../../providers/SocketProvider";
 import { RenderManager } from "./RenderManager";
 import { CanvasStore } from "../store/CanvasStore";
+import { ShapeRenderManager } from "./ShapeRenderManager";
 
 export type Tool = 
     "rectangle" | "circle" | "line" | "arrow" | "pencil" | "text";
@@ -57,6 +58,7 @@ export class CanvasEngine{
     private ctx : CanvasRenderingContext2D;
     // private rc : HTMLCanvasElement;
     private renderer : RenderManager;
+    private shapeRender : ShapeRenderManager;
 
     private store : CanvasStore;
 
@@ -77,15 +79,18 @@ export class CanvasEngine{
         this.store = new CanvasStore();
         // fetch all shapes and shapes[] and send to RenderManagaer and it send to ShapeRenderManager
         const allShapes = this.store.getAllShapes();
+
+        // create instance of shapeRenderManager once;
+        this.shapeRender = new ShapeRenderManager(ctx);
         
         // send whole CanvasStore instance bcz on every update or add Shape[] will change so direct 
         // whole shape access and and store RenderManager instance into listner()=>void then call that 
         // listner on every changes in Shape[] of CanvasStore
-        this.renderer = new RenderManager(this.ctx, this.canvas, this.store);
+        this.renderer = new RenderManager(this.ctx, this.canvas, this.store, this.shapeRender);
         
         this.resizeCanvas();
         
-        this.renderer.start();
+        // this.renderer.start();
 
         window.addEventListener("resize", this.resizeCanvas);
         // this.rc = rough.canvas(canvas);

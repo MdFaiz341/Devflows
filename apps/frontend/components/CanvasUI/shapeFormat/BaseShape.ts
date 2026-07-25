@@ -11,6 +11,6 @@ export interface BaseShape{
     fill : string
     stroke : string;
 
-    strokewidth : number
+    strokeWidth : number
     
 }

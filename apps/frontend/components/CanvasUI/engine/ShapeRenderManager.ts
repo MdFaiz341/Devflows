@@ -41,11 +41,31 @@ export class ShapeRenderManager{
 
 
     private drawRectangle(shape:Rectangle){
+        this.ctx.save();
 
+        this.ctx.strokeStyle = shape.stroke;
+
+        this.ctx.lineWidth = shape.strokeWidth;
+
+        this.ctx.strokeRect(shape.x, shape.y, shape.width, shape.height);
+
+        this.ctx.restore();
     }
 
     private drawCircle(shape:Circle){
+        this.ctx.save();
 
+        this.ctx.beginPath();
+
+        this.ctx.arc(shape.x, shape.y, shape.radius, 0, Math.PI*2);
+
+        this.ctx.strokeStyle = shape.stroke;
+
+        this.ctx.lineWidth = shape.strokeWidth;
+
+        this.ctx.stroke();
+
+        this.ctx.restore();
     }
 
     drawArrow(shape:Arrow){
