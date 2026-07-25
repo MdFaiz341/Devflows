@@ -7,9 +7,25 @@ export class CanvasStore{
 
     private shape : Shape[];
     private listeners = new Set<() => void>();
+    private preview :Shape | null;
 
     constructor(){
         this.shape = [];
+        this.preview = null;
+    }
+
+    setPreview(shape:Shape){
+        this.preview = shape;
+        this.notify();
+    }
+
+    getPreview(){
+        return this.preview;
+    }
+
+    clearPreview(){
+        this.preview = null;
+        this.notify();
     }
 
     subscribe(listener : ()=>void){

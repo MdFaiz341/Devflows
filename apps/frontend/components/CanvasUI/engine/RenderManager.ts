@@ -53,6 +53,13 @@ export class RenderManager{
         for(const val of shapes){
             this.shapeRender.draw(val);
         }
+
+        const previewShape = this.store.getPreview();
+        if(previewShape){
+            this.shapeRender.draw(previewShape)
+        }
+
+        this.store.clearPreview();
     }
 
     destroy(){

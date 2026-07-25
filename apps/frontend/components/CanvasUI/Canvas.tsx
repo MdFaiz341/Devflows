@@ -84,8 +84,6 @@ export const Canvas = ({roomId, adminId}:{
         return engine.destroy();
     }, []);
 
-    
-
 
     return(
         <div className="w-screen h-screen overflow-hidden relative">
@@ -97,7 +95,8 @@ export const Canvas = ({roomId, adminId}:{
                     {
                         Buttons.map((val)=>{
                             return(
-                                <div key={val.id} onClick={()=>{selectButton(val.id)}} className={`cursor-pointer p-2 rounded-full transition-all duration-300 ${currTool === val.id ? "bg-gray-900 scale-125" : "hover:bg-gray-700"}`}>{val.btn}</div>
+                                // onclick currentTool select 
+                                <div key={val.id} onClick={()=>{selectButton(val.id), engine.toolManager.setTool("rectangle")}} className={`cursor-pointer p-2 rounded-full transition-all duration-300 ${currTool === val.id ? "bg-gray-900 scale-125" : "hover:bg-gray-700"}`}>{val.btn}</div>
                             )
                         })
                     }

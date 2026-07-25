@@ -3,6 +3,9 @@ import { useSocket } from "../../../providers/SocketProvider";
 import { RenderManager } from "./RenderManager";
 import { CanvasStore } from "../store/CanvasStore";
 import { ShapeRenderManager } from "./ShapeRenderManager";
+import { InputManager } from "./InputManager";
+import { ToolManager } from "../tools/ToolManager";
+import { RectangleTool } from "../tools/RectangleTool";
 
 export type Tool = 
     "rectangle" | "circle" | "line" | "arrow" | "pencil" | "text";
@@ -40,15 +43,15 @@ export type Tool =
 // }
 
 
-export interface BaseShape{
-    id : string,
-    type : ShapeType,
+// export interface BaseShape{
+//     id : string,
+//     type : ShapeType,
 
-    fill : string,
-    stroke : string,
+//     fill : string,
+//     stroke : string,
 
-    strokeWidth : number,
-}
+//     strokeWidth : number,
+// }
 
 export class CanvasEngine{
     // private pageShape : Record<number,Shape[]>;
@@ -59,6 +62,8 @@ export class CanvasEngine{
     // private rc : HTMLCanvasElement;
     private renderer : RenderManager;
     private shapeRender : ShapeRenderManager;
+    private inputManager : InputManager;
+    private toolManager : ToolManager;
 
     private store : CanvasStore;
 
@@ -70,7 +75,7 @@ export class CanvasEngine{
         if(!ctx) throw new Error("canvas not supported");
         this.ctx = ctx;
         this.socket = socket;
-
+        console.log("inside Engine-------");
         // this.pointerEventHandler();
         // this.pageShape = {};
 
@@ -82,6 +87,13 @@ export class CanvasEngine{
 
         // create instance of shapeRenderManager once;
         this.shapeRender = new ShapeRenderManager(ctx);
+
+
+        this.toolManager = new ToolManager({
+            "rectangle" : new  RectangleTool(this.store)
+        });
+
+        this.inputManager = new InputManager(canvas, this.toolManager);
         
         // send whole CanvasStore instance bcz on every update or add Shape[] will change so direct 
         // whole shape access and and store RenderManager instance into listner()=>void then call that 
@@ -110,7 +122,7 @@ export class CanvasEngine{
     }
 
     destroy(){
-        this.renderer.stop();
+        this.renderer.destroy();
         window.removeEventListener("resize", this.resizeCanvas);
     }
 }
