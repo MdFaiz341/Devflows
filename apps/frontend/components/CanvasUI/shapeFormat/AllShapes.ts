@@ -21,7 +21,9 @@ export interface Circle extends BaseShape{
     x : number,
     y : number,
 
-    radius : number,
+    // radius : number,
+    width : number,
+    height : number,
 }
 
 export interface Arrow extends BaseShape{
@@ -31,6 +33,7 @@ export interface Arrow extends BaseShape{
     endX:number,
     endY:number,
     angle : number,
+    headLength : number,
 }
 
 export interface Line extends BaseShape{

@@ -20,7 +20,7 @@ export class RenderManager{
 
         this.store = store;
 
-        
+        console.log("RenderManager store", this.store);
         // this.shapeRender = new ShapeRenderManager(this.ctx);
         // this.render = render;
 
@@ -35,6 +35,7 @@ export class RenderManager{
     }
 
     private scheduleRender(){
+        console.log("ScheduleRender---")
         if(this.frameRequest) return;
 
         this.frameRequest = true;
@@ -48,7 +49,8 @@ export class RenderManager{
 
     private render(){
 
-        this.ctx.clearRect(0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        console.log("Render----");
         const shapes = this.store.getAllShapes();
         for(const val of shapes){
             this.shapeRender.draw(val);
@@ -59,7 +61,7 @@ export class RenderManager{
             this.shapeRender.draw(previewShape)
         }
 
-        this.store.clearPreview();
+        // this.store.clearPreview();
     }
 
     destroy(){

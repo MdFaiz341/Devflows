@@ -1,25 +1,44 @@
-import { Tool } from "../engine/CanvasEngine";
+
 import { CanvasStore } from "../store/CanvasStore";
+import { Tool, ToolType } from "./Tool";
 
 
 
 export class ToolManager{
 
-    private currentTool : Tool;
-    private store : CanvasStore;
-    constructor(store:CanvasStore){
-        this.store = store;
+    private currentTool : ToolType = "select";
+    private allTools : Map<ToolType, Tool>;
+    constructor(allTools: Map<ToolType, Tool>){
+        this.allTools = allTools;
+    }
+
+    setCurrentTool(val : ToolType){
+        this.currentTool = val;
+        console.log("currntTool----", this.currentTool);
+    }
+
+    private getTool(){
+        return this.allTools.get(this.currentTool);
     }
 
     pointerDown(e:PointerEvent){
-        this.currentTool.pointerDown(e);
+        const tool = this.getTool();
+        console.log("ToolManager tool:--- ");
+        if(!tool) return;
+        tool.pointerDown(e);
     }
 
     pointerMove(e:PointerEvent){
-        this.currentTool.pointerMove(e);
+        const tool = this.getTool();
+        console.log("ToolManager tool:--- ");
+        if(!tool) return;
+        tool.pointerMove(e);
     }
 
     pointerUp(e:PointerEvent){
-        this.currentTool.pointerUp(e);
+        const tool = this.getTool();
+        console.log("ToolManager tool:--- ");
+        if(!tool) return;
+        tool.pointerUp(e);
     }
 }

@@ -12,9 +12,11 @@ export class CanvasStore{
     constructor(){
         this.shape = [];
         this.preview = null;
+        console.log("CanvasStore created", this);
     }
 
     setPreview(shape:Shape){
+        console.log("Preview Updated", shape);
         this.preview = shape;
         this.notify();
     }
@@ -30,6 +32,7 @@ export class CanvasStore{
 
     subscribe(listener : ()=>void){
         this.listeners.add(listener);
+        console.log("Subscribed")
 
         return ()=>{
             this.listeners.delete(listener);
@@ -41,6 +44,7 @@ export class CanvasStore{
     }
 
     private notify(){
+        console.log("notify size: ", this.listeners.size)
         for(const listener of this.listeners){
             listener();
         }

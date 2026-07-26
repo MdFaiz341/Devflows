@@ -18,9 +18,11 @@ export class RectangleTool{
 
     pointerMove(e:PointerEvent){
         // calculate current size
-        const width = Math.abs(e.offsetX - this.startX);
-        const height = Math.abs(e.offsetY - this.startY);
+        const width = e.offsetX - this.startX;
+        const height = e.offsetY - this.startY;
 
+        console.log(width, height);
+        console.log("Rectangle store", this.store);
         // Create preview rectangle
 
         const preview : Rectangle = {
@@ -33,8 +35,8 @@ export class RectangleTool{
             width : width,
             height : height,
 
-            stroke : "#000",
-            fill : "transparent",
+            stroke : "white",
+            fill : "yellow",
             strokeWidth : 2,
         }
 

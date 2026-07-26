@@ -5,10 +5,11 @@ import { ToolManager } from "../tools/ToolManager";
 export class InputManager {
     private toolManager : ToolManager;
     private canvas : HTMLCanvasElement;
+    private clickDown = false;
     constructor(canvas:HTMLCanvasElement, toolManager:ToolManager) {
         this.canvas = canvas
         this.toolManager = toolManager;
-
+        console.log("InputManager instance", this);
         this.attachListeners();
     }
 
@@ -33,18 +34,23 @@ export class InputManager {
 
     private handlePointerDown = (e : PointerEvent)=>{
         this.toolManager.pointerDown(e);
+        this.clickDown = true;
     }
 
     private handlePointerMove = (e : PointerEvent)=>{
+        if(!this.clickDown) return;
+        console.log("InputManager: pointerMove");
         this.toolManager.pointerMove(e);
     }
 
     private handlePointerUp = (e : PointerEvent)=>{
         this.toolManager.pointerUp(e);
+        this.clickDown = false;
     }
 
 
     destroy(){
+        console.log("Destroy InputManager", this);
         this.canvas.removeEventListener(
             "pointerdown",
             this.handlePointerDown

@@ -6,9 +6,11 @@ import { ShapeRenderManager } from "./ShapeRenderManager";
 import { InputManager } from "./InputManager";
 import { ToolManager } from "../tools/ToolManager";
 import { RectangleTool } from "../tools/RectangleTool";
+import { CircleTool } from "../tools/CircleTool";
+import { Tool, ToolType } from "../tools/Tool";
+import { ArrowTool } from "../tools/ArrowTool";
+import { LineTool } from "../tools/LineTool";
 
-export type Tool = 
-    "rectangle" | "circle" | "line" | "arrow" | "pencil" | "text";
 
 
 // export type Shape = {
@@ -85,15 +87,24 @@ export class CanvasEngine{
         // fetch all shapes and shapes[] and send to RenderManagaer and it send to ShapeRenderManager
         const allShapes = this.store.getAllShapes();
 
+        console.log("Engine Store", this.store);
+
         // create instance of shapeRenderManager once;
         this.shapeRender = new ShapeRenderManager(ctx);
 
+        const tools = new Map<ToolType, Tool>();
+        tools.set("rectangle", new RectangleTool(this.store));
+        tools.set("circle", new CircleTool(this.store));
+        tools.set("arrow", new ArrowTool(this.store));
+        tools.set("line", new LineTool(this.store));
+        // tools.set("text", new RectangleTool(this.store));
+        // tools.set("pencil", new RectangleTool(this.store));
 
-        this.toolManager = new ToolManager({
-            "rectangle" : new  RectangleTool(this.store)
-        });
+        this.toolManager = new ToolManager(tools);
 
         this.inputManager = new InputManager(canvas, this.toolManager);
+
+        console.log("inputManager created:---")
         
         // send whole CanvasStore instance bcz on every update or add Shape[] will change so direct 
         // whole shape access and and store RenderManager instance into listner()=>void then call that 
@@ -101,6 +112,7 @@ export class CanvasEngine{
         this.renderer = new RenderManager(this.ctx, this.canvas, this.store, this.shapeRender);
         
         this.resizeCanvas();
+        console.log("Render Store", this.store);
         
         // this.renderer.start();
 
@@ -114,7 +126,9 @@ export class CanvasEngine{
     //     this.canvas.onpointerdown(e:PointerEvent)
     // }
 
-
+    setTool(shape : ToolType){
+        this.toolManager.setCurrentTool(shape);
+    }
 
     private resizeCanvas(){
         this.canvas.width = this.canvas.clientWidth;
@@ -123,6 +137,7 @@ export class CanvasEngine{
 
     destroy(){
         this.renderer.destroy();
+        this.inputManager.destroy();
         window.removeEventListener("resize", this.resizeCanvas);
     }
 }

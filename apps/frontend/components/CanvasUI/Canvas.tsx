@@ -10,32 +10,40 @@ import { LeaveCanvasUI } from "./LeaveCanvasUI"
 import { useSocket } from "../../providers/SocketProvider"
 import rough from "roughjs";
 import { CanvasEngine } from "./engine/CanvasEngine"
+import { ToolType } from "./tools/Tool"
 
 const Buttons = [
     {
         id : 1,
+        shape : "circle",
         btn : <Circle size={15}/>
     },
     {
         id : 2,
+        shape : "rectangle",
         btn : <Square size={15}/>
     },
     {   
         id : 3,
+        shape : "arrow",
         btn : <MoveUpRight size={15}/>,
     },
     {
         id : 4,
+        shape : "line",
         btn : <Slash size={15}/>,
     },
     {
         id : 5,
+        shape : "pencil",
         btn : <PencilLine size={15}/>
     },{
         id : 6,
+        shape : "text",
         btn : <TextCursor size={15}/>
     },{
         id : 7,
+        shape : "select",
         btn : <MousePointer size={15}/>
     }
 ]
@@ -52,7 +60,8 @@ export const Canvas = ({roomId, adminId}:{
     const [showLeave, setShowLeave] = useState(false);
     const {open, setOpen} = useHook();
     const joinRef = useRef(false);
-    const [currTool, setCurrTool] = useState<number>();
+    const [currTool, setCurrTool] = useState<ToolType>("select");
+    const engineRef = useRef<CanvasEngine | null>(null);
 
     // useEffect(()=>{
     //     function hitJoinCanvasRoom(){
@@ -71,18 +80,25 @@ export const Canvas = ({roomId, adminId}:{
     //     }
     // }, []);
 
-    function selectButton(id:number){
-        console.log("btnId: ", id);
-        setCurrTool(id);
-    }
+    // function selectButton(id:number){
+    //     console.log("btnId: ", id);
+    //     setCurrTool(id);
+    // }
 
     useEffect(()=>{
         if(!canvasRef.current) return;
         const canvas = canvasRef.current;
-        const engine = new CanvasEngine(roomId, canvas, socket);
+        engineRef.current = new CanvasEngine(roomId, canvas, socket);
 
-        return engine.destroy();
+        return ()=>{
+            engineRef.current?.destroy();
+        }
     }, []);
+
+    useEffect(()=>{
+        if(!engineRef.current) return;
+        engineRef.current.setTool(currTool)
+    }, [currTool]);
 
 
     return(
@@ -96,7 +112,7 @@ export const Canvas = ({roomId, adminId}:{
                         Buttons.map((val)=>{
                             return(
                                 // onclick currentTool select 
-                                <div key={val.id} onClick={()=>{selectButton(val.id), engine.toolManager.setTool("rectangle")}} className={`cursor-pointer p-2 rounded-full transition-all duration-300 ${currTool === val.id ? "bg-gray-900 scale-125" : "hover:bg-gray-700"}`}>{val.btn}</div>
+                                <div key={val.id} onClick={()=>{setCurrTool(val.shape as ToolType)}} className={`cursor-pointer p-2 rounded-full transition-all duration-300 ${currTool === val.shape ? "bg-gray-900 scale-125" : "hover:bg-gray-700"}`}>{val.btn}</div>
                             )
                         })
                     }
