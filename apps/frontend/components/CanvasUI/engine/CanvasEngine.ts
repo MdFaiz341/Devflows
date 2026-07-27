@@ -10,6 +10,8 @@ import { CircleTool } from "../tools/CircleTool";
 import { Tool, ToolType } from "../tools/Tool";
 import { ArrowTool } from "../tools/ArrowTool";
 import { LineTool } from "../tools/LineTool";
+import { PencilTool } from "../tools/PencilTool";
+import { TextTool } from "../tools/TextTool";
 
 
 
@@ -97,8 +99,8 @@ export class CanvasEngine{
         tools.set("circle", new CircleTool(this.store));
         tools.set("arrow", new ArrowTool(this.store));
         tools.set("line", new LineTool(this.store));
-        // tools.set("text", new RectangleTool(this.store));
-        // tools.set("pencil", new RectangleTool(this.store));
+        tools.set("text", new TextTool(this.store));
+        tools.set("pencil", new PencilTool(this.store));
 
         this.toolManager = new ToolManager(tools);
 

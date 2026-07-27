@@ -1,36 +1,33 @@
-import { Arrow } from "../shapeFormat/AllShapes";
+import { Pencil, Points } from "../shapeFormat/AllShapes";
 import { CanvasStore } from "../store/CanvasStore";
 
 
 
-export class ArrowTool{
+export class PencilTool{
 
-    private startX = 0;
-    private startY = 0;
-
+    private points : Points[] = [];
     constructor(
         private store : CanvasStore
     ){}
 
     pointerDown(e:PointerEvent){
-        this.startX = e.offsetX;
-        this.startY = e.offsetY;
+        this.points = [];
+        this.points.push({
+            x : e.offsetX,
+            y : e.offsetY,
+        })
     }
 
     pointerMove(e:PointerEvent){
-        // find direction :-
-        const angle = Math.atan2(e.offsetY-this.startY, e.offsetX-this.startX);
+        this.points.push({
+            x : e.offsetX,
+            y : e.offsetY,
+        })
 
-        const preview : Arrow = {
+        const preview : Pencil = {
             id : "preview",
-            type : "arrow",
-            startX : this.startX,
-            startY : this.startY,
-            endX : e.offsetX,
-            endY : e.offsetY,
-            angle : angle,
-            
-            headLength : 15,
+            type : "pencil",
+            points : [...this.points],
             stroke : "white",
             fill : "yellow",
             strokeWidth : 2,
@@ -49,5 +46,6 @@ export class ArrowTool{
         })
 
         this.store.clearPreview();
+        this.points = [];
     }
 }

@@ -26,7 +26,7 @@ const Buttons = [
     {   
         id : 3,
         shape : "arrow",
-        btn : <MoveUpRight size={15}/>,
+        btn : <MoveUpRight size={17}/>,
     },
     {
         id : 4,

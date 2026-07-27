@@ -8,7 +8,9 @@ export type ToolType =
 import { ArrowTool } from "./ArrowTool";
 import { CircleTool } from "./CircleTool";
 import { LineTool } from "./LineTool";
+import { PencilTool } from "./PencilTool";
 import { RectangleTool } from "./RectangleTool";
+import { TextTool } from "./TextTool";
 
 
-export type Tool = RectangleTool | CircleTool | LineTool | ArrowTool;
+export type Tool = RectangleTool | CircleTool | LineTool | ArrowTool | PencilTool | TextTool;

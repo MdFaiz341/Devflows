@@ -1,6 +1,6 @@
 
-import { Arrow, Circle, Rectangle, Text, Line } from "./AllShapes";
+import { Arrow, Circle, Rectangle, Text, Line, Pencil } from "./AllShapes";
 
 
 
-export type Shape = Circle | Rectangle | Arrow | Line | Text;
+export type Shape = Circle | Rectangle | Arrow | Line | Text | Pencil;

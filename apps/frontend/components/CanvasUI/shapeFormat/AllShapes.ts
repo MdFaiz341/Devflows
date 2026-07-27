@@ -50,4 +50,21 @@ export interface Text extends BaseShape{
     x:number,
     y:number,
     text:string,
+
+    fontSize: number;
+    fontFamily: string;
+    fontWeight: "normal" | "bold";
+    fontStyle: "normal" | "italic";
+    textAlign: "left" | "center" | "right";
+
+    color: string;
+}
+
+export type Points = {
+    x : number,
+    y : number,
+}
+export interface Pencil extends BaseShape{
+    type : "pencil",
+    points : Points[],
 }

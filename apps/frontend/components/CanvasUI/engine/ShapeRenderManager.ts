@@ -1,4 +1,4 @@
-import { Arrow, Circle, Line, Rectangle, Text } from "../shapeFormat/AllShapes";
+import { Arrow, Circle, Line, Pencil, Rectangle, Text } from "../shapeFormat/AllShapes";
 import { Shape } from "../shapeFormat/Shape";
 
 
@@ -32,6 +32,10 @@ export class ShapeRenderManager{
 
             case "text":
                 this.drawText(shape);
+                break;
+
+            case "pencil":
+                this.drawPencil(shape);
                 break;
 
             default:
@@ -77,14 +81,14 @@ export class ShapeRenderManager{
         // this.ctx.restore();
     }
 
-    drawArrow(shape:Arrow){
+    private drawArrow(shape:Arrow){
         // left Wing:
-        const leftX = shape.endX - shape.headLength * Math.cos(shape.angle - Math.PI/10);
-        const leftY = shape.endY - shape.headLength * Math.sin(shape.angle - Math.PI/10);
+        const leftX = shape.endX - shape.headLength * Math.cos(shape.angle - Math.PI/6);
+        const leftY = shape.endY - shape.headLength * Math.sin(shape.angle - Math.PI/6);
 
         // right Wing:
-        const rightX = shape.endX - shape.headLength * Math.cos(shape.angle + Math.PI/10);
-        const rightY = shape.endY - shape.headLength * Math.sin(shape.angle + Math.PI/10);
+        const rightX = shape.endX - shape.headLength * Math.cos(shape.angle + Math.PI/6);
+        const rightY = shape.endY - shape.headLength * Math.sin(shape.angle + Math.PI/6);
 
         this.ctx.lineCap = "round"
         this.ctx.lineJoin = "round"
@@ -123,8 +127,43 @@ export class ShapeRenderManager{
         this.ctx.stroke();
     }
 
-    drawText(shape:Text){
+    private drawText(shape:Text){
+        this.ctx.font = `${shape.fontWeight} ${shape.fontSize}px ${shape.fontFamily}`;
+        console.log("Text Render me hai-----");
+        this.ctx.fillStyle = shape.color;
+        this.ctx.textAlign = shape.textAlign;
+        this.ctx.fillText(
+            shape.text,
+            shape.x,
+            shape.y
+        );
+    }
 
+    private drawPencil(shape:Pencil){
+        const pts = shape.points;
+        if(pts.length < 2 || !pts[0]) return;
+
+        this.ctx.beginPath();
+
+        this.ctx.moveTo(pts[0]!.x, pts[0]!.y);
+        for (let i = 1; i < pts.length - 1; i++) {
+            const midX = (pts[i]!.x + pts[i + 1]!.x) / 2;
+            const midY = (pts[i]!.y + pts[i + 1]!.y) / 2;
+
+            this.ctx.quadraticCurveTo(
+                pts[i]!.x,
+                pts[i]!.y,
+                midX,
+                midY
+            );
+        }
+
+        this.ctx.strokeStyle = shape.stroke;
+        this.ctx.lineWidth = shape.strokeWidth;
+        this.ctx.lineCap = "round";
+        this.ctx.lineJoin = "round";
+
+        this.ctx.stroke();
     }
 
 }

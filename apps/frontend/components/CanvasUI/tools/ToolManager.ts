@@ -23,21 +23,21 @@ export class ToolManager{
 
     pointerDown(e:PointerEvent){
         const tool = this.getTool();
-        console.log("ToolManager tool:--- ");
+        console.log("ToolManager tool:--- ", tool);
         if(!tool) return;
         tool.pointerDown(e);
     }
 
     pointerMove(e:PointerEvent){
         const tool = this.getTool();
-        console.log("ToolManager tool:--- ");
+        console.log("ToolManager tool:--- ", tool);
         if(!tool) return;
         tool.pointerMove(e);
     }
 
     pointerUp(e:PointerEvent){
         const tool = this.getTool();
-        console.log("ToolManager tool:--- ");
+        console.log("ToolManager tool:--- ", tool);
         if(!tool) return;
         tool.pointerUp(e);
     }
