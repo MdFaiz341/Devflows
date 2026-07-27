@@ -6,7 +6,7 @@ import { Tool, ToolType } from "./Tool";
 
 export class ToolManager{
 
-    private currentTool : ToolType = "select";
+    public currentTool : ToolType = "select";
     private allTools : Map<ToolType, Tool>;
     constructor(allTools: Map<ToolType, Tool>){
         this.allTools = allTools;
@@ -17,7 +17,7 @@ export class ToolManager{
         console.log("currntTool----", this.currentTool);
     }
 
-    private getTool(){
+    getTool(){
         return this.allTools.get(this.currentTool);
     }
 
@@ -29,6 +29,7 @@ export class ToolManager{
     }
 
     pointerMove(e:PointerEvent){
+        if(this.currentTool == "text") return;
         const tool = this.getTool();
         console.log("ToolManager tool:--- ", tool);
         if(!tool) return;

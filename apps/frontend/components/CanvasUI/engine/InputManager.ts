@@ -38,6 +38,7 @@ export class InputManager {
     }
 
     private handlePointerMove = (e : PointerEvent)=>{
+        if(this.toolManager.currentTool === "text") this.clickDown = false;
         if(!this.clickDown) return;
         console.log("InputManager: pointerMove");
         this.toolManager.pointerMove(e);

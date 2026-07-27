@@ -99,7 +99,7 @@ export class CanvasEngine{
         tools.set("circle", new CircleTool(this.store));
         tools.set("arrow", new ArrowTool(this.store));
         tools.set("line", new LineTool(this.store));
-        tools.set("text", new TextTool(this.store));
+        tools.set("text", new TextTool(this.store, canvas, ctx));
         tools.set("pencil", new PencilTool(this.store));
 
         this.toolManager = new ToolManager(tools);
@@ -133,8 +133,13 @@ export class CanvasEngine{
     }
 
     private resizeCanvas(){
-        this.canvas.width = this.canvas.clientWidth;
-        this.canvas.height = this.canvas.clientHeight;
+        // this.canvas.width = this.canvas.clientWidth;
+        // this.canvas.height = this.canvas.clientHeight;
+        const dpr = window.devicePixelRatio || 1;
+        this.canvas.width = this.canvas.clientWidth * dpr;
+        this.canvas.height = this.canvas.clientHeight * dpr;
+
+        this.ctx.scale(dpr, dpr);
     }
 
     destroy(){
