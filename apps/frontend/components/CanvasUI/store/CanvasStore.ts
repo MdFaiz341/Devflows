@@ -8,6 +8,7 @@ export class CanvasStore{
     private shape : Shape[];
     private listeners = new Set<() => void>();
     private preview :Shape | null;
+    private selectedShapeId : string | null = null;
 
     constructor(){
         this.shape = [];
@@ -28,6 +29,14 @@ export class CanvasStore{
     clearPreview(){
         this.preview = null;
         this.notify();
+    }
+
+    selectShape(id:string | null){
+        this.selectedShapeId = id;
+    }
+
+    getSelectedShapeId(){
+        return this.selectedShapeId;
     }
 
     subscribe(listener : ()=>void){

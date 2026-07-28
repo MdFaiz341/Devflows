@@ -15,7 +15,7 @@ export class TextTool{
         private canvas : HTMLCanvasElement,
         private ctx : CanvasRenderingContext2D,
     ){}
-
+    // add undo/redo, move shape, select shape, delet shape, add chatbox and websocket
     pointerDown(e:PointerEvent){
 
         this.startX = Math.round(e.offsetX);

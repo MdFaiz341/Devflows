@@ -35,6 +35,7 @@ export class InputManager {
     private handlePointerDown = (e : PointerEvent)=>{
         this.toolManager.pointerDown(e);
         this.clickDown = true;
+        
     }
 
     private handlePointerMove = (e : PointerEvent)=>{
