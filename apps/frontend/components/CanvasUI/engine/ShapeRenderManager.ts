@@ -65,10 +65,8 @@ export class ShapeRenderManager{
     
         const width =  Math.abs(shape.width);
         const height = Math.abs(shape.height);
-
-        const centerX = x + width/2;
-        const centerY = y + height/2;
-        this.ctx.ellipse(centerX, centerY, width/2, height/2, 0, 0, Math.PI * 2)
+        
+        this.ctx.ellipse(x+width/2, y+height/2, width/2, height/2, 0, 0, Math.PI * 2)
 
         // this.ctx.arc(shape.x, shape.y, shape.radius, 0, Math.PI*2);
 

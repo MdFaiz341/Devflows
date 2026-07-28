@@ -18,11 +18,14 @@ export class CircleTool{
     }
 
     pointerMove(e:PointerEvent){
-        // calculate radius
+        // calculate width, height
         const dx = e.offsetX - this.startX;
         const dy = e.offsetY - this.startY;
 
-        const radius = Math.sqrt(dx*dx + dy*dy);
+        const centerX = this.startX + dx/2;
+        const centerY = this.startY + dy/2;
+
+        // const radius = Math.sqrt(dx*dx + dy*dy);
 
         const preview : Circle = {
             id : "preview",
@@ -32,6 +35,9 @@ export class CircleTool{
             // radius : radius,
             width : dx,
             height : dy,
+
+            centerX : centerX,
+            centerY : centerY,
 
             stroke : "white",
             fill : "yellow",

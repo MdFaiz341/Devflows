@@ -33,10 +33,38 @@ export class CanvasStore{
 
     selectShape(id:string | null){
         this.selectedShapeId = id;
+        this.notify();
     }
 
     getSelectedShapeId(){
         return this.selectedShapeId;
+    }
+
+    moveShape(id:string, dx:number, dy:number){
+        const shape = this.shape.find(s => s.id === id);
+        if(!shape) return;
+
+        switch (shape.type){
+            case "rectangle":
+                shape.x += dx;
+                shape.y += dy;
+                break;
+            
+            case "circle" :
+                shape.centerX += dx;
+                shape.centerY += dy;
+                break;
+            
+            case "line":
+                shape.startX += dx;
+                shape.endX += dx;
+
+                shape.startY += dy;
+                shape.endY += dy;
+                break;
+
+        }
+        this.notify();
     }
 
     subscribe(listener : ()=>void){

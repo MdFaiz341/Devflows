@@ -12,6 +12,17 @@ import { ArrowTool } from "../tools/ArrowTool";
 import { LineTool } from "../tools/LineTool";
 import { PencilTool } from "../tools/PencilTool";
 import { TextTool } from "../tools/TextTool";
+import { ShapeRender } from "../renderer/1ShapeRender";
+import { Shape } from "../shapeFormat/Shape";
+import { RectangleRenderer } from "../renderer/RectangleRenderer";
+import { CircleRenderer } from "../renderer/CircleRenderer";
+import { ArrowRenderer } from "../renderer/ArrowRenderer";
+import { LineRenderer } from "../renderer/LineRenderer";
+import { PencilRenderer } from "../renderer/PencilRenderer";
+import { TextRenderer } from "../renderer/TextRenderer";
+import { Registery } from "./Registery";
+import { SelectionTool } from "../hitTest/SelectionTool";
+import { HitTestManager } from "../hitTest/HitTestManager";
 
 
 
@@ -70,6 +81,8 @@ export class CanvasEngine{
     private toolManager : ToolManager;
 
     private store : CanvasStore;
+    private registry : Registery;
+    private hitTestManager : HitTestManager;
 
     constructor(roomId:number, canvas:HTMLCanvasElement, socket:any){
         this.currRoomId = roomId;
@@ -94,6 +107,19 @@ export class CanvasEngine{
         // create instance of shapeRenderManager once;
         this.shapeRender = new ShapeRenderManager(ctx);
 
+        // ---------------------Registry Instance:-----------
+        const registry = new Map<ToolType, ShapeRender<Shape>>();
+        registry.set("rectangle", new RectangleRenderer(ctx));
+        registry.set("circle", new CircleRenderer(ctx));
+        registry.set("arrow", new ArrowRenderer(ctx));
+        registry.set("line", new LineRenderer(ctx));
+        registry.set("pencil", new PencilRenderer(ctx));
+        registry.set("text", new TextRenderer(ctx));
+
+        this.registry = new Registery(registry);
+
+        this.hitTestManager = new HitTestManager(this.store, this.registry);
+
         const tools = new Map<ToolType, Tool>();
         tools.set("rectangle", new RectangleTool(this.store));
         tools.set("circle", new CircleTool(this.store));
@@ -101,6 +127,7 @@ export class CanvasEngine{
         tools.set("line", new LineTool(this.store));
         tools.set("text", new TextTool(this.store, canvas, ctx));
         tools.set("pencil", new PencilTool(this.store));
+        tools.set("select", new SelectionTool(this.hitTestManager, this.store));
 
         this.toolManager = new ToolManager(tools);
 
@@ -111,7 +138,7 @@ export class CanvasEngine{
         // send whole CanvasStore instance bcz on every update or add Shape[] will change so direct 
         // whole shape access and and store RenderManager instance into listner()=>void then call that 
         // listner on every changes in Shape[] of CanvasStore
-        this.renderer = new RenderManager(this.ctx, this.canvas, this.store, this.shapeRender);
+        this.renderer = new RenderManager(this.registry, this.ctx, this.canvas, this.store, this.shapeRender);
         
         this.resizeCanvas();
         console.log("Render Store", this.store);

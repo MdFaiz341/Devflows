@@ -35,7 +35,7 @@ export class InputManager {
     private handlePointerDown = (e : PointerEvent)=>{
         this.toolManager.pointerDown(e);
         this.clickDown = true;
-        
+
     }
 
     private handlePointerMove = (e : PointerEvent)=>{
@@ -48,6 +48,7 @@ export class InputManager {
     private handlePointerUp = (e : PointerEvent)=>{
         this.toolManager.pointerUp(e);
         this.clickDown = false;
+        this.toolManager.setCurrentTool("select");
     }
 
 

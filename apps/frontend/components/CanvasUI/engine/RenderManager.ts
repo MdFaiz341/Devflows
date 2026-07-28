@@ -1,5 +1,6 @@
 import { Shape } from "../shapeFormat/Shape";
 import { CanvasStore } from "../store/CanvasStore";
+import { Registery } from "./Registery";
 import { ShapeRenderManager } from "./ShapeRenderManager";
 
 
@@ -13,8 +14,9 @@ export class RenderManager{
     private store : CanvasStore;
     private frameRequest  = false;
     private unsubscribe? : ()=>void;
+    private registery : Registery;
 
-    constructor(ctx:CanvasRenderingContext2D, canvas:HTMLCanvasElement, store:CanvasStore, shapeRender:ShapeRenderManager){
+    constructor(registery:Registery, ctx:CanvasRenderingContext2D, canvas:HTMLCanvasElement, store:CanvasStore, shapeRender:ShapeRenderManager){
         this.ctx = ctx;
         this.canvas = canvas;
 
@@ -25,6 +27,8 @@ export class RenderManager{
         // this.render = render;
 
         this.shapeRender = shapeRender;
+
+        this.registery = registery;
     
         this.unsubscribe = this.store.subscribe(()=>{
             this.scheduleRender();
@@ -52,16 +56,25 @@ export class RenderManager{
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         console.log("Render----");
         const shapes = this.store.getAllShapes();
+
+        const selected = this.store.getSelectedShapeId();
         for(const val of shapes){
-            this.shapeRender.draw(val);
+            const renderer = this.registery.get(val.type);
+
+            renderer?.draw(val)
+
+            if(val.id === selected){
+                renderer?.drawSelection(val);
+            }
         }
 
         const previewShape = this.store.getPreview();
-        if(previewShape){
-            this.shapeRender.draw(previewShape)
-        }
+        if(!previewShape) return;
+        const renderer = this.registery.get(previewShape?.type);
 
-        // this.store.clearPreview();
+        renderer?.draw(previewShape)
+        
+
     }
 
     destroy(){
