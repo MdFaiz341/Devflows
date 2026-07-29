@@ -1,3 +1,4 @@
+import { CursorManager } from "../cursor/CursorManager";
 import { Registery } from "../engine/Registery";
 import { CanvasStore } from "../store/CanvasStore";
 import { HitTestManager } from "./HitTestManager";
@@ -13,6 +14,7 @@ export class SelectionTool{
     constructor(
         private testManager : HitTestManager,
         private store : CanvasStore,
+        private cursor : CursorManager,
     ){}
 
     pointerDown(e:PointerEvent){
@@ -24,6 +26,7 @@ export class SelectionTool{
             return;
         }
 
+        
         this.store.selectShape(shape.id);
 
         this.dragging = true;
@@ -42,12 +45,13 @@ export class SelectionTool{
 
         const id = this.store.getSelectedShapeId();
         if(!id) return;
-
-        this.store.moveShape(id, dx, dy);
+        // this.cursor.set("move");
+        this.store.moveShape(id, dx, dy, );
     }
 
     pointerUp(e:PointerEvent){
         this.dragging = false;
         this.store.selectShape(null);
+        // this.cursor.set("default");
     }
 }

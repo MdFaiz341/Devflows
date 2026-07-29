@@ -37,21 +37,22 @@ export class TextRenderer implements ShapeRender<Text>{
     }
 
     drawSelection(text: Text): void {
-        // this.ctx.save();
+        this.ctx.save();
+        
+        this.ctx.font = `${text.fontSize}px Arial`
+        this.ctx.strokeStyle = "#4A90E2"
 
-        // this.ctx.strokeStyle = "#4A90E2"
+        this.ctx.lineWidth = 2;
 
-        // this.ctx.lineWidth = 2;
+        this.ctx.setLineDash([5,5]);
 
-        // this.ctx.setLineDash([5,5]);
+        const width = this.ctx.measureText(text.text).width
+        const height = text.fontSize;
 
-        // const width = this.ctx.measureText(text.text).width
-        // const height = text.fontSize;
+        const left = text.x;
+        const top = text.y - height;
+        this.ctx.strokeRect(left, top, width, height);
 
-        // const left = text.x;
-        // const top = height - text.y;
-        // this.ctx.strokeRect(left, top, width, height);
-
-        // this.ctx.restore();
+        this.ctx.restore();
     }
 }

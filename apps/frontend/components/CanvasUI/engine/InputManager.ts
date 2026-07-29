@@ -1,3 +1,4 @@
+import { CursorManager } from "../cursor/CursorManager";
 import { ToolType } from "../tools/Tool";
 import { ToolManager } from "../tools/ToolManager";
 
@@ -8,12 +9,15 @@ export class InputManager {
     private canvas : HTMLCanvasElement;
     private clickDown = false;
     private onToolChange : (e:ToolType)=>void
-    constructor(canvas:HTMLCanvasElement, toolManager:ToolManager, onToolChange : (e:ToolType)=>void) {
+    private cursor : CursorManager;
+
+    constructor(cursor:CursorManager, canvas:HTMLCanvasElement, toolManager:ToolManager, onToolChange : (e:ToolType)=>void) {
         this.canvas = canvas
         this.toolManager = toolManager;
         console.log("InputManager instance", this);
         this.attachListeners();
         this.onToolChange = onToolChange;
+        this.cursor = cursor;
     }
 
 
@@ -46,6 +50,12 @@ export class InputManager {
         if(!this.clickDown) return;
         // console.log("InputManager: pointerMove");
         this.toolManager.pointerMove(e);
+
+        if(this.toolManager.currentTool === "text"){
+            this.cursor.set("text");
+        }
+        else if(this.toolManager.currentTool === "select") this.cursor.set("move")
+        else this.cursor.set("crosshair");
     }
 
     private handlePointerUp = (e : PointerEvent)=>{
@@ -53,6 +63,7 @@ export class InputManager {
         this.clickDown = false;
         this.toolManager.setCurrentTool("select");
         this.onToolChange("select");
+        this.cursor.set("default")
     }
 
 

@@ -23,6 +23,7 @@ import { TextRenderer } from "../renderer/TextRenderer";
 import { Registery } from "./Registery";
 import { SelectionTool } from "../hitTest/SelectionTool";
 import { HitTestManager } from "../hitTest/HitTestManager";
+import { CursorManager } from "../cursor/CursorManager";
 
 
 
@@ -83,6 +84,7 @@ export class CanvasEngine{
     private store : CanvasStore;
     private registry : Registery;
     private hitTestManager : HitTestManager;
+    private cursor : CursorManager;
     private onToolChange : (tool:ToolType)=>void
 
     constructor(roomId:number, canvas:HTMLCanvasElement, socket:any, onToolChange : (e:ToolType)=>void){
@@ -101,7 +103,8 @@ export class CanvasEngine{
         // first initialize store where the shape is going to store
         this.store = new CanvasStore();
         // fetch all shapes and shapes[] and send to RenderManagaer and it send to ShapeRenderManager
-        const allShapes = this.store.getAllShapes();
+
+        this.cursor = new CursorManager(canvas);
 
         console.log("Engine Store", this.store);
 
@@ -128,11 +131,11 @@ export class CanvasEngine{
         tools.set("line", new LineTool(this.store));
         tools.set("text", new TextTool(this.store, canvas, ctx));
         tools.set("pencil", new PencilTool(this.store));
-        tools.set("select", new SelectionTool(this.hitTestManager, this.store));
+        tools.set("select", new SelectionTool(this.hitTestManager, this.store, this.cursor));
 
         this.toolManager = new ToolManager(tools);
 
-        this.inputManager = new InputManager(canvas, this.toolManager, this.onToolChange);
+        this.inputManager = new InputManager(this.cursor, canvas, this.toolManager, this.onToolChange);
 
         console.log("inputManager created:---")
         
@@ -164,6 +167,9 @@ export class CanvasEngine{
         this.toolManager.getTool();
     }
 
+    setCurrentPage(page:number){
+        this.store.setCurrentPage(page);
+    }
     
 
     private resizeCanvas(){

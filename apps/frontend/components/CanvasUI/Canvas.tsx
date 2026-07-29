@@ -11,6 +11,7 @@ import { useSocket } from "../../providers/SocketProvider"
 import rough from "roughjs";
 import { CanvasEngine } from "./engine/CanvasEngine"
 import { Tool, ToolType } from "./tools/Tool"
+import { ShapeSetting } from "./ShapeSetting"
 
 const Buttons = [
     {
@@ -58,10 +59,11 @@ export const Canvas = ({roomId, adminId}:{
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const [showFriend, setShowFriend] = useState(false);
     const [showLeave, setShowLeave] = useState(false);
-    const {open, setOpen} = useHook();
+    const {open, setOpen, active, setActive} = useHook();
     const joinRef = useRef(false);
     const [currTool, setCurrTool] = useState<ToolType>("select");
     const engineRef = useRef<CanvasEngine | null>(null);
+    const [page, setPage] = useState(1);
 
     // useEffect(()=>{
     //     function hitJoinCanvasRoom(){
@@ -100,6 +102,10 @@ export const Canvas = ({roomId, adminId}:{
         engineRef.current.setTool(currTool)
     }, [currTool]);
 
+    useEffect(()=>{
+        engineRef.current?.setCurrentPage(page);
+    }, [page])
+
 
 
     return(
@@ -134,20 +140,21 @@ export const Canvas = ({roomId, adminId}:{
                 />
             </div>
 
-            <div className="bottom-2 right-10 text-white absolute flex items-center gap-5">
+            <div className="bottom-2 right-10 text-white absolute flex items-center gap-2">
                 <Button
                     type="button"
                     text="prev"
                     className="px-2 py-1 rounded-lg"
                     design="outline"
-                    onClick={()=>{}}
+                    onClick={()=>{setPage(prev => prev-1)}}
                 />
+                <span className="text-xs">{page}</span>
                 <Button
                     type="button"
                     text="next"
                     className="px-2 py-1 rounded-lg"
                     design="outline"
-                    onClick={()=>{}}
+                    onClick={()=>{setPage(prev => prev+1)}}
                 />
             </div>
             
@@ -157,6 +164,9 @@ export const Canvas = ({roomId, adminId}:{
             {
                open && <InviteGenerator open={open} setOpen={setOpen}/>
             }
+            {
+                true && <ShapeSetting active={active}/>
+            } 
         </div>
     )
 }
