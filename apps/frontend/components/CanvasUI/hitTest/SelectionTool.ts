@@ -1,3 +1,4 @@
+import { Registery } from "../engine/Registery";
 import { CanvasStore } from "../store/CanvasStore";
 import { HitTestManager } from "./HitTestManager";
 
@@ -47,5 +48,6 @@ export class SelectionTool{
 
     pointerUp(e:PointerEvent){
         this.dragging = false;
+        this.store.selectShape(null);
     }
 }

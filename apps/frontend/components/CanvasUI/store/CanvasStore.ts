@@ -63,6 +63,28 @@ export class CanvasStore{
                 shape.endY += dy;
                 break;
 
+            case "arrow":
+                shape.startX += dx;
+                shape.endX += dx;
+
+                shape.startY += dy;
+                shape.endY += dy;
+                break;
+
+            case "text":
+                shape.x += dx;
+                shape.y += dx;
+                break;
+
+            case "pencil":
+                // shape.startX += dx;
+                // shape.endX += dx;
+
+                // shape.startY += dy;
+                // shape.endY += dy;
+                break;
+            
+
         }
         this.notify();
     }
@@ -81,7 +103,7 @@ export class CanvasStore{
     }
 
     private notify(){
-        console.log("notify size: ", this.listeners.size)
+        // console.log("notify size: ", this.listeners.size)
         for(const listener of this.listeners){
             listener();
         }

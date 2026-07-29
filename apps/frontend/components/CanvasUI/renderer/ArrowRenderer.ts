@@ -63,7 +63,18 @@ export class ArrowRenderer implements ShapeRender<Arrow>{
         return distance <= tolerance;
     }
 
-    drawSelection(shape: Arrow): void {
-        
+    drawSelection(arrow: Arrow): void {
+        this.ctx.save();
+
+        this.ctx.strokeStyle = "#4A90E2"
+
+        this.ctx.lineWidth = 2;
+
+        this.ctx.setLineDash([5,5]);
+        const width = arrow.endX - arrow.startX;
+        const height = arrow.endY - arrow.startY;
+        this.ctx.strokeRect(arrow.startX, arrow.startY, width, height);
+
+        this.ctx.restore();
     }
 }

@@ -15,15 +15,16 @@ export class CircleRenderer implements ShapeRender<Circle>{
 
         this.ctx.beginPath();
 
-        const x = Math.min(shape.x, shape.x + shape.width);
-        const y = Math.min(shape.y, shape.y + shape.height);
+        // const x = Math.min(shape.x, shape.x + shape.width);
+        // const y = Math.min(shape.y, shape.y + shape.height);
     
-        const width =  Math.abs(shape.width);
-        const height = Math.abs(shape.height);
+        // const width =  Math.abs(shape.width);
+        // const height = Math.abs(shape.height);
 
-        const centerX = x + width/2;
-        const centerY = y + height/2;
-        this.ctx.ellipse(centerX, centerY, width/2, height/2, 0, 0, Math.PI * 2)
+        // const centerX = x + width/2;
+        // const centerY = y + height/2;
+        // this.ctx.ellipse(centerX, centerY, width/2, height/2, 0, 0, Math.PI * 2)
+        this.ctx.ellipse(shape.centerX, shape.centerY, shape.width/2, shape.height/2, 0, 0, Math.PI * 2)
 
         // this.ctx.arc(shape.x, shape.y, shape.radius, 0, Math.PI*2);
 
@@ -51,7 +52,24 @@ export class CircleRenderer implements ShapeRender<Circle>{
         return dx*dx + dy*dy <= radiusX * radiusY;
     }
 
-    drawSelection(shape: Circle): void {
-        
+    drawSelection(circle: Circle): void {
+        this.ctx.save();
+
+        this.ctx.strokeStyle = "#4A90E2"
+
+        this.ctx.lineWidth = 2;
+
+        this.ctx.setLineDash([5,5]);
+
+        const left = circle.centerX - circle.width/2;
+
+        const top = circle.centerY - circle.height/2;
+
+        const sizeX = circle.width/2 * 2;
+        const sizeY = circle.height/2 * 2;
+
+        this.ctx.strokeRect(left, top, sizeX, sizeY);
+
+        this.ctx.restore();
     }
 }

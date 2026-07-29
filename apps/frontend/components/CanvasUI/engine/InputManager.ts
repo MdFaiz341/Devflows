@@ -1,3 +1,4 @@
+import { ToolType } from "../tools/Tool";
 import { ToolManager } from "../tools/ToolManager";
 
 
@@ -6,11 +7,13 @@ export class InputManager {
     private toolManager : ToolManager;
     private canvas : HTMLCanvasElement;
     private clickDown = false;
-    constructor(canvas:HTMLCanvasElement, toolManager:ToolManager) {
+    private onToolChange : (e:ToolType)=>void
+    constructor(canvas:HTMLCanvasElement, toolManager:ToolManager, onToolChange : (e:ToolType)=>void) {
         this.canvas = canvas
         this.toolManager = toolManager;
         console.log("InputManager instance", this);
         this.attachListeners();
+        this.onToolChange = onToolChange;
     }
 
 
@@ -41,7 +44,7 @@ export class InputManager {
     private handlePointerMove = (e : PointerEvent)=>{
         if(this.toolManager.currentTool === "text") this.clickDown = false;
         if(!this.clickDown) return;
-        console.log("InputManager: pointerMove");
+        // console.log("InputManager: pointerMove");
         this.toolManager.pointerMove(e);
     }
 
@@ -49,6 +52,7 @@ export class InputManager {
         this.toolManager.pointerUp(e);
         this.clickDown = false;
         this.toolManager.setCurrentTool("select");
+        this.onToolChange("select");
     }
 
 

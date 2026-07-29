@@ -39,7 +39,6 @@ export class RenderManager{
     }
 
     private scheduleRender(){
-        console.log("ScheduleRender---")
         if(this.frameRequest) return;
 
         this.frameRequest = true;
@@ -54,7 +53,6 @@ export class RenderManager{
     private render(){
 
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        console.log("Render----");
         const shapes = this.store.getAllShapes();
 
         const selected = this.store.getSelectedShapeId();
@@ -64,6 +62,7 @@ export class RenderManager{
             renderer?.draw(val)
 
             if(val.id === selected){
+                console.log("yes selected:---");
                 renderer?.drawSelection(val);
             }
         }

@@ -32,9 +32,9 @@ export class RectangleRenderer implements ShapeRender<Rectangle>{
     drawSelection(rect: Rectangle): void {
         this.ctx.save();
 
-        this.ctx.strokeStyle = "white"   //"#4A90E2";
+        this.ctx.strokeStyle = "#4A90E2"
 
-        this.ctx.lineWidth = 1;
+        this.ctx.lineWidth = 2;
 
         this.ctx.setLineDash([5,5]);
 

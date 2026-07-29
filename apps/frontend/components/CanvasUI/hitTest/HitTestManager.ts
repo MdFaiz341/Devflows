@@ -12,8 +12,8 @@ export class HitTestManager{
         // private ctx : CanvasRenderingContext2D,
         private registery : Registery,
     ){}
-
-    findShape(x:number, y : number){
+    // select nahi ho raha and hitTest false return kar raha hai
+    findShape(x:number, y : number) {
         console.log("Inside HitManager-----");
         const shapes = this.store.getAllShapes();
         for(let i=shapes.length-1; i>=0; i--){

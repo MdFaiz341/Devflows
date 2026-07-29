@@ -83,8 +83,9 @@ export class CanvasEngine{
     private store : CanvasStore;
     private registry : Registery;
     private hitTestManager : HitTestManager;
+    private onToolChange : (tool:ToolType)=>void
 
-    constructor(roomId:number, canvas:HTMLCanvasElement, socket:any){
+    constructor(roomId:number, canvas:HTMLCanvasElement, socket:any, onToolChange : (e:ToolType)=>void){
         this.currRoomId = roomId;
         this.canvas = canvas;
         const ctx = canvas.getContext("2d");
@@ -95,7 +96,7 @@ export class CanvasEngine{
         console.log("inside Engine-------");
         // this.pointerEventHandler();
         // this.pageShape = {};
-
+        this.onToolChange = onToolChange;
 
         // first initialize store where the shape is going to store
         this.store = new CanvasStore();
@@ -131,7 +132,7 @@ export class CanvasEngine{
 
         this.toolManager = new ToolManager(tools);
 
-        this.inputManager = new InputManager(canvas, this.toolManager);
+        this.inputManager = new InputManager(canvas, this.toolManager, this.onToolChange);
 
         console.log("inputManager created:---")
         
@@ -158,6 +159,12 @@ export class CanvasEngine{
     setTool(shape : ToolType){
         this.toolManager.setCurrentTool(shape);
     }
+
+    currentTool(){
+        this.toolManager.getTool();
+    }
+
+    
 
     private resizeCanvas(){
         // this.canvas.width = this.canvas.clientWidth;

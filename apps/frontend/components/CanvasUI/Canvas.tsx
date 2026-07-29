@@ -10,7 +10,7 @@ import { LeaveCanvasUI } from "./LeaveCanvasUI"
 import { useSocket } from "../../providers/SocketProvider"
 import rough from "roughjs";
 import { CanvasEngine } from "./engine/CanvasEngine"
-import { ToolType } from "./tools/Tool"
+import { Tool, ToolType } from "./tools/Tool"
 
 const Buttons = [
     {
@@ -88,7 +88,7 @@ export const Canvas = ({roomId, adminId}:{
     useEffect(()=>{
         if(!canvasRef.current) return;
         const canvas = canvasRef.current;
-        engineRef.current = new CanvasEngine(roomId, canvas, socket);
+        engineRef.current = new CanvasEngine(roomId, canvas, socket, (tool)=>setCurrTool(tool));
 
         return ()=>{
             engineRef.current?.destroy();
@@ -99,6 +99,7 @@ export const Canvas = ({roomId, adminId}:{
         if(!engineRef.current) return;
         engineRef.current.setTool(currTool)
     }, [currTool]);
+
 
 
     return(
@@ -112,7 +113,7 @@ export const Canvas = ({roomId, adminId}:{
                         Buttons.map((val)=>{
                             return(
                                 // onclick currentTool select 
-                                <div key={val.id} onClick={()=>{setCurrTool(val.shape as ToolType)}} className={`cursor-pointer p-2 rounded-full transition-all duration-300 ${currTool === val.shape ? "bg-gray-900 scale-125" : "hover:bg-gray-700"}`}>{val.btn}</div>
+                                <div key={val.id} onClick={()=>{setCurrTool(val.shape as ToolType)}} className={`cursor-pointer p-2 rounded-full transition-all duration-300 ${currTool === val.shape ? "bg-blue-500 scale-125" : "hover:bg-gray-700"}`}>{val.btn}</div>
                             )
                         })
                     }

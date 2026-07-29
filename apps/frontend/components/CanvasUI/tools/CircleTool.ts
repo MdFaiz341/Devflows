@@ -22,8 +22,14 @@ export class CircleTool{
         const dx = e.offsetX - this.startX;
         const dy = e.offsetY - this.startY;
 
-        const centerX = this.startX + dx/2;
-        const centerY = this.startY + dy/2;
+        const x = Math.min(this.startX, this.startX + dx);
+        const y = Math.min(this.startY, this.startY + dy);
+    
+        const width =  Math.abs(dx);
+        const height = Math.abs(dy);
+
+        const centerX = x + width/2;
+        const centerY = y + height/2;
 
         // const radius = Math.sqrt(dx*dx + dy*dy);
 
@@ -33,8 +39,8 @@ export class CircleTool{
             x : this.startX,
             y : this.startY,
             // radius : radius,
-            width : dx,
-            height : dy,
+            width : width,
+            height : height,
 
             centerX : centerX,
             centerY : centerY,

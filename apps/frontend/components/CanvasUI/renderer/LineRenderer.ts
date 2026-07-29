@@ -45,7 +45,18 @@ export class LineRenderer implements ShapeRender<Line>{
         return distance <= tolerance;
     }
 
-    drawSelection(shape: Line): void {
-        
+    drawSelection(line: Line): void {
+        this.ctx.save();
+
+        this.ctx.strokeStyle = "#4A90E2"
+
+        this.ctx.lineWidth = 2;
+
+        this.ctx.setLineDash([5,5]);
+        const width = line.endX - line.startX;
+        const height = line.endY - line.startY;
+        this.ctx.strokeRect(line.startX, line.startY, width, height);
+
+        this.ctx.restore();
     }
 }
