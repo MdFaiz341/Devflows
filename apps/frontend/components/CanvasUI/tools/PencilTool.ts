@@ -1,3 +1,4 @@
+import { useCanvasStore } from "../../../Storage/useCanvasStore";
 import { Pencil, Points } from "../shapeFormat/AllShapes";
 import { CanvasStore } from "../store/CanvasStore";
 
@@ -19,6 +20,8 @@ export class PencilTool{
     }
 
     pointerMove(e:PointerEvent){
+        const stroke = useCanvasStore.getState().stroke;
+        const strokeWidth = useCanvasStore.getState().strokeWidth;
         this.points.push({
             x : e.offsetX,
             y : e.offsetY,
@@ -28,9 +31,9 @@ export class PencilTool{
             id : "preview",
             type : "pencil",
             points : [...this.points],
-            stroke : "white",
-            fill : "yellow",
-            strokeWidth : 2,
+            stroke : stroke,
+            fill : "transparent",
+            strokeWidth : strokeWidth,
         }
 
         this.store.setPreview(preview);

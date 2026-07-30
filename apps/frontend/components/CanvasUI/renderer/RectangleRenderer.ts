@@ -16,6 +16,9 @@ export class RectangleRenderer implements ShapeRender<Rectangle>{
         this.ctx.strokeStyle = shape.stroke;
 
         this.ctx.lineWidth = shape.strokeWidth;
+        console.log(shape.fill);
+        this.ctx.fillStyle = shape.fill;
+        this.ctx.fillRect(shape.x, shape.y, shape.width, shape.height);
 
         this.ctx.strokeRect(shape.x, shape.y, shape.width, shape.height);
 

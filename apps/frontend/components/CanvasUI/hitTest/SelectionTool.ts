@@ -16,6 +16,7 @@ export class SelectionTool{
         private store : CanvasStore,
         private shapeSetting : (e:boolean)=>void,
         private registery : Registery,
+        private cursor : CursorManager,
     ){}
 
     pointerDown(e:PointerEvent){
@@ -40,6 +41,7 @@ export class SelectionTool{
         const renderer = this.registery.get(shape.type);
         renderer?.drawSelection(shape);
 
+        this.cursor.set("move")
     }
 
     pointerMove(e:PointerEvent){
@@ -53,7 +55,7 @@ export class SelectionTool{
 
         const id = this.store.getSelectedShapeId();
         if(!id) return;
-        // this.cursor.set("move");
+        this.cursor.set("move");
         this.store.moveShape(id, dx, dy, );
 
         this.shapeSetting(false);

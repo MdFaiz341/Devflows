@@ -164,7 +164,7 @@ export class CanvasStore{
     getShape(id:string){
         const allShapes = this.pageWithShape.get(this.currentPage);
         if(!allShapes) return null;
-        return allShapes.find(shape => shape.id === id);
+        const val = allShapes.find(shape => shape.id === id);
         // return this.shape.find(shape =>shape.id === id);
     }
 

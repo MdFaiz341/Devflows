@@ -1,3 +1,4 @@
+import { useCanvasStore } from "../../../Storage/useCanvasStore";
 import { Arrow } from "../shapeFormat/AllShapes";
 import { CanvasStore } from "../store/CanvasStore";
 
@@ -18,6 +19,9 @@ export class ArrowTool{
     }
 
     pointerMove(e:PointerEvent){
+        const stroke = useCanvasStore.getState().stroke;
+        const strokeWidth = useCanvasStore.getState().strokeWidth;
+        
         // find direction :-
         const angle = Math.atan2(e.offsetY-this.startY, e.offsetX-this.startX);
 
@@ -31,9 +35,9 @@ export class ArrowTool{
             angle : angle,
             
             headLength : 15,
-            stroke : "white",
-            fill : "yellow",
-            strokeWidth : 2,
+            stroke : stroke,
+            fill : "transparent",
+            strokeWidth : strokeWidth,
         }
 
         this.store.setPreview(preview);

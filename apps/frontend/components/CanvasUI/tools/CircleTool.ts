@@ -1,3 +1,4 @@
+import { useCanvasStore } from "../../../Storage/useCanvasStore";
 import { Circle } from "../shapeFormat/AllShapes";
 import { CanvasStore } from "../store/CanvasStore";
 
@@ -18,6 +19,10 @@ export class CircleTool{
     }
 
     pointerMove(e:PointerEvent){
+        const stroke = useCanvasStore.getState().stroke;
+        const background = useCanvasStore.getState().background;
+        const strokeWidth = useCanvasStore.getState().strokeWidth;
+
         // calculate width, height
         const dx = e.offsetX - this.startX;
         const dy = e.offsetY - this.startY;
@@ -45,9 +50,9 @@ export class CircleTool{
             centerX : centerX,
             centerY : centerY,
 
-            stroke : "white",
-            fill : "yellow",
-            strokeWidth : 2,
+            stroke : stroke,
+            fill : background,
+            strokeWidth : strokeWidth,
         }
         this.store.setPreview(preview);
     }

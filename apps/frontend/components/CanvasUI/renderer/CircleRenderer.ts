@@ -26,13 +26,11 @@ export class CircleRenderer implements ShapeRender<Circle>{
         // this.ctx.ellipse(centerX, centerY, width/2, height/2, 0, 0, Math.PI * 2)
         this.ctx.ellipse(shape.centerX, shape.centerY, shape.width/2, shape.height/2, 0, 0, Math.PI * 2)
 
-        // this.ctx.arc(shape.x, shape.y, shape.radius, 0, Math.PI*2);
-
         this.ctx.strokeStyle = shape.stroke;
 
         this.ctx.lineWidth = shape.strokeWidth;
-        // this.ctx.fillStyle = shape.fill;
-        // this.ctx.fill();
+        this.ctx.fillStyle = shape.fill;
+        this.ctx.fill();
 
         this.ctx.stroke();
 

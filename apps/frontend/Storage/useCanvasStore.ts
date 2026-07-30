@@ -31,6 +31,18 @@ interface CanvasType{
     currentRoomId : number | null,
     setCurrentRoomId : (e : number)=>void,
 
+    stroke : string,
+    setStroke : (e:string)=>void
+
+    strokeWidth : number,
+    setStrokeWidth : (e:number)=>void,
+
+    textSize : string,
+    setTextSize : (e:string)=>void,
+
+    background : string,
+    setBackground : (e:string)=>void,
+
     canvasOrder : number[],   // roomIds
     setCanvasOrder : (e : number[])=>void,
 
@@ -41,12 +53,28 @@ interface CanvasType{
     setCanvasRoomData : (roomId:number, data:any)=>void,
 }
 
+// stroke : "white",
+// fill : "yellow",
+// strokeWidth : 2,
+
 export const useCanvasStore = create<CanvasType>(
     (set)=>({
         currentRoomId : null,
         canvasOrder : [],
         canvasCard : {},
         canvasRoomData : {},
+
+        stroke : "white",
+        strokeWidth : 2,
+        background : "transparent",
+        textSize : "22px",
+
+
+        setTextSize : (val)=>set({textSize:val}),
+
+        setBackground : (val)=>set({background:val}),
+        setStrokeWidth : (val)=> set({strokeWidth:val}),
+        setStroke : (val)=> set({stroke:val}),
 
         setCanvasRoomData : (pageNo, data)=>set((state)=>({
             canvasRoomData : {

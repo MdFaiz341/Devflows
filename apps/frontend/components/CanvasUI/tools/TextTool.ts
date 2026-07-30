@@ -1,5 +1,7 @@
+import { useCanvasStore } from "../../../Storage/useCanvasStore";
 import { Text } from "../shapeFormat/AllShapes";
 import { CanvasStore } from "../store/CanvasStore";
+import { ToolManager } from "./ToolManager";
 
 
 
@@ -18,6 +20,12 @@ export class TextTool{
     // add undo/redo, move shape, select shape, delet shape, add chatbox and websocket
     pointerDown(e:PointerEvent){
 
+        const stroke = useCanvasStore.getState().stroke;
+        const strokeWidth = useCanvasStore.getState().strokeWidth;
+        const textSize = useCanvasStore.getState().textSize;
+
+        console.log("TextSize---", textSize);
+
         this.startX = Math.round(e.offsetX);
         this.startY = Math.round(e.offsetY);
 
@@ -29,8 +37,8 @@ export class TextTool{
         textArea.style.background = "transparent";
         textArea.style.border = "none";
         textArea.style.outline = "none";
-        textArea.style.color = "white";
-        textArea.style.fontSize = "24px";
+        textArea.style.color = stroke;
+        textArea.style.fontSize = textSize;
         textArea.style.fontFamily = "Arial";
         textArea.style.resize = "none";
         textArea.style.overflow = "hidden";
@@ -39,7 +47,7 @@ export class TextTool{
         textArea.style.margin = "0";
         textArea.style.lineHeight = "24px";
         textArea.style.whiteSpace = "pre";
-        textArea.style.caretColor = "white";
+        textArea.style.caretColor = stroke;
 
         const resize = ()=>{
             const metrics = this.ctx.measureText(textArea.value || " ");
@@ -56,7 +64,6 @@ export class TextTool{
                 this.activeTextArea = null;
                 return;
             }
-
             const preview : Text = {
                 id : crypto.randomUUID(),
                 type : "text",
@@ -64,16 +71,16 @@ export class TextTool{
                 y : y,
                 text : textArea.value,
 
-                fontSize: 24,
+                fontSize: parseInt(textSize),
                 fontFamily: "Arial",
                 fontWeight: "normal",       // "normal" | "bold";
                 fontStyle:  "normal",       // "normal" | "italic"
                 textAlign: "left",          // "left" | "center" | "right";
-                color: "white",
+                color: stroke,
 
-                stroke : "white",
-                fill : "yellow",
-                strokeWidth : 2,
+                stroke : stroke,
+                fill : "transparent",
+                strokeWidth : strokeWidth,
             }
             this.store.addShape(preview);
 
@@ -96,7 +103,6 @@ export class TextTool{
         this.prevY = this.startY;
         this.activeTextArea = textArea;
         textArea.focus();
-
         
 
         textArea.addEventListener("keydown", (e)=>{
@@ -110,12 +116,13 @@ export class TextTool{
             }
         })
 
-
         textArea.addEventListener("input", ()=>{
             resize();
             textArea.style.height = "auto";
             textArea.style.height = `${textArea.scrollHeight}px`;
         });
+
+
     }
 
     pointerMove(e:PointerEvent){
@@ -128,6 +135,8 @@ export class TextTool{
         // this.store.addShape(previewShape);
 
         // this.store.clearPreview();
+
+        this.activeTextArea = null;
         return;
     }
 }

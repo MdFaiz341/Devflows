@@ -1,3 +1,4 @@
+import { useCanvasStore } from "../../../Storage/useCanvasStore";
 import { Line } from "../shapeFormat/AllShapes";
 import { CanvasStore } from "../store/CanvasStore";
 
@@ -18,6 +19,8 @@ export class LineTool{
     }
 
     pointerMove(e:PointerEvent){
+        const stroke = useCanvasStore.getState().stroke;
+        const strokeWidth = useCanvasStore.getState().strokeWidth;
 
         const preview : Line = {
             id : "preview",
@@ -29,9 +32,9 @@ export class LineTool{
             endX : e.offsetX,
             endY : e.offsetY,
 
-            stroke : "white",
-            fill : "yellow",
-            strokeWidth : 2,
+            stroke : stroke,
+            fill : "transparent",
+            strokeWidth : strokeWidth,
         }
 
         this.store.setPreview(preview);

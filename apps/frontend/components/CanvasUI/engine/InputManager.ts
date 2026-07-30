@@ -48,14 +48,11 @@ export class InputManager {
     private handlePointerMove = (e : PointerEvent)=>{
         if(this.toolManager.currentTool === "text") this.clickDown = false;
         if(!this.clickDown) return;
-        // console.log("InputManager: pointerMove");
         this.toolManager.pointerMove(e);
 
-        if(this.toolManager.currentTool === "text"){
-            this.cursor.set("text");
-        }
-        else if(this.toolManager.currentTool === "select") this.cursor.set("move")
-        else this.cursor.set("crosshair");
+        if(this.toolManager.currentTool === "text") this.cursor.set("text");
+        else if(this.toolManager.currentTool !== "select") this.cursor.set("crosshair")
+        // else this.cursor.set("crosshair");
     }
 
     private handlePointerUp = (e : PointerEvent)=>{

@@ -64,6 +64,7 @@ export const Canvas = ({roomId, adminId}:{
     const [currTool, setCurrTool] = useState<ToolType>("select");
     const engineRef = useRef<CanvasEngine | null>(null);
     const [page, setPage] = useState(1);
+    // const ref = useRef<HTMLInputElement>(true);
 
     // useEffect(()=>{
     //     function hitJoinCanvasRoom(){
@@ -169,9 +170,9 @@ export const Canvas = ({roomId, adminId}:{
             {
                open && <InviteGenerator open={open} setOpen={setOpen}/>
             }
-            {
-                active && <ShapeSetting active={active} removeShape={removeShape}/>
-            } 
+            
+            <ShapeSetting active={active} removeShape={removeShape} currTool={currTool}/>
+            
         </div>
     )
 }

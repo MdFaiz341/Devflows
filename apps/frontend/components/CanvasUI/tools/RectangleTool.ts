@@ -1,3 +1,4 @@
+import { useCanvasStore } from "../../../Storage/useCanvasStore";
 import { Rectangle } from "../shapeFormat/AllShapes";
 import { CanvasStore } from "../store/CanvasStore";
 
@@ -17,6 +18,10 @@ export class RectangleTool{
     }
 
     pointerMove(e:PointerEvent){
+        const stroke = useCanvasStore.getState().stroke;
+        const background = useCanvasStore.getState().background;
+        const strokeWidth = useCanvasStore.getState().strokeWidth;
+
         // calculate current size
         const width = e.offsetX - this.startX;
         const height = e.offsetY - this.startY;
@@ -24,7 +29,6 @@ export class RectangleTool{
         console.log(width, height);
         console.log("Rectangle store", this.store);
         // Create preview rectangle
-
         const preview : Rectangle = {
             id : "preview",
 
@@ -35,9 +39,9 @@ export class RectangleTool{
             width : width,
             height : height,
 
-            stroke : "white",
-            fill : "yellow",
-            strokeWidth : 2,
+            stroke : stroke,
+            fill : background,
+            strokeWidth : strokeWidth,
         }
 
         this.store.setPreview(preview);

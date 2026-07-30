@@ -133,7 +133,7 @@ export class CanvasEngine{
         tools.set("line", new LineTool(this.store));
         tools.set("text", new TextTool(this.store, canvas, ctx));
         tools.set("pencil", new PencilTool(this.store));
-        tools.set("select", new SelectionTool(this.hitTestManager, this.store, this.shapeSetting, this.registry));
+        tools.set("select", new SelectionTool(this.hitTestManager, this.store, this.shapeSetting, this.registry, this.cursor));
 
         this.toolManager = new ToolManager(tools);
 
