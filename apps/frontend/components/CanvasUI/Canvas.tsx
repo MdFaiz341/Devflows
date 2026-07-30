@@ -90,12 +90,17 @@ export const Canvas = ({roomId, adminId}:{
     useEffect(()=>{
         if(!canvasRef.current) return;
         const canvas = canvasRef.current;
-        engineRef.current = new CanvasEngine(roomId, canvas, socket, (tool)=>setCurrTool(tool));
+        engineRef.current = new CanvasEngine(roomId, canvas, socket, (tool)=>setCurrTool(tool), (e)=>setActive(e));
 
         return ()=>{
             engineRef.current?.destroy();
         }
     }, []);
+
+    function removeShape(){
+        console.log("removeSHape call---");
+        engineRef.current?.removeShape();
+    }
 
     useEffect(()=>{
         if(!engineRef.current) return;
@@ -113,13 +118,13 @@ export const Canvas = ({roomId, adminId}:{
             <canvas ref={canvasRef} id="canvas" className="w-screen h-screen"></canvas>
 
             {/* buttons */}
-            <div className="absolute bg-gray-800 z-50 top-2 px-5 py-2 rounded-2xl right-[35%]">
+            <div className="absolute bg-gray-800 z-50 top-2 px-5 py-1 rounded-2xl right-[35%]">
                 <div className="flex items-center gap-4 text-white">
                     {
                         Buttons.map((val)=>{
                             return(
                                 // onclick currentTool select 
-                                <div key={val.id} onClick={()=>{setCurrTool(val.shape as ToolType)}} className={`cursor-pointer p-2 rounded-full transition-all duration-300 ${currTool === val.shape ? "bg-blue-500 scale-125" : "hover:bg-gray-700"}`}>{val.btn}</div>
+                                <div key={val.id} onClick={()=>{setCurrTool(val.shape as ToolType)}} className={`cursor-pointer p-2 rounded-lg transition-all duration-300 ${currTool === val.shape ? "bg-blue-500" : "hover:bg-gray-700"}`}>{val.btn}</div>
                             )
                         })
                     }
@@ -165,7 +170,7 @@ export const Canvas = ({roomId, adminId}:{
                open && <InviteGenerator open={open} setOpen={setOpen}/>
             }
             {
-                true && <ShapeSetting active={active}/>
+                active && <ShapeSetting active={active} removeShape={removeShape}/>
             } 
         </div>
     )

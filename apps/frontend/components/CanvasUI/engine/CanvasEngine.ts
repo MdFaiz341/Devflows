@@ -86,8 +86,9 @@ export class CanvasEngine{
     private hitTestManager : HitTestManager;
     private cursor : CursorManager;
     private onToolChange : (tool:ToolType)=>void
+    private shapeSetting : (e : boolean)=>void;
 
-    constructor(roomId:number, canvas:HTMLCanvasElement, socket:any, onToolChange : (e:ToolType)=>void){
+    constructor(roomId:number, canvas:HTMLCanvasElement, socket:any, onToolChange : (e:ToolType)=>void, shapeSetting:(e:boolean)=>void){
         this.currRoomId = roomId;
         this.canvas = canvas;
         const ctx = canvas.getContext("2d");
@@ -99,6 +100,7 @@ export class CanvasEngine{
         // this.pointerEventHandler();
         // this.pageShape = {};
         this.onToolChange = onToolChange;
+        this.shapeSetting = shapeSetting;
 
         // first initialize store where the shape is going to store
         this.store = new CanvasStore();
@@ -131,7 +133,7 @@ export class CanvasEngine{
         tools.set("line", new LineTool(this.store));
         tools.set("text", new TextTool(this.store, canvas, ctx));
         tools.set("pencil", new PencilTool(this.store));
-        tools.set("select", new SelectionTool(this.hitTestManager, this.store, this.cursor));
+        tools.set("select", new SelectionTool(this.hitTestManager, this.store, this.shapeSetting, this.registry));
 
         this.toolManager = new ToolManager(tools);
 
@@ -161,6 +163,8 @@ export class CanvasEngine{
 
     setTool(shape : ToolType){
         this.toolManager.setCurrentTool(shape);
+        this.shapeSetting(false);
+        this.store.selectShape(null);
     }
 
     currentTool(){
@@ -171,6 +175,9 @@ export class CanvasEngine{
         this.store.setCurrentPage(page);
     }
     
+    removeShape(){
+        this.store.removeShape();
+    }
 
     private resizeCanvas(){
         // this.canvas.width = this.canvas.clientWidth;

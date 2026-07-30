@@ -50,6 +50,7 @@ export class CanvasStore{
     }
 
     selectShape(id:string | null){
+        console.log("set Shape ID:--- ", id);
         this.selectedShapeId = id;
         this.notify();
     }
@@ -141,9 +142,10 @@ export class CanvasStore{
         this.notify()
     }
 
-    removeShape(id:string){
+    removeShape(){
+        console.log("current Shape id: ", this.selectedShapeId);
         const allShapes = this.pageWithShape.get(this.currentPage);
-        const filterShapes = allShapes?.filter(shape => shape.id !== id);
+        const filterShapes = allShapes?.filter(shape => shape.id !== this.selectedShapeId);
         if(filterShapes) this.pageWithShape.set(this.currentPage, filterShapes);
         else this.pageWithShape.set(this.currentPage, [])
 

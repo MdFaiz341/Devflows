@@ -14,7 +14,8 @@ export class SelectionTool{
     constructor(
         private testManager : HitTestManager,
         private store : CanvasStore,
-        private cursor : CursorManager,
+        private shapeSetting : (e:boolean)=>void,
+        private registery : Registery,
     ){}
 
     pointerDown(e:PointerEvent){
@@ -26,12 +27,19 @@ export class SelectionTool{
             return;
         }
 
-        
+        this.store.selectShape(null);
+
         this.store.selectShape(shape.id);
 
+
+        this.shapeSetting(true);
         this.dragging = true;
         this.lastX = e.offsetX;
         this.lastY = e.offsetY;
+
+        const renderer = this.registery.get(shape.type);
+        renderer?.drawSelection(shape);
+
     }
 
     pointerMove(e:PointerEvent){
@@ -47,11 +55,13 @@ export class SelectionTool{
         if(!id) return;
         // this.cursor.set("move");
         this.store.moveShape(id, dx, dy, );
+
+        this.shapeSetting(false);
     }
 
     pointerUp(e:PointerEvent){
         this.dragging = false;
-        this.store.selectShape(null);
+        // this.store.selectShape(null);
         // this.cursor.set("default");
     }
 }

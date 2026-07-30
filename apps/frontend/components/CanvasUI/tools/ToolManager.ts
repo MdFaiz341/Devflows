@@ -15,6 +15,7 @@ export class ToolManager{
     setCurrentTool(val : ToolType){
         this.currentTool = val;
         console.log("currntTool----", this.currentTool);
+           
     }
 
     getTool(){

@@ -1,138 +1,185 @@
+import { Button } from "@repo/ui/button";
+import {
+  AlignCenter,
+  AlignLeft,
+  AlignRight,
+  ArrowDown,
+  ArrowUp,
+  BringToFront,
+  Code2,
+  Download,
+  PenLine,
+  Trash2,
+  Type,
+} from "lucide-react";
+import { useRef, useState } from "react";
 
-import { motion, AnimatePresence} from "framer-motion"
-import { Minus } from "lucide-react"
+const colors = [
+  "#ffffff",
+  "#ff6b6b",
+  "#2ea043",
+  "#58a6ff",
+  "#d97706",
+];
 
+export const  ShapeSetting = ({active, removeShape}:
+    {
+        active:boolean,
+        removeShape : ()=>void;
+    })=>{
 
+    const ref = useRef(true);
+    function handleClick() {
+        console.log("ref: ", ref.current);
+        ref.current = !ref.current;
+        console.log("ref: ", ref);
+        setPlaceAt(ref.current);
+    }
+    console.log("ref: ", ref.current);
+    const [placeAt, setPlaceAt] = useState(ref.current);
 
-const stroke = [{
-    id : 1,
-    color : "#1e1e1e"
-}, {
-    id : 2,
-    color : "#e03131"
-}, {
-    id : 3,
-    color : "#2f9e44"
-}, {
-    id : 4, 
-    color : "#1971c2"
-}]
+  return (
+    active && 
+        <div className={`absolute top-[15%] z-50 w-56 h-[70%] ${placeAt ? "left-1" : "right-1"} overflow-y-auto rounded-2xl bg-[#24242b] p-3 text-white border border-[#34343d]`}>
+            <Button
+                text={placeAt ? "right" : "left"}
+                type="button"
+                design="outline"
+                className="p-px px-3 rounded-lg text-sm absolute right-5 bg-gray-600"
+                onClick={handleClick}
+            />
+        {/* Stroke */}
+        <Section title="Stroke">
+            <div className="flex items-center gap-3">
+                {colors.map((color) => (
+                    <button
+                    key={color}
+                    className="w-7 h-7 rounded-md border border-white/20 transition hover:scale-110"
+                    style={{ background: color }}
+                    />
+                ))}
+            </div>
+        </Section>
 
-const background = [{
-    id : 1,
-    color : "transparent"
-}, {
-    id : 2,
-    color : "#ffc9c9"
-}, {
-    id : 3,
-    color : "#b2f2bb"
-}, {
-    id : 4, 
-    color : "#ffec99"
-}]
+        {/* Font Family */}
+        <Section title="Font family">
+            <div className="flex items-center gap-3">
+                <IconButton active>
+                    <PenLine size={15} />
+                </IconButton>
 
-const strokeWidth = [{
-    id : 1,
-    strokeWidth : 1,
-}, {
-    id : 2,
-    strokeWidth : 3,
-}, {
-    id : 3,
-    strokeWidth : 5,
-}]
+                <IconButton>
+                    <Type size={15} />
+                </IconButton>
 
+                <IconButton>
+                    <Code2 size={15} />
+                </IconButton>
+            </div>
+        </Section>
 
-export const ShapeSetting = ({active}:{
-    active : boolean,
-})=>{
+        {/* Font Size */}
+        <Section title="Font size">
+            <div className="flex gap-3">
+                {["S", "M", "L", "XL"].map((size, i) => (
+                    <button
+                        key={size}
+                        className={`w-7 h-7 rounded-lg transition ${
+                            i === 1
+                            ? "bg-indigo-600"
+                            : "bg-[#31313d] hover:bg-[#3d3d4b]"
+                        }`}
+                    >
+                    {size}
+                    </button>
+                ))}
+            </div>
+        </Section>
 
+        {/* Text Align */}
+        <Section title="Text align">
+            <div className="flex gap-3">
+            <IconButton active>
+                <AlignLeft size={15} />
+            </IconButton>
 
-    return(
-        <AnimatePresence>
-        {true && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4"
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="w-full max-w-md bg-[#0F172A] border border-white/10 rounded-3xl p-7 shadow-2xl"
-            >
-              <div className="flex flex-col text-white gap-4">
-                <div className="flex flex-col gap-1">
-                    <p>Stroke</p>
-                    <div className="flex gap-2">
-                        {
-                            stroke.map((clr)=>{
-                                return(
-                                    <div key={clr.id}  className={`w-7 h-7 border rounded-lg bg-[${clr.color}]`}></div>
-                                )
-                            })
-                        }
-                    </div>
-                </div>
-                <div className="flex flex-col gap-1">
-                    <p>Background</p>
-                    <div className="flex gap-2">
-                        {
-                            background.map((clr)=>(
-                                <div key={clr.id} className={`w-7 h-7 border rounded-lg bg-[${clr.color}]`}></div>
-                            ))
-                        }
-                    </div>
-                </div>
-                <div className="flex flex-col gap-1">
-                    <p className="">Stroke width</p>
-                    <div className="flex gap-2">
-                        {
-                            strokeWidth.map((val)=>(
-                                <div key={val.id} className="w-7 h-7 border rounded-lg bg-gray-700 flex justify-center items-center">
-                                    <Minus strokeWidth={val.strokeWidth}/>
-                                </div>
-                                
-                            ))
-                        }
-                    </div>
-                </div>
+            <IconButton>
+                <AlignCenter size={15} />
+            </IconButton>
 
-                {/* ---------------------------Only for Text------------------- */}
-                <div className="flex flex-col gap-1">
-                    <p className="">Font family</p>
-                    <div className="flex gap-2">
-                        {
-                            strokeWidth.map((val)=>(
-                                <div key={val.id} className="w-7 h-7 border rounded-lg bg-gray-700 flex justify-center items-center">
-                                    <Minus strokeWidth={val.strokeWidth}/>
-                                </div>
-                                
-                            ))
-                        }
-                    </div>
-                </div>
+            <IconButton>
+                <AlignRight size={15} />
+            </IconButton>
+            </div>
+        </Section>
 
-                <div className="flex flex-col gap-1">
-                    <p className="">Font style</p>
-                    <div className="flex gap-2">
-                        {
-                            strokeWidth.map((val)=>(
-                                <div key={val.id} className="w-7 h-7 border rounded-lg bg-gray-700 flex justify-center items-center">
-                                    <Minus strokeWidth={val.strokeWidth}/>
-                                </div>
-                                
-                            ))
-                        }
-                    </div>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    )
+        {/* Opacity */}
+        <Section title="Opacity">
+            <input
+            type="range"
+            min={0}
+            max={100}
+            defaultValue={100}
+            className="w-full accent-indigo-500"
+            />
+
+            <div className="flex justify-between text-sm mt-2 text-white/80">
+            <span>0</span>
+            <span>100</span>
+            </div>
+        </Section>
+
+        {/* Layers */}
+        <Section title="Layers">
+            <div className="grid grid-cols-4 gap-3">
+                <IconButton>
+                    <Download size={18} />
+                </IconButton>
+
+                <IconButton>
+                    <Trash2 size={18} onClick={removeShape} />
+                </IconButton>
+            </div>
+        </Section>
+        </div>
+  );
+}
+
+function Section({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="mb-8">
+      <h3 className="text-sm font-medium mb-4 text-white/90">
+        {title}
+      </h3>
+
+      {children}
+    </div>
+  );
+}
+
+function IconButton({
+  children,
+  active = false,
+}: {
+  children: React.ReactNode;
+  active?: boolean;
+}) {
+  return (
+    <button
+      className={`w-7 h-7 rounded-lg flex items-center justify-center transition
+      ${
+        active
+          ? "bg-indigo-600"
+          : "bg-[#31313d] hover:bg-[#3d3d4b]"
+      }`}
+    >
+      {children}
+    </button>
+  );
 }
