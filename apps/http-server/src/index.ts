@@ -423,10 +423,20 @@ app.get("/allCanvasRooms", middleware, async(req, res)=>{
 // })
 
 
-app.post("/getShapesAtpage", middleware, async(req, res)=>{
+
+app.get("/getShapesAtpage/:roomId/:page", middleware, async(req, res)=>{
     try{
-        const roomId = req.body.roomId;
-        const page = req.body.page;
+        const roomId = Number(req.params.roomId);
+        const page = Number(req.params.page);
+
+        if(!roomId || !page){
+            return res.status(resStatus.NotFound).json({
+                message: "Page or roomId not found",
+                success : false,
+            })
+        }
+
+        // const roomId = Number(roomIdStr)
 
         const shapes = await client.page.findUnique({
             where:{
@@ -442,7 +452,7 @@ app.post("/getShapesAtpage", middleware, async(req, res)=>{
 
         console.log("shapes----", shapes);
         return res.status(resStatus.Success).json({
-            shapes
+            shapes,
         });
     }
     catch(e){

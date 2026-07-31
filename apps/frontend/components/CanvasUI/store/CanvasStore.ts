@@ -1,4 +1,6 @@
+import { useCanvasStore } from "../../../Storage/useCanvasStore";
 import { Shape } from "../shapeFormat/Shape";
+import { GetAllShapes } from "./GetAllShapes";
 
 
 
@@ -15,8 +17,9 @@ export class CanvasStore{
     private listeners = new Set<() => void>();
     private preview :Shape | null;
     private selectedShapeId : string | null = null;
-
-    constructor(){
+    constructor(
+        private currRoomId : number,
+    ){
         // this.shape = [];
         this.pageWithShape.set(1, []);
         this.preview = null;
@@ -26,10 +29,22 @@ export class CanvasStore{
         return this.currentPage;
     }
 
-    setCurrentPage(page:number){
+    getRoomId(){
+        return this.currRoomId;
+    }
+
+    async setCurrentPage(page:number){
         this.currentPage = page;
         if(!this.pageWithShape.has(page)){
-            this.pageWithShape.set(page, []);
+            // this.pageWithShape.set(page, []);
+
+            // fet data from backend is shape exir return shape[] else [];
+            const shapes = await GetAllShapes(this.currRoomId, this.currentPage);
+            this.pageWithShape.set(this.currentPage, shapes);
+        }
+        else{
+            const canvasRoomData = useCanvasStore.getState().canvasRoomData[this.currentPage] || [];
+            this.pageWithShape.set(this.currentPage, canvasRoomData)
         }
         this.notify();
     }
@@ -130,8 +145,10 @@ export class CanvasStore{
             listener();
         }
     }
+    
 
     addShape(shape:Shape){
+
         if(!this.pageWithShape.has(this.currentPage)){
             this.pageWithShape.set(this.currentPage, []);
         }

@@ -7,6 +7,7 @@ import { Button } from "@repo/ui/button";
 import { ArrowRight, Loader } from "lucide-react";
 import { toast } from "sonner";
 import { useHook } from "../../hook/useHook";
+import { useCanvasStore } from "../../Storage/useCanvasStore";
 
 interface PropsTye{
     open : boolean,
@@ -16,7 +17,10 @@ interface PropsTye{
 
 export const CreateCanvasRoom = (props:PropsTye)=>{
 
-    const roomInput = useRef<HTMLInputElement>(null)
+    const roomInput = useRef<HTMLInputElement>(null);
+    const setCanvasOrder = useCanvasStore((state)=>state.setCanvasCard)
+
+  
     const {active, setActive} = useHook();
 
     async function createRoomHandler(){

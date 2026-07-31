@@ -112,59 +112,23 @@ export const  ShapeSetting = ({active, removeShape, currTool}:
             </div>
         </Section>
 
-            <div>
-                <Section title="Font family">
-                    <div className="flex items-center gap-3">
-                        <IconButton active>
-                            <PenLine size={15} />
-                        </IconButton>
-
-                        <IconButton>
-                            <Type size={15} />
-                        </IconButton>
-
-                        <IconButton>
-                            <Code2 size={15} />
-                        </IconButton>
-                    </div>
-                </Section>
-
-                <Section title="Font size">
-                    <div className="flex gap-3">
-                        {["S", "M", "L", "XL"].map((size, i) => (
-                            <button
-                                onClick={()=>{textSizeHandler(size), setFontSizeIdx(i)}}
-                                key={size}
-                                className={`w-7 h-7 rounded-lg transition ${
-                                    i === fontSizeIdx
-                                    ? "bg-indigo-600"
-                                    : "bg-[#31313d] hover:bg-[#3d3d4b]"
-                                }`}
-                            >
-                            {size}
-                            </button>
-                        ))}
-                    </div>
-                </Section>
-
-                <Section title="Text align">
-                    <div className="flex gap-3">
-                    <IconButton active>
-                        <AlignLeft size={15} />
-                    </IconButton>
-
-                    <IconButton>
-                        <AlignCenter size={15} />
-                    </IconButton>
-
-                    <IconButton>
-                        <AlignRight size={15} />
-                    </IconButton>
-                    </div>
-                </Section>
+        <Section title="Font size">
+            <div className="flex gap-3">
+                {["S", "M", "L", "XL"].map((size, i) => (
+                    <button
+                        onClick={()=>{textSizeHandler(size), setFontSizeIdx(i)}}
+                        key={size}
+                        className={`w-7 h-7 rounded-lg transition ${
+                            i === fontSizeIdx
+                            ? "bg-indigo-600"
+                            : "bg-[#31313d] hover:bg-[#3d3d4b]"
+                        }`}
+                    >
+                    {size}
+                    </button>
+                ))}
             </div>
-
-        
+        </Section>
 
 
         {/* Layers */}

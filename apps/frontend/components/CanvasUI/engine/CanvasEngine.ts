@@ -103,7 +103,7 @@ export class CanvasEngine{
         this.shapeSetting = shapeSetting;
 
         // first initialize store where the shape is going to store
-        this.store = new CanvasStore();
+        this.store = new CanvasStore(this.currRoomId);
         // fetch all shapes and shapes[] and send to RenderManagaer and it send to ShapeRenderManager
 
         this.cursor = new CursorManager(canvas);

@@ -92,6 +92,11 @@ wss.on("connection", (socket, request)=>{
             }
 
             if(parsed.type === "canvas_msg"){
+                console.log("canvas_msg");
+                console.log("roomId: ", parsed.roomId);
+                console.log("pageNo: ", parsed.pageNo);
+                
+                console.log("canvas_msg");
                 if(!user.roomId){
                     return;
                 }
@@ -123,12 +128,14 @@ wss.on("connection", (socket, request)=>{
 
                 const payload = JSON.stringify({
                     type : "canvas_msg",
-                    data:saved,
+                    pageNo : saved.pageId,
+                    roomId : page.roomId,
+                    shape:saved.data,
                     senderName : user.firstname+ " " +user.lastname,
                     senderImage : saved.user.image
                 })
 
-                // broadCast(parsed.roomId, payload, saved.userId);
+                broadCastInCanvas(payload, page.roomId);
             }
 
             if(parsed.type === "leave_conversation"){
@@ -574,6 +581,7 @@ async function joinCanvasRoom(socket:WebSocket, roomId:number, userId:string) {
     if(!canvasRoomOnline.has(roomId)){
         canvasRoomOnline.set(roomId, new Set());
     }
+
     canvasRoomOnline.get(roomId)?.add(userId);
 
     const totalUserIDs = canvasRoomOnline.get(roomId);
@@ -589,26 +597,25 @@ async function joinCanvasRoom(socket:WebSocket, roomId:number, userId:string) {
 
     broadCastInCanvas(payload, roomId);
 
-    const historyData = await client.page.findUnique({
-        where:{
-            roomId_pageNo:{
-                roomId,
-                pageNo : 1,
-            }
-        },
-        include:{
-            shapes:true,
-        }
-    })
+    // const historyData = await client.page.findUnique({
+    //     where:{
+    //         roomId_pageNo:{
+    //             roomId,
+    //             pageNo : 1,
+    //         }
+    //     },
+    //     include:{
+    //         shapes:true,
+    //     }
+    // })
 
-    socket.send(JSON.stringify({
-        type : "canvas_History",
-        message : {
-            historyData,
-            roomId,
-        }
-    }))
-
+    // socket.send(JSON.stringify({
+    //     type : "canvas_History",
+    //     message : {
+    //         historyData,
+    //         roomId,
+    //     }
+    // }))
 }
 
 function broadCastInCanvas(payload:string, roomId:number){

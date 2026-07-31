@@ -49,8 +49,8 @@ interface CanvasType{
     canvasCard : Record<number, CanvasCardFormat>,
     setCanvasCard : (id :number, data:CanvasCardFormat)=>void,
 
-    canvasRoomData : Record<number, CanvasData>,    // pageNo, shapes
-    setCanvasRoomData : (roomId:number, data:any)=>void,
+    canvasRoomData : Record<number, any[]>,    // pageNo, shapes
+    setCanvasRoomData : (roomId:number, data:any, pageNo:number)=>void,
 }
 
 // stroke : "white",
@@ -76,12 +76,16 @@ export const useCanvasStore = create<CanvasType>(
         setStrokeWidth : (val)=> set({strokeWidth:val}),
         setStroke : (val)=> set({stroke:val}),
 
-        setCanvasRoomData : (pageNo, data)=>set((state)=>({
-            canvasRoomData : {
-                ...state.canvasRoomData,
-                [pageNo] : data,
+        setCanvasRoomData : (roomId, data, pageNo)=>set((state)=>{
+            const savedShape = state.canvasRoomData[pageNo] || [];
+
+            return{
+                canvasRoomData:{
+                    ...state.canvasRoomData,
+                    [pageNo] : [...savedShape, data],
+                }
             }
-        })),
+        }),
 
         setCanvasCard : (id, data)=>set((state)=>({
             canvasCard:{

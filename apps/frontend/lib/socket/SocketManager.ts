@@ -154,13 +154,27 @@ class SocketManager {
         this.canvasOnlineUser(data);
         break;
 
+      case "canvas_msg":
+        this.saveShape(data);
+        break;
       
     }
   }
+// type : "canvas_msg",
+// pageNo : saved.pageId,
+// roomId : page.roomId,
+// shape:saved,
+// senderName : user.firstname+ " " +user.lastname,
+// senderImage : saved.user.image
+
+  private saveShape(data:any){
+    const setCanvasRoomData = useCanvasStore.getState().setCanvasRoomData;
+    setCanvasRoomData(data.roomId, data.shape, data.pageNo);
+  }
 
   private canvasHistory(data:any){
-    const setCanvasRoomData = useCanvasStore.getState().setCanvasRoomData;
-    setCanvasRoomData(data.message.roomId, data.message.historyData);
+    // const setCanvasRoomData = useCanvasStore.getState().setCanvasRoomData;
+    // setCanvasRoomData(data.message.roomId, data.message.historyData);
   }
 
   private canvasOnlineUser(data:any){
