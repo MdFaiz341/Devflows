@@ -11,10 +11,10 @@ export default async function canvasRoom({params}:{
     }
 }){
 
-    
-    const roomId = params.roomId
+    const url = (await params);
+    const roomId = url.roomId
     console.log("roomId: ", roomId);
-    const adminId = params.adminId
+    const adminId = url.adminId
     console.log("adminId: ", adminId);
 
     return <Canvas roomId={roomId} adminId={adminId}/>

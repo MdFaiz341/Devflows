@@ -56,7 +56,7 @@ export class SelectionTool{
         const id = this.store.getSelectedShapeId();
         if(!id) return;
         this.cursor.set("move");
-        this.store.moveShape(id, dx, dy, );
+        this.store.moveShape(id, dx, dy);
 
         this.shapeSetting(false);
     }

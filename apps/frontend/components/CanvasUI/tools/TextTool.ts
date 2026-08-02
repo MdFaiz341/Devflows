@@ -1,6 +1,7 @@
 import { useCanvasStore } from "../../../Storage/useCanvasStore";
 import { Text } from "../shapeFormat/AllShapes";
 import { CanvasStore } from "../store/CanvasStore";
+import { ToolType } from "./Tool";
 import { ToolManager } from "./ToolManager";
 
 
@@ -16,6 +17,7 @@ export class TextTool{
         private store : CanvasStore,
         private canvas : HTMLCanvasElement,
         private ctx : CanvasRenderingContext2D,
+        private onToolChange : (tool:ToolType)=>void,
     ){}
     // add undo/redo, move shape, select shape, delet shape, add chatbox and websocket
     pointerDown(e:PointerEvent){
@@ -86,7 +88,7 @@ export class TextTool{
 
             textArea.remove();
             this.activeTextArea = null;
-
+            this.onToolChange("select");
         }
 
         if(this.activeTextArea){

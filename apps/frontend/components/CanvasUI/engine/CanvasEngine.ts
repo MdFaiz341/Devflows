@@ -88,7 +88,7 @@ export class CanvasEngine{
     private onToolChange : (tool:ToolType)=>void
     private shapeSetting : (e : boolean)=>void;
 
-    constructor(roomId:number, canvas:HTMLCanvasElement, socket:any, onToolChange : (e:ToolType)=>void, shapeSetting:(e:boolean)=>void){
+    constructor(roomId:number, canvas:HTMLCanvasElement, socket:WebSocket, onToolChange : (e:ToolType)=>void, shapeSetting:(e:boolean)=>void){
         this.currRoomId = roomId;
         this.canvas = canvas;
         const ctx = canvas.getContext("2d");
@@ -131,7 +131,7 @@ export class CanvasEngine{
         tools.set("circle", new CircleTool(this.store));
         tools.set("arrow", new ArrowTool(this.store));
         tools.set("line", new LineTool(this.store));
-        tools.set("text", new TextTool(this.store, canvas, ctx));
+        tools.set("text", new TextTool(this.store, canvas, ctx, this.onToolChange));
         tools.set("pencil", new PencilTool(this.store));
         tools.set("select", new SelectionTool(this.hitTestManager, this.store, this.shapeSetting, this.registry, this.cursor));
 

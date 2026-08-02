@@ -1,4 +1,4 @@
-import { useSocket } from "../../../providers/SocketProvider";
+
 import { useCanvasStore } from "../../../Storage/useCanvasStore";
 import { Rectangle } from "../shapeFormat/AllShapes";
 import { CanvasStore } from "../store/CanvasStore";
@@ -52,13 +52,13 @@ export class RectangleTool{
         const previewShape = this.store.getPreview();
         if(!previewShape) return;
         const currentPage = this.store.getCurrentPage();
-        const socket = useSocket();
+        // const socket = this.store.getSocket();
         const payload = {
             type : "canvas_msg",
             pageNo : currentPage,
             roomId : this.store.getRoomId,
         }
-        socket.send(payload);
+        // socket.send(payload)
 
         this.store.addShape({
             ...previewShape,

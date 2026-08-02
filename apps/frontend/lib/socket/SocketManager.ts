@@ -160,12 +160,6 @@ class SocketManager {
       
     }
   }
-// type : "canvas_msg",
-// pageNo : saved.pageId,
-// roomId : page.roomId,
-// shape:saved,
-// senderName : user.firstname+ " " +user.lastname,
-// senderImage : saved.user.image
 
   private saveShape(data:any){
     const setCanvasRoomData = useCanvasStore.getState().setCanvasRoomData;

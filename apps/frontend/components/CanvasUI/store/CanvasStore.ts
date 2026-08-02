@@ -42,10 +42,10 @@ export class CanvasStore{
             const shapes = await GetAllShapes(this.currRoomId, this.currentPage);
             this.pageWithShape.set(this.currentPage, shapes);
         }
-        else{
-            const canvasRoomData = useCanvasStore.getState().canvasRoomData[this.currentPage] || [];
-            this.pageWithShape.set(this.currentPage, canvasRoomData)
-        }
+        // else{
+        //     const canvasRoomData = useCanvasStore.getState().canvasRoomData[this.currentPage] || [];
+        //     this.pageWithShape.set(this.currentPage, canvasRoomData)
+        // }
         this.notify();
     }
 
@@ -110,7 +110,7 @@ export class CanvasStore{
 
             case "text":
                 shape.x += dx;
-                shape.y += dx;
+                shape.y += dy;
                 break;
 
             case "pencil":

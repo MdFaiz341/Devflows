@@ -2,6 +2,8 @@ import { useChatStore } from "../../Storage/useChatStore";
 import { useStore } from "../../Storage/useStore";
 
 
+// =================== This is Use less Bcz Socket Manager handles all Cases =========================
+
 export const eventHandler = (event : MessageEvent)=>{
     const data = JSON.parse(event.data);
     const user = useStore.getState().user;

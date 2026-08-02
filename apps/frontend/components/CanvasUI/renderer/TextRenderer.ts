@@ -29,10 +29,10 @@ export class TextRenderer implements ShapeRender<Text>{
         const width = this.ctx.measureText(text.text).width;
 
         return (
-            x >= text.x 
-            && x <= text.x + width && 
-            y <= text.y && 
-            y >= text.y - text.fontSize
+            x >= text.x &&
+            x <= text.x + width && 
+            y >= text.y && 
+            y <= text.y + text.fontSize
         );
     }
 
@@ -42,7 +42,7 @@ export class TextRenderer implements ShapeRender<Text>{
         this.ctx.font = `${text.fontSize}px Arial`
         this.ctx.strokeStyle = "#4A90E2"
 
-        this.ctx.lineWidth = 2;
+        this.ctx.lineWidth = 4;
 
         this.ctx.setLineDash([5,5]);
 
@@ -50,7 +50,7 @@ export class TextRenderer implements ShapeRender<Text>{
         const height = text.fontSize;
 
         const left = text.x;
-        const top = text.y - height;
+        const top = text.y;
         this.ctx.strokeRect(left, top, width, height);
 
         this.ctx.restore();
