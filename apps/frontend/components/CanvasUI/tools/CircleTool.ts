@@ -61,10 +61,12 @@ export class CircleTool{
         const previewShape = this.store.getPreview();
         if(!previewShape) return;
 
-        this.store.addShape({
+        const currPage = this.store.getCurrentPage();
+        const finalShape = {
             ...previewShape,
-            id : crypto.randomUUID()
-        })
+            id : crypto.randomUUID(),
+        }
+        this.store.addShape(currPage, finalShape, true);
 
         this.store.clearPreview();
     }

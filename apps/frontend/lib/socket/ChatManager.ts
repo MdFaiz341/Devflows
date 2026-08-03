@@ -134,11 +134,13 @@ class ChatManager{
     }
 
     sendMessage(payload:any){
+        console.log("ChatManager Sendmessage---", payload);
         socketManager.send(payload);
     }
 
 
     private handleChatMessage(data:any){
+        console.log("new Message receiving----", data);
         const store = useChatStore.getState();
         const current = store.messageByConversation[data.message.conversationId] || []
         

@@ -4,13 +4,7 @@ import { useChatStore } from "../../Storage/useChatStore";
 import { useStore } from "../../Storage/useStore";
 import { chatManager } from "./ChatManager";
 
-// import { useStore } from "@/Storage/useStore";
-// import { useChatStore } from "@/Storage/useChatStore";
 
-// import { chatManager } from "@/chat/ChatManager";
-// import { canvasSyncManager } from "@/canvas/sync/CanvasSyncManager";
-// import { notificationManager } from "@/notification/NotificationManager";
-// import { presenceManager } from "@/presence/PresenceManager";
 
 class DashboardManager {
 
@@ -44,7 +38,8 @@ class DashboardManager {
         try {
             await this.fetchConversations();
 
-            this.startManagers();
+            chatManager.start();
+            console.log("ChatManager Start---");
         }
         catch (err) {
             console.error(err);
@@ -55,20 +50,10 @@ class DashboardManager {
     destroy() {
         if (!this.initialized) return;
         this.initialized = false;
-        this.stopManagers();
-    }
-
-    private startManagers() {
-        chatManager.start();
-        canvasSyncManager.start();
-
-    }
-
-    private stopManagers() {
         chatManager.stop();
-        CanvasSyncManager.stop();
-
+        console.log("ChatManager Stop-----");
     }
+
 
     private async fetchConversations(){
         try{

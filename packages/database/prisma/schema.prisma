@@ -85,12 +85,14 @@ model Page {
 
 model Shape {
   id                    String      @id @default(uuid())
-  type                  String
-  data                  String
+  type                  ShapeType
+  data                  Json
   pageId                Int
   page                  Page        @relation(fields: [pageId], references: [id])
   userId                String
   user                  User        @relation(fields: [userId], references: [id])
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
 }
 
 
@@ -146,6 +148,15 @@ model Message {
 enum CanvasUser{
   ADMIN
   MEMBER
+}
+
+enum ShapeType{
+  rectangle
+  circle
+  line
+  arrow
+  pencil
+  text
 }
 
 enum ConversationType{

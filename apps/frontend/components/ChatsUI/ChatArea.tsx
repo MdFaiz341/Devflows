@@ -16,6 +16,7 @@ import { Button } from "@repo/ui/button";
 import api from "../../API/Interceptor";
 import { toast } from "sonner";
 import { useSocket } from "../../providers/SocketProvider";
+import { chatManager } from "../../lib/socket/ChatManager";
 
 
 
@@ -65,7 +66,9 @@ export const ChatArea = ()=>{
     }, [storeMessages])
 
     function sendMessage(){
+        console.log("hiii---", socket);
         if(!socket) return;
+        console.log("nyee---", socket);
         try{
             const message = inputMessageRef.current?.value
             if(!message){
@@ -98,7 +101,8 @@ export const ChatArea = ()=>{
                     text : message,
                     clientID,
                 }
-                socket.send(payload);
+                chatManager.sendMessage(payload);
+                // socket.send(payload);
                 // send message
                 // userSendMessage(socket, payload);
                 if(inputMessageRef.current){

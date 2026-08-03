@@ -9,7 +9,7 @@ export class CanvasSyncManager{
 
     private started = false;
 
-    private constructor(
+    constructor(
         private store : CanvasStore
     ){}
 
@@ -17,19 +17,36 @@ export class CanvasSyncManager{
         if (this.started) return;
         this.started = true;
 
+        // Store Events:   Store -> Server
+        this.store.on(
+            "shapeAdded",
+            this.handleNewShape
+        )
+
+        this.store.on(
+            "shapeUpdated",
+            this.handleUpdateShape,
+        )
+
+        this.store.on(
+            "shapeDeleted",
+            this.handleDeleteShape
+        )
+
+        // Sockets Events    Server -> Store
         socketManager.subscribe(
             "new_Shape",
-            this.handleNewShape
+            this.receiveNewShape
         );
 
         socketManager.subscribe(
             "shape_History",
-            this.handleHistory
+            this.receiveHistory
         );
 
         socketManager.subscribe(
             "update_Shape",
-            this.handleUpdateShape
+            this.receiveUpdateShape
         )
 
         // socketManager.subscribe(
@@ -39,7 +56,7 @@ export class CanvasSyncManager{
 
         socketManager.subscribe(
             "delete_Shape",
-            this.handleDeleteShape
+            this.receiceDeleteShape
         );
 
     }
@@ -48,19 +65,35 @@ export class CanvasSyncManager{
         if (!this.started) return;
         this.started = false;
 
+        this.store.off(
+            "shapeAdded",
+            this.handleNewShape
+        );
+
+        this.store.off(
+            "shapeUpdated",
+            this.handleUpdateShape
+
+        );
+
+        this.store.off(
+            "shapeDeleted",
+            this.handleDeleteShape
+        );
+
         socketManager.unsubscribe(
             "new_Shape",
-            this.handleNewShape
+            this.receiveNewShape
         );
 
         socketManager.unsubscribe(
             "shape_History",
-            this.handleHistory
+            this.receiveHistory
         );
 
         socketManager.unsubscribe(
             "update_Shape",
-            this.handleUpdateShape
+            this.receiveUpdateShape
         );
 
         // socketManager.unsubscribe(
@@ -70,13 +103,37 @@ export class CanvasSyncManager{
 
         socketManager.unsubscribe(
             "delete_Shape",
-            this.handleDeleteShape
+            this.receiceDeleteShape
         );
     }
 
     // Client send:-
-    sendShape(payload:any){
-        socketManager.send(payload);
+    private  handleNewShape = (payload:any)=>{
+        console.log("handleNewShape:--- ", payload);
+        socketManager.send({
+            type: "new_Shape",
+            roomId: payload.roomId,
+            page: payload.page,
+            shape: payload.shape,
+        });
+    }
+
+    private handleDeleteShape = (payload:any)=>{
+        socketManager.send({
+            type: "delete_Shape",
+            roomId: payload.roomId,
+            page: payload.page,
+            shapeId: payload.shapeId,
+        });
+    }
+
+    private handleUpdateShape = (payload:any)=>{
+        socketManager.send({
+            type: "update_Shape",
+            roomId: payload.roomId,
+            page: payload.page,
+            shape: payload.shape,
+        });
     }
 
     joinCnvasRoom(roomId:number){
@@ -87,28 +144,16 @@ export class CanvasSyncManager{
         socketManager.send(payload);
     }
 
-    deleteShape(roomId:number, pageNo:number, id:string){
+    leaveRoom(roomId:number){
         const payload = {
-            type : "delete_Shape",
-            roomId,
-            pageNo,
-            id
-        }
-        socketManager.send(payload);
-    }
-
-    updateShape(roomId:number, shape:any, pageNo:number){
-        const payload = {
-            type : "update_Shape",
-            roomId,
-            pageNo,
-            shape
+            type : "leave_canvas",
+            roomId
         }
         socketManager.send(payload);
     }
 
     // server broadcast, now receiving:
-    private handleNewShape = (data:any)=>{
+    private receiveNewShape = (data:any)=>{
         this.store
         .addShape(
             data.page,
@@ -116,7 +161,7 @@ export class CanvasSyncManager{
             false
         );
     }
-    private handleDeleteShape = (data:any)=>{
+    private receiceDeleteShape = (data:any)=>{
         this.store
         .removeShape(
             data.page,
@@ -125,7 +170,7 @@ export class CanvasSyncManager{
         );
     }
 
-    private handleUpdateShape = (data:any)=>{
+    private receiveUpdateShape = (data:any)=>{
         this.store
         .updateShape(
             data.page,
@@ -134,8 +179,9 @@ export class CanvasSyncManager{
         );
     }
 
-    private handleHistory = (data:any)=>{
-        this.store
+    private receiveHistory = (data:any)=>{
+        console.log("history--- ", data);
+        // this.store
         // .setPageShapes(
         //     data.roomId,
         //     data.pages

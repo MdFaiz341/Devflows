@@ -24,7 +24,7 @@ import { Registery } from "./Registery";
 import { SelectionTool } from "../hitTest/SelectionTool";
 import { HitTestManager } from "../hitTest/HitTestManager";
 import { CursorManager } from "../cursor/CursorManager";
-import { CanvasSyncManager, canvasSyncManager } from "../../../lib/socket/CanvasSyncManager";
+import { CanvasSyncManager } from "../../../lib/socket/CanvasSyncManager";
 
 
 
@@ -78,7 +78,7 @@ export class CanvasEngine{
     private ctx : CanvasRenderingContext2D;
     // private rc : HTMLCanvasElement;
     private renderer : RenderManager;
-    private shapeRender : ShapeRenderManager;
+    // private shapeRender : ShapeRenderManager;
     private inputManager : InputManager;
     private toolManager : ToolManager;
 
@@ -112,10 +112,8 @@ export class CanvasEngine{
 
         console.log("Engine Store", this.store);
 
-        // create instance of shapeRenderManager once;
-        this.shapeRender = new ShapeRenderManager(ctx);
-
-        this.canvasSyncManager = new canvasSyncManager(this.store);
+        // // create instance of shapeRenderManager once;
+        // this.shapeRender = new ShapeRenderManager(ctx);
 
         // ---------------------Registry Instance:-----------
         const registry = new Map<ToolType, ShapeRender<Shape>>();
@@ -148,7 +146,11 @@ export class CanvasEngine{
         // send whole CanvasStore instance bcz on every update or add Shape[] will change so direct 
         // whole shape access and and store RenderManager instance into listner()=>void then call that 
         // listner on every changes in Shape[] of CanvasStore
-        this.renderer = new RenderManager(this.registry, this.ctx, this.canvas, this.store, this.shapeRender);
+        this.renderer = new RenderManager(this.registry, this.ctx, this.canvas, this.store);
+
+        this.canvasSyncManager = new CanvasSyncManager(this.store);
+        this.canvasSyncManager.start();
+        this.canvasSyncManager.joinCnvasRoom(this.currRoomId);
         
         this.resizeCanvas();
         console.log("Render Store", this.store);
@@ -172,7 +174,7 @@ export class CanvasEngine{
     }
 
     currentTool(){
-        this.toolManager.getTool();
+        return this.toolManager.getTool();
     }
 
     setCurrentPage(page:number){
@@ -180,8 +182,12 @@ export class CanvasEngine{
     }
     
     removeShape(){
-        this.store.removeShape();
+        const selectedShapeId = this.store.getSelectedShapeId();
+        if(!selectedShapeId) return;
+        this.store.removeShape(this.store.getCurrentPage(), selectedShapeId, true);
     }
+
+
 
     private resizeCanvas(){
         // this.canvas.width = this.canvas.clientWidth;
@@ -189,11 +195,12 @@ export class CanvasEngine{
         const dpr = window.devicePixelRatio || 1;
         this.canvas.width = this.canvas.clientWidth * dpr;
         this.canvas.height = this.canvas.clientHeight * dpr;
-
-        this.ctx.scale(dpr, dpr);
+        this.ctx.setTransform(dpr,0,0,dpr,0,0);
     }
 
     destroy(){
+        this.canvasSyncManager.leaveRoom(this.currRoomId);
+        this.canvasSyncManager.stop();
         this.renderer.destroy();
         this.inputManager.destroy();
         window.removeEventListener("resize", this.resizeCanvas);

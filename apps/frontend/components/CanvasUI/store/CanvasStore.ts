@@ -10,6 +10,8 @@ type Page = {
     shape : Shape[]
 }
 
+export type CanvasEvent = "shapeAdded" | "shapeUpdated" | "shapeDeleted"
+
 export class CanvasStore{
 
     // private shape : Shape[];
@@ -18,6 +20,8 @@ export class CanvasStore{
     private listeners = new Set<() => void>();
     private preview :Shape | null;
     private selectedShapeId : string | null = null;
+    private eventListeners = new Map<CanvasEvent, Set<(payload:any)=>void>>();
+
     constructor(
         private currRoomId : number,
     ){
@@ -159,6 +163,37 @@ export class CanvasStore{
     //     this.notify()
     // }
 
+
+    on(
+        event: CanvasEvent,
+        listener: (payload:any)=>void
+    ) {
+
+        if (!this.eventListeners.has(event)) {
+
+            this.eventListeners.set(
+                event,
+                new Set()
+            );
+
+        }
+
+        this.eventListeners
+            .get(event)!
+            .add(listener);
+
+    }
+
+    off(event: CanvasEvent, listener: (payload:any)=>void) {
+        this.eventListeners.get(event)?.delete(listener);
+    }
+
+    private emit(event: CanvasEvent, payload: any) {
+        this.eventListeners.get(event)?.forEach(listener => {
+                listener(payload);
+            });
+    }
+
     addShape(page:number, shape:Shape, broadcast:boolean){
         if(!this.pageWithShape.has(page)){
             this.pageWithShape.set(page, []);
@@ -169,20 +204,17 @@ export class CanvasStore{
         this.notify();
 
         if(broadcast){
-            
+            console.log("Broadcast---");
+            this.emit(
+                "shapeAdded", 
+                {
+                    roomId: this.currRoomId,
+                    page,
+                    shape,
+                }
+            )
         }
     }
-
-    // removeShape(){
-    //     console.log("current Shape id: ", this.selectedShapeId);
-    //     const allShapes = this.pageWithShape.get(this.currentPage);
-    //     const filterShapes = allShapes?.filter(shape => shape.id !== this.selectedShapeId);
-    //     if(filterShapes) this.pageWithShape.set(this.currentPage, filterShapes);
-    //     else this.pageWithShape.set(this.currentPage, [])
-
-    //     // this.shape = this.shape.filter(shape => shape.id !== id)
-    //     this.notify();
-    // }
 
     removeShape(page:number, shapeId:string, broadcast:boolean){
         const shapes = this.pageWithShape.get(page);
@@ -194,7 +226,14 @@ export class CanvasStore{
         this.notify();
 
         if(broadcast){
-
+            this.emit(
+                "shapeDeleted",
+                {
+                    roomId : this.currRoomId,
+                    page, 
+                    shapeId,
+                }
+            )
         }
     }
 
@@ -209,7 +248,14 @@ export class CanvasStore{
         this.notify();
 
         if(broadcast){
-            canvasSyncManager.updateShape(this.currRoomId, shape, page);
+            this.emit(
+                "shapeUpdated",
+                {
+                    roomId:this.currRoomId,
+                    page,
+                    shape
+                }
+            );
         }
     }
 

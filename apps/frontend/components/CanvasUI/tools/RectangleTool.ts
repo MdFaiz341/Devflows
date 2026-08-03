@@ -52,18 +52,13 @@ export class RectangleTool{
         const previewShape = this.store.getPreview();
         if(!previewShape) return;
         const currentPage = this.store.getCurrentPage();
-        // const socket = this.store.getSocket();
-        const payload = {
-            type : "canvas_msg",
-            pageNo : currentPage,
-            roomId : this.store.getRoomId,
-        }
-        // socket.send(payload)
 
-        this.store.addShape({
+        const finalShape = {
             ...previewShape,
-            id : crypto.randomUUID()
-        })
+            id : crypto.randomUUID(),
+        }
+
+        this.store.addShape(currentPage, finalShape, true);
 
         this.store.clearPreview();
     }

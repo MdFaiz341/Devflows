@@ -84,7 +84,10 @@ export class TextTool{
                 fill : "transparent",
                 strokeWidth : strokeWidth,
             }
-            this.store.addShape(preview);
+            // this.store.addShape(preview);
+            const currPage = this.store.getCurrentPage();
+
+            this.store.addShape(currPage, preview, true);
 
             textArea.remove();
             this.activeTextArea = null;

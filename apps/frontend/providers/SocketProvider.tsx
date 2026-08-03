@@ -89,56 +89,56 @@ export const SocketProvider = ({children}:{children:React.ReactNode})=>{
         
     // }, []) 
 
-    useEffect(()=>{
-        async function fetchDmsAnsGroupChat() {
-            try{
-                const response = await api.get("/conversations");
-                console.log("allchatsWithRoom: ", response.data.conversation);
-                // setConversation(response.data.conversation);
-                setBackendConversation(response.data.conversation)
+    // useEffect(()=>{
+    //     async function fetchDmsAnsGroupChat() {
+    //         try{
+    //             const response = await api.get("/conversations");
+    //             console.log("allchatsWithRoom: ", response.data.conversation);
+    //             // setConversation(response.data.conversation);
+    //             setBackendConversation(response.data.conversation)
 
-                const val = response.data.conversation.map((v:any)=> v.id)
-                setSideConversationOrder(val);
+    //             const val = response.data.conversation.map((v:any)=> v.id)
+    //             setSideConversationOrder(val);
 
-                // socketManager.connect();
-                // setSocket(socketManager.getSocket());
+    //             // socketManager.connect();
+    //             // setSocket(socketManager.getSocket());
 
-                response.data.conversation.forEach((v:any)=> {
-                    const friendDetails = v.members.filter((users:any) => users.userId !== user?.id);
-                    const data = {
-                        conversationId : v.id,
-                        createdAt : v.createdAt,
-                        image : v.image || null,
-                        // member : {
-                        //     senderId : friendDetails[0].userId,
-                        //     firstname : friendDetails[0].user.firstname,
-                        //     image : friendDetails[0].user.image,
-                        // },
-                        member : friendDetails,
-                        lastMessage : v.messages.length > 0 ? v.messages[0].text.includes("joined") ? "" : v.messages[0].text : "",
-                        type : v.type,
-                        name : v.name || null,
-                        updatedAt : v.updatedAt,
-                    } 
-                    setSidebarDefaultConversation(v.id, data);
+    //             response.data.conversation.forEach((v:any)=> {
+    //                 const friendDetails = v.members.filter((users:any) => users.userId !== user?.id);
+    //                 const data = {
+    //                     conversationId : v.id,
+    //                     createdAt : v.createdAt,
+    //                     image : v.image || null,
+    //                     // member : {
+    //                     //     senderId : friendDetails[0].userId,
+    //                     //     firstname : friendDetails[0].user.firstname,
+    //                     //     image : friendDetails[0].user.image,
+    //                     // },
+    //                     member : friendDetails,
+    //                     lastMessage : v.messages.length > 0 ? v.messages[0].text.includes("joined") ? "" : v.messages[0].text : "",
+    //                     type : v.type,
+    //                     name : v.name || null,
+    //                     updatedAt : v.updatedAt,
+    //                 } 
+    //                 setSidebarDefaultConversation(v.id, data);
 
-                    //set default unread Messages:
-                    const currUser = v.members.find((admin:any)=>admin.userId === user?.id)
-                    // console.log("msg-members", v.members.find((val:any)=>val.userId === user?.id))
-                    if(currUser.unreadCount > 0){
-                        setUnreadMessage(currUser.conversationId, currUser.unreadCount);
-                    }
-                })
+    //                 //set default unread Messages:
+    //                 const currUser = v.members.find((admin:any)=>admin.userId === user?.id)
+    //                 // console.log("msg-members", v.members.find((val:any)=>val.userId === user?.id))
+    //                 if(currUser.unreadCount > 0){
+    //                     setUnreadMessage(currUser.conversationId, currUser.unreadCount);
+    //                 }
+    //             })
 
-                // setConversation(response.data.conversation);
-            }
-            catch(e:any){
-                console.log(e);
-            }
-        }
+    //             // setConversation(response.data.conversation);
+    //         }
+    //         catch(e:any){
+    //             console.log(e);
+    //         }
+    //     }
 
-        fetchDmsAnsGroupChat()
-    }, [])
+    //     fetchDmsAnsGroupChat()
+    // }, [])
 
 
     useEffect(()=>{

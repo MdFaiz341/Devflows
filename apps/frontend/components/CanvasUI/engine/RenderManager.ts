@@ -10,13 +10,12 @@ export class RenderManager{
 
     private ctx : CanvasRenderingContext2D;
     private canvas : HTMLCanvasElement;
-    private shapeRender : ShapeRenderManager;
     private store : CanvasStore;
     private frameRequest  = false;
     private unsubscribe? : ()=>void;
     private registery : Registery;
 
-    constructor(registery:Registery, ctx:CanvasRenderingContext2D, canvas:HTMLCanvasElement, store:CanvasStore, shapeRender:ShapeRenderManager){
+    constructor(registery:Registery, ctx:CanvasRenderingContext2D, canvas:HTMLCanvasElement, store:CanvasStore){
         this.ctx = ctx;
         this.canvas = canvas;
 
@@ -25,8 +24,6 @@ export class RenderManager{
         console.log("RenderManager store", this.store);
         // this.shapeRender = new ShapeRenderManager(this.ctx);
         // this.render = render;
-
-        this.shapeRender = shapeRender;
 
         this.registery = registery;
     

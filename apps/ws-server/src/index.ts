@@ -88,15 +88,20 @@ wss.on("connection", (socket, request)=>{
             if(parsed.type === "join_canvasroom"){
                 if(!parsed.roomId) return;
                 console.log("join_canvasroom-------Server");
+                console.log("parsed Data---", parsed);
                 joinCanvasRoom(socket, parsed.roomId, user.userId);
             }
 
-            if(parsed.type === "canvas_msg"){
-                console.log("canvas_msg");
+            if(parsed.type === "new_Shape"){
+                console.log("new_Shape");
+                console.log(parsed);
                 console.log("roomId: ", parsed.roomId);
-                console.log("pageNo: ", parsed.pageNo);
+                console.log("pageNo: ", parsed.page);
+
+                const roomIdInt = Number(parsed.roomId);
+                console.log("roomIdInt", roomIdInt);
+
                 
-                console.log("canvas_msg");
                 if(!user.roomId){
                     return;
                 }
@@ -104,21 +109,21 @@ wss.on("connection", (socket, request)=>{
                 const page = await client.page.upsert({
                     where:{
                         roomId_pageNo:{
-                            roomId : parsed.roomId,
-                            pageNo : parsed.pageNo,
+                            roomId : roomIdInt,
+                            pageNo : parsed.page,
                         }
                     },
                     update : {},
                     create:{
-                        roomId : parsed.roomId,
-                        pageNo : parsed.pageNo,
+                        roomId : roomIdInt,
+                        pageNo : parsed.page,
                     }
                 })
 
                 // then ceate shape
                 const saved = await client.shape.create({
                     data:{
-                        type : parsed.shapeType,
+                        type : parsed.shape.type,
                         pageId : page.id,
                         data: parsed.shape,
                         userId : user.userId
@@ -127,7 +132,7 @@ wss.on("connection", (socket, request)=>{
                 });
 
                 const payload = JSON.stringify({
-                    type : "canvas_msg",
+                    type : "new_Shape",
                     pageNo : saved.pageId,
                     roomId : page.roomId,
                     shape:saved.data,
@@ -753,6 +758,8 @@ function broadCastConversation(payload : string, conversationId:number){
 
         clientSocket.send(payload);
     });
+
+    console.log("Server send Back-- ", payload);
 }
 
 

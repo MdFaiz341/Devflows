@@ -30,7 +30,7 @@ export const NotificationUI = ({openNotification}:{
                                     if(!count) return;
                                     const chat = sidebarDefaultConversation[ids];
                                     return(
-                                        <div key={chat?.conversationId} onClick={()=>router.push("/dashboard/chat-room")}>
+                                        <div key={chat?.conversationId} className="bg-gray-800 hover:bg-gray-700 transition-all duration-300" onClick={()=>router.push("/dashboard/chat-room")}>
                                             <SidebarConversations chat={chat} unreads={[]} setUnreads={()=>{}}/>
                                         </div>
                                     )

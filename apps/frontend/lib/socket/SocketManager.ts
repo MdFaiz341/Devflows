@@ -72,6 +72,10 @@ export class SocketManager {
     }
 
     this.handlers.get(type)?.add(handler);
+
+    // return ()=>{
+    //   this.handlers.get(type)?.delete(handler);
+    // }
   }
 
   unsubscribe(type:string, handler:(data:any)=>void){
@@ -248,7 +252,7 @@ export class SocketManager {
     if(!this.socket || this.socket.readyState !== WebSocket.OPEN){
       return;
     }
-
+    console.log("SocketManager Send()-- ", payload);
     this.socket.send(JSON.stringify({
       ...payload,
     }))
