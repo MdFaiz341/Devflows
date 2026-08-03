@@ -24,6 +24,7 @@ import { Registery } from "./Registery";
 import { SelectionTool } from "../hitTest/SelectionTool";
 import { HitTestManager } from "../hitTest/HitTestManager";
 import { CursorManager } from "../cursor/CursorManager";
+import { CanvasSyncManager, canvasSyncManager } from "../../../lib/socket/CanvasSyncManager";
 
 
 
@@ -87,6 +88,7 @@ export class CanvasEngine{
     private cursor : CursorManager;
     private onToolChange : (tool:ToolType)=>void
     private shapeSetting : (e : boolean)=>void;
+    private canvasSyncManager : CanvasSyncManager
 
     constructor(roomId:number, canvas:HTMLCanvasElement, socket:WebSocket, onToolChange : (e:ToolType)=>void, shapeSetting:(e:boolean)=>void){
         this.currRoomId = roomId;
@@ -112,6 +114,8 @@ export class CanvasEngine{
 
         // create instance of shapeRenderManager once;
         this.shapeRender = new ShapeRenderManager(ctx);
+
+        this.canvasSyncManager = new canvasSyncManager(this.store);
 
         // ---------------------Registry Instance:-----------
         const registry = new Map<ToolType, ShapeRender<Shape>>();

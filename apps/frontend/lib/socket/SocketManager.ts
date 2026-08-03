@@ -4,36 +4,9 @@
 import { useCanvasStore } from "../../Storage/useCanvasStore";
 import { useChatStore } from "../../Storage/useChatStore";
 import { useStore } from "../../Storage/useStore";
-import { joinUser } from "./socket-emit";
-import { eventHandler } from "./socket-events";
-// import { socketEventListner } from "./socket-events";
-
-// export const createSocket = () => {
-
-//   if (
-//     socket &&
-//     (
-//       socket.readyState === WebSocket.OPEN ||
-//       socket.readyState === WebSocket.CONNECTING
-//     )
-//   ) {
-
-//     return socket;
-//   }
-
-//   socket = new WebSocket(`${process.env.NEXT_PUBLIC_WS_SERVER_URL}`);
-//   return socket;
-// };
-
-// export const getSocket = () => socket;
-
-// export const createSocket = () => {
-//   return new WebSocket(`${process.env.NEXT_PUBLIC_WS_SERVER_URL}`);
-// };
 
 
-
-class SocketManager {
+export class SocketManager {
   private static instance: SocketManager;
   private socket : WebSocket | null = null;
   private isConnecting = false;
@@ -41,6 +14,8 @@ class SocketManager {
   private shouldReconnect = true;
   private MAX_RECONNECT_ATTEMPTS = 10;
   private reconnectTimeOut : NodeJS.Timeout | null = null;
+
+  private handlers = new Map<string, Set<(data:any)=>void>>();
 
 
   static getInstance(){
@@ -66,27 +41,6 @@ class SocketManager {
     this.socket = new WebSocket(`${process.env.NEXT_PUBLIC_WS_SERVER_URL}`);
 
     this.attachEventListner();
-
-    // this.socket.onopen = ()=>{
-    //   console.log("User connected");
-    //   this.reconnectAttempts = 0;
-
-    //   // join all rooms but before join fetch all conversations Ids from http
-    //   // then hit ws-server to join those ids we can also do while joining that send
-    //   //  all history back to the user
-    //   // then we dont need to iterate and call history when chat-rooms mount
-    //   // this.socketListner()
-    //   this.joinAllRooms()
-    // }
-
-    // this.socket.onclose = ()=>{
-    //   console.log("Disconnected")
-    //   if(this.shouldReconnect){
-    //     this.reconnect();
-    //   }
-    // }
-
-    // return this.socket;
   }
 
   private attachEventListner(){
@@ -96,7 +50,7 @@ class SocketManager {
       console.log("WS-CONNECTED");
       this.isConnecting = false;
       this.reconnectAttempts = 0;
-      this.joinAllChats();
+      // this.joinAllChats();
     }
 
     this.socket.onmessage = this.eventHandler;
@@ -112,53 +66,69 @@ class SocketManager {
     }
   }
 
+  subscribe(type:string, handler:(data:any)=>void){
+    if(!this.handlers.has(type)){
+      this.handlers.set(type, new Set());
+    }
+
+    this.handlers.get(type)?.add(handler);
+  }
+
+  unsubscribe(type:string, handler:(data:any)=>void){
+    this.handlers.get(type)?.delete(handler)
+  }
+
   private eventHandler = (event : MessageEvent)=>{
     const data = JSON.parse(event.data);
     console.log("Socket-Receive-- ", data);
 
-    switch(data.type){
+    const listeners = this.handlers.get(data.type)
+    listeners?.forEach( listen =>{
+      listen(data);
+    })
+    // switch(data.type){
 
-      case "new_message":
-        this.handleChatMessage(data);
-        break;
+    //   case "new_message":
+    //     this.handleChatMessage(data);
+    //     break;
 
-      case "history":
-        this.handleHistory(data);
-        break;
+    //   case "history":
+    //     this.handleHistory(data);
+    //     break;
 
-      case "totalUser":
-        this.handleTotalUser(data);
-        break;
+    //   case "totalUser":
+    //     this.handleTotalUser(data);
+    //     break;
 
-      case "typing":
-        this.handleTyping(data);
-        break;
+    //   case "typing":
+    //     this.handleTyping(data);
+    //     break;
 
-      case "stop_typing":
-        this.handleStopTyping(data);
-        break;
+    //   case "stop_typing":
+    //     this.handleStopTyping(data);
+    //     break;
 
-      case "delete_chat":
-        this.handleDeleteChat(data);
-        break;
+    //   case "delete_chat":
+    //     this.handleDeleteChat(data);
+    //     break;
 
-      case "chatCreation":
-        this.handleChatCreation(data);
-        break;
+    //   case "chatCreation":
+    //     this.handleChatCreation(data);
+    //     break;
       
-      case "canvas_History":
-        this.canvasHistory(data);
-        break;
+    //   case "canvas_History":
+    //     this.canvasHistory(data);
+    //     break;
 
-      case "canvasRoom_online":
-        this.canvasOnlineUser(data);
-        break;
+    //   case "canvasRoom_online":
+    //     this.canvasOnlineUser(data);
+    //     break;
 
-      case "canvas_msg":
-        this.saveShape(data);
-        break;
+    //   case "canvas_msg":
+    //     this.saveShape(data);
+    //     break;
       
-    }
+    // }
   }
 
   private saveShape(data:any){

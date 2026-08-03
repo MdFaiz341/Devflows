@@ -1,3 +1,4 @@
+import {  } from "../../../lib/socket/CanvasSyncManager";
 import { useCanvasStore } from "../../../Storage/useCanvasStore";
 import { Shape } from "../shapeFormat/Shape";
 import { GetAllShapes } from "./GetAllShapes";
@@ -145,37 +146,72 @@ export class CanvasStore{
             listener();
         }
     }
-    
 
-    addShape(shape:Shape){
+    // addShape(shape:Shape){
 
-        if(!this.pageWithShape.has(this.currentPage)){
-            this.pageWithShape.set(this.currentPage, []);
+    //     if(!this.pageWithShape.has(this.currentPage)){
+    //         this.pageWithShape.set(this.currentPage, []);
+    //     }
+    //     const allShapes = this.pageWithShape.get(this.currentPage);
+    //     allShapes?.push(shape);
+
+    //     // this.shape.push(shape);
+    //     this.notify()
+    // }
+
+    addShape(page:number, shape:Shape, broadcast:boolean){
+        if(!this.pageWithShape.has(page)){
+            this.pageWithShape.set(page, []);
         }
-        const allShapes = this.pageWithShape.get(this.currentPage);
+
+        const allShapes = this.pageWithShape.get(page);
         allShapes?.push(shape);
-
-        // this.shape.push(shape);
-        this.notify()
-    }
-
-    removeShape(){
-        console.log("current Shape id: ", this.selectedShapeId);
-        const allShapes = this.pageWithShape.get(this.currentPage);
-        const filterShapes = allShapes?.filter(shape => shape.id !== this.selectedShapeId);
-        if(filterShapes) this.pageWithShape.set(this.currentPage, filterShapes);
-        else this.pageWithShape.set(this.currentPage, [])
-
-        // this.shape = this.shape.filter(shape => shape.id !== id)
         this.notify();
+
+        if(broadcast){
+            
+        }
     }
 
-    // updateShape(shape:Shape){
-    //     const index = this.shape.findIndex(shapes =>shapes.id === shape.id);
-    //     if(index === -1) return;
-    //     this.shape[index] = shape;
+    // removeShape(){
+    //     console.log("current Shape id: ", this.selectedShapeId);
+    //     const allShapes = this.pageWithShape.get(this.currentPage);
+    //     const filterShapes = allShapes?.filter(shape => shape.id !== this.selectedShapeId);
+    //     if(filterShapes) this.pageWithShape.set(this.currentPage, filterShapes);
+    //     else this.pageWithShape.set(this.currentPage, [])
+
+    //     // this.shape = this.shape.filter(shape => shape.id !== id)
     //     this.notify();
     // }
+
+    removeShape(page:number, shapeId:string, broadcast:boolean){
+        const shapes = this.pageWithShape.get(page);
+        if(!shapes) return;
+        const index = shapes.findIndex(s => s.id === shapeId);
+        if(index == -1) return;
+
+        shapes.splice(index, 1);
+        this.notify();
+
+        if(broadcast){
+
+        }
+    }
+
+    updateShape(page:number, shape:Shape, broadcast:boolean){
+        const shapes = this.pageWithShape.get(page);
+        if(!shapes) return;
+
+        const index = shapes.findIndex(s=>s.id === shape.id);
+        if(index == -1) return;
+
+        shapes[index] = shape;
+        this.notify();
+
+        if(broadcast){
+            canvasSyncManager.updateShape(this.currRoomId, shape, page);
+        }
+    }
 
     // for move the tool
     getShape(id:string){
