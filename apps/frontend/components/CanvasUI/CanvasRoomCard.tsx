@@ -5,11 +5,14 @@ import { useCanvasStore } from "../../Storage/useCanvasStore"
 import { Button } from "@repo/ui/button";
 import { useRouter } from "next/navigation";
 import { useSocket } from "../../providers/SocketProvider";
+import { CanvasCardFormat } from "../../app/dashboard/(head)/canvas/page";
 
 
 
 
-export const CanvasRoomsCard = ()=>{
+export const CanvasRoomsCard = ({rooms}:{
+    rooms : CanvasCardFormat[]
+})=>{
     const router = useRouter();
     const socket = useSocket();
     const canvasCard = useCanvasStore((state)=>state.canvasCard);
@@ -36,15 +39,14 @@ export const CanvasRoomsCard = ()=>{
             {/* Rooms Grid */}
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {
-                    canvasOrder.map((roomId) => {
-                        const cards = canvasCard[roomId];
-                        console.log("Each_card--- ", cards);
-                        if(!cards) return;
-                        const userRole = cards.members.find((userId)=>userId.role === "ADMIN");
+                    rooms.map((val) => {
+                        // const cards = canvasCard[roomId];
+                        console.log("Each_card--- ", val);
+                        const userRole = val.members.find((userId)=>userId.role === "ADMIN");
                         console.log("adminId: ", userRole?.userId);
                         return(
                             <motion.div
-                                key={cards.roomId}
+                                key={val.roomId}
                                 whileHover={{ y: -6 }}
                                 className="bg-[#0F172A] border border-white/10 rounded-2xl p-6 cursor-pointer hover:border-indigo-500/40 transition overflow-hidden relative hover:bg-gradient-to-br from-gray-800 to-gray-950"
                             >
@@ -52,7 +54,7 @@ export const CanvasRoomsCard = ()=>{
 
                                 <div>
                                     <div className="flex items-center justify-between mb-5">
-                                        <img src={cards.image} className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-xl font-bold shadow-lg">
+                                        <img src={val.image} className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-xl font-bold shadow-lg">
                                             {/* <img src={cards.image}/> */}
                                         </img>
 
@@ -61,7 +63,7 @@ export const CanvasRoomsCard = ()=>{
                                         </span>
                                     </div>
 
-                                    <h2 className="text-lg font-semibold mb-2">{cards.name}</h2>
+                                    <h2 className="text-lg font-semibold mb-2">{val.name}</h2>
 
                                     <p className="text-sm text-gray-400 line-clamp-2">
                                         {/* {room.description}  */} Description.......
@@ -69,14 +71,14 @@ export const CanvasRoomsCard = ()=>{
 
                                     <div className="mt-6 flex items-center justify-between text-sm">
                                         <span className="text-gray-500">
-                                        {cards.members.length} members
+                                        {val.members.length} members
                                         </span>
                                         <Button
                                             text="Join"
                                             type="button"
                                             design="primary"
                                             className="px-4 py-2 rounded-lg"
-                                            onClick={()=>joinCanvasRoon(cards.roomId, userRole?.userId!)}
+                                            onClick={()=>joinCanvasRoon(val.roomId, userRole?.userId!)}
                                         />
                                     </div>
                                 </div>

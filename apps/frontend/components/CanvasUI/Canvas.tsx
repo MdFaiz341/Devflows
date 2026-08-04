@@ -164,15 +164,14 @@ export const Canvas = ({roomId, adminId}:{
                 />
             </div>
             
-            {
-                showLeave && <LeaveCanvasUI showLeave={showLeave} setShowLeave={setShowLeave}/>
-            }
-            {
-               open && <InviteGenerator open={open} setOpen={setOpen}/>
-            }
+            
+            <LeaveCanvasUI showLeave={showLeave} setShowLeave={setShowLeave} roomId={roomId}/>
+            
+            <InviteGenerator open={open} setOpen={setOpen}/>
             
             <ShapeSetting active={active} removeShape={removeShape} currTool={currTool}/>
             
         </div>
     )
+    // kon kon join hai wo dikhao side me-> ADMIN, MEMBER
 }

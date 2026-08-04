@@ -8,72 +8,104 @@ import { History, Loader2, Menu, PlusIcon, UserRoundPlus, UsersRound } from "luc
 import { useHook } from "../../../../hook/useHook";
 import { JoinCanvasRoom } from "../../../../components/CanvasUI/JoinCanvasRoom";
 import api from "../../../../API/Interceptor";
-import { CanvasCardFormat, useCanvasStore } from "../../../../Storage/useCanvasStore";
+// import { CanvasCardFormat, useCanvasStore } from "../../../../Storage/useCanvasStore";
 import { toast } from "sonner";
 import { useStore } from "../../../../Storage/useStore";
 import { CanvasRoomsCard } from "../../../../components/CanvasUI/CanvasRoomCard";
+
+
+export interface CanvasCardFormat{
+    createdAt : string,
+    roomId : number,
+    image : string,
+    name : string,
+    members : [
+        {
+            joinedAt : string,
+            role : "ADMIN" | "MEMBER",
+            userId : string,
+            user : {
+                firstname : string,
+                email : string,
+                image : string,
+            }
+        },
+    ]
+}
 
 export default function CanvasRoomsPage() {
 
   const [search, setSearch] = useState("");
   const {open, setOpen, active, setActive, loading, setLoading} = useHook();
   const [roomCreated, setRommCreated] = useState(false);
-  const canvasOrder = useCanvasStore((state)=>state.canvasOrder);
-  const setCanvasOrder = useCanvasStore((state)=>state.setCanvasOrder);
-  const setCanvasCard = useCanvasStore((state)=>state.setCanvasCard);
-  const canvasCard = useCanvasStore((state)=>state.canvasCard);
-  const user = useStore((state)=>state.user);
-  const fetchRef = useRef(false);
+  const [rooms, setRooms] = useState<CanvasCardFormat[]>()
 
   // best filter
-  const filteredRooms = useMemo(() => {
-    return rooms.filter((room) =>
-      room.name.toLowerCase().includes(search.toLowerCase())
-    );
-  }, [search]);
+  // const filteredRooms = useMemo(() => {
+  //   return rooms.filter((room) =>
+  //     room.name.toLowerCase().includes(search.toLowerCase())
+  //   );
+  // }, [search]);
 
   async function getAllCanvas() {
     try{
       setLoading(true);
       const response = await api.get("/allCanvasRooms");
       console.log(response.data.allRooms);
-      
-      const dataVal = response.data.allRooms;
-      // const filteredFriend = dataVal.member.filter((adminId:any)=>adminId.userId !== user?.id)
-      dataVal.forEach((val:any)=>{
-        console.log("val: ", val);
 
-        // const filteredFriend = val.members.filter((adminId:any)=>{
-        //     adminId.userId !== user?.id
-        // })
-        const value = {
+      const data = response.data.allRooms.map((val:any)=>({
           createdAt : val.createdAt,
           roomId : val.id,
           image : val.image,
           name : val.name,
           members: val.members //filteredFriend,
-        }
+      }))
 
-        setCanvasCard(val.id, value);
-        setCanvasOrder(val.id);
+      setRooms(data);
+      
+      // const dataVal = response.data.allRooms;
+      // // const filteredFriend = dataVal.member.filter((adminId:any)=>adminId.userId !== user?.id)
+      // dataVal.forEach((val:any)=>{
+      //   console.log("val: ", val);
 
-        // createdAt : string,
-        // roomId : number,
-        // image : string,
-        // name : string,
-        // members : [
-        //     {
-        //         userId : string,
-        //         role : "ADMIN" | "MEMBER",
-        //         firstname : string,
-        //         email : string,
-        //         image : string,
-        //         joinedAt : string,
-        //     },
-        // ]
+      //   // const filteredFriend = val.members.filter((adminId:any)=>{
+      //   //     adminId.userId !== user?.id
+      //   // })
+      //   const value = {
+      //     createdAt : val.createdAt,
+      //     roomId : val.id,
+      //     image : val.image,
+      //     name : val.name,
+      //     members: val.members //filteredFriend,
+      //   }
 
-      })
-      // toast.success(response.data.message);
+      //   setRooms((prev)=>{
+      //     if(prev){
+      //       [...prev, value]
+      //     }else{
+      //       value
+      //     }
+      //   });
+      //   // setCanvasCard(val.id, value);
+      //   // setCanvasOrder(val.id);
+
+      //   // createdAt : string,
+      //   // roomId : number,
+      //   // image : string,
+      //   // name : string,
+      //   // members : [
+      //   //     {
+      //   //         userId : string,
+      //   //         role : "ADMIN" | "MEMBER",
+      //   //         firstname : string,
+      //   //         email : string,
+      //   //         image : string,
+      //   //         joinedAt : string,
+      //   //     },
+      //   // ]
+
+      // })
+      // // toast.success(response.data.message);
     }
     catch(e:any){
       console.log(e);
@@ -84,20 +116,13 @@ export default function CanvasRoomsPage() {
   }
 
   useEffect(()=>{
-    if(fetchRef.current === false){
-      console.log(fetchRef.current);
       getAllCanvas();
-      fetchRef.current = true;
-      console.log(fetchRef.current);
-    }
   }, []);
 
   function menuHandler(){
 
   }
 
-  // console.log("CnavsOrder: ", canvasOrder);
-  // console.log("CanvasCard: ", canvasCard);
 
   return (
     <div className="min-h-screen bg-[#05070D] text-white overflow-hidden">
@@ -150,7 +175,7 @@ export default function CanvasRoomsPage() {
           <div className="w-screen h-screen flex justify-center items-center">
               <div className="designLoader w-20 h-10"></div>
           </div>
-        : canvasOrder.length === 0 
+        : !rooms
         ? <div className="w-screen h-screen flex justify-center items-center">
             <Button
               type="button"
@@ -163,7 +188,7 @@ export default function CanvasRoomsPage() {
             />
         </div>
         :  <div>
-              <CanvasRoomsCard/>
+              <CanvasRoomsCard rooms={rooms}/>
           </div>
       }
       
@@ -181,40 +206,40 @@ export default function CanvasRoomsPage() {
   );
 }
 
-const rooms = [
-  {
-    id: 1,
-    name: "Frontend Canvas",
-    description: "Realtime UI collaboration and whiteboarding.",
-    members: 12,
-    online: 4,
-  },
-  {
-    id: 2,
-    name: "DevFlow Core",
-    description: "Architecture discussions and backend planning.",
-    members: 18,
-    online: 6,
-  },
-  {
-    id: 3,
-    name: "Design Team",
-    description: "Wireframes, flows, and design systems.",
-    members: 9,
-    online: 2,
-  },
-  {
-    id: 4,
-    name: "Realtime Engine",
-    description: "WebSocket scaling and sync optimizations.",
-    members: 14,
-    online: 5,
-  },
-  {
-    id: 5,
-    name: "Product Ideas",
-    description: "Brainstorming new features and roadmap.",
-    members: 7,
-    online: 3,
-  },
-];
+// const rooms = [
+//   {
+//     id: 1,
+//     name: "Frontend Canvas",
+//     description: "Realtime UI collaboration and whiteboarding.",
+//     members: 12,
+//     online: 4,
+//   },
+//   {
+//     id: 2,
+//     name: "DevFlow Core",
+//     description: "Architecture discussions and backend planning.",
+//     members: 18,
+//     online: 6,
+//   },
+//   {
+//     id: 3,
+//     name: "Design Team",
+//     description: "Wireframes, flows, and design systems.",
+//     members: 9,
+//     online: 2,
+//   },
+//   {
+//     id: 4,
+//     name: "Realtime Engine",
+//     description: "WebSocket scaling and sync optimizations.",
+//     members: 14,
+//     online: 5,
+//   },
+//   {
+//     id: 5,
+//     name: "Product Ideas",
+//     description: "Brainstorming new features and roadmap.",
+//     members: 7,
+//     online: 3,
+//   },
+// ];

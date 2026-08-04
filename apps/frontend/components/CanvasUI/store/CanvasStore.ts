@@ -201,12 +201,11 @@ export class CanvasStore{
         if(!this.pageWithShape.has(page)){
             this.pageWithShape.set(page, []);
         }
-        console.log("Shape Ayaaa---")
-        console.log(page)
-        console.log(shape)
-        console.log(broadcast);
         const allShapes = this.pageWithShape.get(page);
-        if(!allShapes?.includes(shape)){
+
+        const isExist = allShapes?.some((val)=>val.id === shape.id);
+        if(isExist === false){
+            console.log("Not Exit, so Add Shape----");
             allShapes?.push(shape);
         }
         this.notify();

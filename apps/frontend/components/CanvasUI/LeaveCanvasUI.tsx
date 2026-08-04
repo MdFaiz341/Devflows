@@ -4,30 +4,46 @@ import { Button } from "@repo/ui/button"
 import { motion, AnimatePresence } from "framer-motion"
 import { Loader2 } from "lucide-react"
 import { useHook } from "../../hook/useHook"
+import api from "../../API/Interceptor"
+import { toast } from "sonner"
+import { useRouter } from "next/navigation"
 
 
-export const LeaveCanvasUI = ({showLeave, setShowLeave}:{
+export const LeaveCanvasUI = ({showLeave, setShowLeave, roomId}:{
     showLeave : boolean,
-    setShowLeave : (e:boolean)=>void
+    setShowLeave : (e:boolean)=>void,
+    roomId : number,
 })=>{
 
     const {active, setActive} = useHook();
+    const router = useRouter();
+
+    // const canvasOrder = 
 
     async function leaveHandler(){
-        setActive(true);
-        await new Promise((res)=>setTimeout(res, 3000))
-        setActive(false);
+        try{
+            setActive(true);
+            await new Promise((res)=>setTimeout(res, 3000))
+            const response = await api.post("/leaveCanvasRoom", {roomId});
+            router.push("/dashboard/canvas");
+            toast.success(response.data.message);
+        }
+        catch(e:any){
+            console.log(e);
+            toast.error(e?.response.data.message || "Something went wrong")
+        }finally{
+            setActive(false);
+        }
     }
 
 
     return(
         <AnimatePresence>
-        {showLeave && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 px-4"
+            className={`fixed inset-0 bg-black/30 backdrop-blur-sm flex ${showLeave ? "block" : "hidden"} items-center justify-center z-50 px-4`}
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
@@ -61,7 +77,7 @@ export const LeaveCanvasUI = ({showLeave, setShowLeave}:{
                 />
             </motion.div>
           </motion.div>
-        )}
+        
       </AnimatePresence>
     )
 }

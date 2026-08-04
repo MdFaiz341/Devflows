@@ -432,12 +432,28 @@ app.get("/allCanvasRooms", middleware, async(req, res)=>{
 //     }
 // })
 
-app.post("/leaveCanvasRoom", async(req, res)=>{
+app.post("/leaveCanvasRoom", middleware, async(req, res)=>{
     try{
-        
+        const roomId = Number(req.body.roomId);
+
+        await client.canvasMember.delete({
+            where:{
+                roomId_userId:{
+                    roomId,
+                    userId : req.userId,
+                }
+            }
+        })
+
+        return res.status(resStatus.Success).json({
+            message: "Left the room"
+        })
     }
     catch(e){
-
+        console.log(e);
+        return res.status(resStatus.Error).json({
+            message: "Failed to leave the room"
+        })
     }
 })
 
