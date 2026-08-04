@@ -1,4 +1,5 @@
 import { ShapeRender } from "../renderer/1ShapeRender";
+import { Shape } from "../shapeFormat/Shape";
 import { ToolType } from "../tools/Tool";
 
 
@@ -7,7 +8,7 @@ import { ToolType } from "../tools/Tool";
 export class Registery{
 
     constructor(
-        private renderer : Map<ToolType, ShapeRender<any>>,
+        private renderer : Map<ToolType, ShapeRender<Shape>>,
     ){}
 
 

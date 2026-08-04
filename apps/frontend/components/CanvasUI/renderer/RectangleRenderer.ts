@@ -11,6 +11,7 @@ export class RectangleRenderer implements ShapeRender<Rectangle>{
     ){}
 
     draw(shape: Rectangle): void {
+        console.log("Draw--- ", shape);
         this.ctx.save();
 
         this.ctx.strokeStyle = shape.stroke;

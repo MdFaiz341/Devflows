@@ -261,7 +261,6 @@ app.post("/join_member/:randomLink/:adminId/:roomId", middleware, async(req, res
             data:{
                 userId : req.userId,
                 role : "MEMBER",
-                roomId,
             }
         })
 

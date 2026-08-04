@@ -10,7 +10,7 @@ type Page = {
     shape : Shape[]
 }
 
-export type CanvasEvent = "shapeAdded" | "shapeUpdated" | "shapeDeleted"
+export type CanvasEvent = "shapeAdded" | "shapeUpdated" | "shapeDeleted" | "currPageHistory"
 
 export class CanvasStore{
 
@@ -38,19 +38,22 @@ export class CanvasStore{
         return this.currRoomId;
     }
 
-    async setCurrentPage(page:number){
+    setCurrentPage(page:number){
         this.currentPage = page;
         if(!this.pageWithShape.has(page)){
+            console.log("SetCurrPage hitt--- ");
             // this.pageWithShape.set(page, []);
-
             // fet data from backend is shape exir return shape[] else [];
-            const shapes = await GetAllShapes(this.currRoomId, this.currentPage);
-            this.pageWithShape.set(this.currentPage, shapes);
+            // const shapes = await GetAllShapes(this.currRoomId, this.currentPage);
+            // this.pageWithShape.set(this.currentPage, shapes);
+            this.emit(
+                "currPageHistory",
+                {
+                    page,
+                    roomId:this.currRoomId,
+                }
+            )
         }
-        // else{
-        //     const canvasRoomData = useCanvasStore.getState().canvasRoomData[this.currentPage] || [];
-        //     this.pageWithShape.set(this.currentPage, canvasRoomData)
-        // }
         this.notify();
     }
 
@@ -257,6 +260,18 @@ export class CanvasStore{
                 }
             );
         }
+    }
+
+    shapeHistory(shape:Shape[], page:number){
+        // if(!this.pageWithShape.has(page)){
+        //     this.pageWithShape.set(page, []);
+        // }
+        // this.pageWithShape.set
+        // // allShapes = shapes
+        // const allShapes = shape;
+        console.log("Shapes-- ", shape);
+        this.pageWithShape.set(page, shape);
+        this.notify();
     }
 
     // for move the tool

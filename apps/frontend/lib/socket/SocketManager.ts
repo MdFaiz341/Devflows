@@ -72,10 +72,6 @@ export class SocketManager {
     }
 
     this.handlers.get(type)?.add(handler);
-
-    // return ()=>{
-    //   this.handlers.get(type)?.delete(handler);
-    // }
   }
 
   unsubscribe(type:string, handler:(data:any)=>void){

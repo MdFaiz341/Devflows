@@ -32,6 +32,10 @@ export class CanvasSyncManager{
             "shapeDeleted",
             this.handleDeleteShape
         )
+        this.store.on(
+            "currPageHistory",
+            this.getHistory
+        )
 
         // Sockets Events    Server -> Store
         socketManager.subscribe(
@@ -118,6 +122,14 @@ export class CanvasSyncManager{
         });
     }
 
+    private getHistory = (payload:any)=>{
+        socketManager.send({
+            type : "shape_History",
+            page : payload.page,
+            roomId : payload.roomId
+        })
+    }
+
     private handleDeleteShape = (payload:any)=>{
         socketManager.send({
             type: "delete_Shape",
@@ -181,10 +193,24 @@ export class CanvasSyncManager{
 
     private receiveHistory = (data:any)=>{
         console.log("history--- ", data);
-        // this.store
-        // .setPageShapes(
-        //     data.roomId,
-        //     data.pages
-        // );
+        console.log("historyData--- ", data.historyData);
+        if(data.historyData){
+            const finalShape = data.historyData.shapes.map((v:any)=>v.data)
+            console.log("FinalShape--- ", finalShape);
+    
+            this.store
+            .shapeHistory(
+                finalShape,
+                data.historyData.pageNo
+            );
+        }
+        else{
+            const currPage = this.store.getCurrentPage();
+            this.store
+            .shapeHistory(
+                [],
+                currPage,
+            );
+        }
     }
 }

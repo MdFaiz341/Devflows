@@ -6,6 +6,7 @@ import { Button } from "@repo/ui/button";
 import { Loader2, UserRoundPlus } from "lucide-react";
 import { toast } from "sonner";
 import { useHook } from "../../hook/useHook";
+import { useRouter } from "next/navigation";
 
 export const JoinCanvasRoom = ({active, setActive}:{
     active : boolean,
@@ -13,6 +14,7 @@ export const JoinCanvasRoom = ({active, setActive}:{
 })=>{
     const inputRef = useRef<HTMLInputElement>(null);
     const {open, setOpen} = useHook();
+    const router = useRouter();
 
     async function joinRoomHandler(){
       const linkVal = inputRef.current?.value
@@ -27,10 +29,11 @@ export const JoinCanvasRoom = ({active, setActive}:{
         const adminId = data[data?.length-2];
         const randomLink = data[data.length-3];
         console.log("Join-Message: ", randomLink + " " + adminId + " " + roomId);
-        await new Promise((res)=>setTimeout(res, 4000));
+        await new Promise((res)=>setTimeout(res, 2000));
         const response = await api.post(`/join_member/${randomLink}/${adminId}/${roomId}`)
-        console.log(response.data);
-        toast.success(response.data.message)
+        console.log("JoinCanvasRoom res--- ", response.data);
+        toast.success(response.data.message);
+        router.push(`/canvasroom/${adminId}/${roomId}`);
       }
       catch(e:any){
         console.log(e);

@@ -143,6 +143,29 @@ wss.on("connection", (socket, request)=>{
                 broadCastInCanvas(payload, page.roomId);
             }
 
+            if(parsed.type === "shape_History"){
+                console.log("Shape_History--- ", parsed);
+
+
+                const historyData = await client.page.findUnique({
+                    where:{
+                        roomId_pageNo:{
+                            roomId : Number(parsed.roomId),
+                            pageNo : parsed.page,
+                        }
+                    },
+                    include:{
+                        shapes:true,
+                    }
+                })
+
+                socket.send(JSON.stringify({
+                    type : "shape_History",
+                    historyData,
+                }))
+                
+            }
+
             if(parsed.type === "leave_conversation"){
                 const { conversationId } = parsed;
                 if(!conversationId) return;
@@ -602,25 +625,26 @@ async function joinCanvasRoom(socket:WebSocket, roomId:number, userId:string) {
 
     broadCastInCanvas(payload, roomId);
 
-    // const historyData = await client.page.findUnique({
-    //     where:{
-    //         roomId_pageNo:{
-    //             roomId,
-    //             pageNo : 1,
-    //         }
-    //     },
-    //     include:{
-    //         shapes:true,
-    //     }
-    // })
+    // 1. history hanlder add karo canvasSynmanager me so when user comes firt time it restore all shape
+    // 2. remove shape and update shape wala bhi add kar sakte ho
 
-    // socket.send(JSON.stringify({
-    //     type : "canvas_History",
-    //     message : {
-    //         historyData,
-    //         roomId,
-    //     }
-    // }))
+
+    const historyData = await client.page.findUnique({
+        where:{
+            roomId_pageNo:{
+                roomId,
+                pageNo : 1,
+            }
+        },
+        include:{
+            shapes:true,
+        }
+    })
+
+    socket.send(JSON.stringify({
+        type : "shape_History",
+        historyData,
+    }))
 }
 
 function broadCastInCanvas(payload:string, roomId:number){
