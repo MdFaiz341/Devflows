@@ -4,7 +4,7 @@ import { create } from "zustand";
 
 
 
-interface CanvasCardFormat{
+export interface CanvasCardFormat{
     createdAt : string,
     roomId : number,
     image : string,
@@ -44,7 +44,7 @@ interface CanvasType{
     setBackground : (e:string)=>void,
 
     canvasOrder : number[],   // roomIds
-    setCanvasOrder : (e : number[])=>void,
+    setCanvasOrder : (e : number)=>void,
 
     canvasCard : Record<number, CanvasCardFormat>,
     setCanvasCard : (id :number, data:CanvasCardFormat)=>void,
@@ -87,13 +87,31 @@ export const useCanvasStore = create<CanvasType>(
             }
         }),
 
-        setCanvasCard : (id, data)=>set((state)=>({
-            canvasCard:{
-                ...state.canvasCard,
-                [id] : data,
+        setCanvasCard : (id, data)=>set((state)=>{
+    
+            const val = state.canvasCard[id];
+            if(val) return {};
+
+            return{
+                canvasCard:{
+                    ...state.canvasCard,
+                    [id] : data,
+                }
             }
-        })),
-        setCanvasOrder : (ids)=>set({canvasOrder : ids}),
+        }),
+        setCanvasOrder : (ids:number)=>set((state)=>{
+            if(state.canvasOrder.includes(ids)){
+                return {};
+            }
+
+            return{
+                canvasOrder : [
+                    ...state.canvasOrder,
+                    ids
+                ]
+            }
+        }),
+
         setCurrentRoomId : (id)=>set({currentRoomId : id})
     })
 )

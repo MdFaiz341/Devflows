@@ -91,7 +91,7 @@ export const Canvas = ({roomId, adminId}:{
     useEffect(()=>{
         if(!canvasRef.current) return;
         const canvas = canvasRef.current;
-        engineRef.current = new CanvasEngine(roomId, canvas, socket, (tool)=>setCurrTool(tool), (e)=>setActive(e));
+        engineRef.current = new CanvasEngine(roomId, canvas, (tool)=>setCurrTool(tool), (e)=>setActive(e));
 
         return ()=>{
             engineRef.current?.destroy();

@@ -74,7 +74,6 @@ export class CanvasEngine{
     // private pageShape : Record<number,Shape[]>;
     private currRoomId : number;
     private canvas : HTMLCanvasElement;
-    private socket : WebSocket;
     private ctx : CanvasRenderingContext2D;
     // private rc : HTMLCanvasElement;
     private renderer : RenderManager;
@@ -90,14 +89,13 @@ export class CanvasEngine{
     private shapeSetting : (e : boolean)=>void;
     private canvasSyncManager : CanvasSyncManager
 
-    constructor(roomId:number, canvas:HTMLCanvasElement, socket:WebSocket, onToolChange : (e:ToolType)=>void, shapeSetting:(e:boolean)=>void){
+    constructor(roomId:number, canvas:HTMLCanvasElement, onToolChange : (e:ToolType)=>void, shapeSetting:(e:boolean)=>void){
         this.currRoomId = roomId;
         this.canvas = canvas;
         const ctx = canvas.getContext("2d");
         // const socket = useSocket();
         if(!ctx) throw new Error("canvas not supported");
         this.ctx = ctx;
-        this.socket = socket;
         console.log("inside Engine-------");
         // this.pointerEventHandler();
         // this.pageShape = {};
@@ -189,7 +187,7 @@ export class CanvasEngine{
 
 
 
-    private resizeCanvas(){
+    private resizeCanvas = ()=>{
         // this.canvas.width = this.canvas.clientWidth;
         // this.canvas.height = this.canvas.clientHeight;
         const dpr = window.devicePixelRatio || 1;

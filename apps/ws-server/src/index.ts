@@ -583,7 +583,8 @@ wss.on("connection", (socket, request)=>{
 
 
 async function joinCanvasRoom(socket:WebSocket, roomId:number, userId:string) {
-
+    console.log("userId-- ", userId);
+    console.log("roomId-- ", roomId);
     const userExist = await client.canvasMember.findUnique({
         where:{
             roomId_userId:{

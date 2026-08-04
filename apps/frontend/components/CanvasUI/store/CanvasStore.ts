@@ -201,9 +201,14 @@ export class CanvasStore{
         if(!this.pageWithShape.has(page)){
             this.pageWithShape.set(page, []);
         }
-
+        console.log("Shape Ayaaa---")
+        console.log(page)
+        console.log(shape)
+        console.log(broadcast);
         const allShapes = this.pageWithShape.get(page);
-        allShapes?.push(shape);
+        if(!allShapes?.includes(shape)){
+            allShapes?.push(shape);
+        }
         this.notify();
 
         if(broadcast){

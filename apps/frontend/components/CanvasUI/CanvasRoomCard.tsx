@@ -28,6 +28,8 @@ export const CanvasRoomsCard = ()=>{
         router.push(`/dashboard/canvas/canvasroom/${adminId}/${roomId}`);
     }
 
+    console.log("canvasOrder-- ", canvasOrder);
+    console.log("canvasCARD------- ", canvasCard);
 
     return(
         <main className="max-w-7xl mx-auto px-6 py-10 mt-16">
@@ -36,6 +38,7 @@ export const CanvasRoomsCard = ()=>{
                 {
                     canvasOrder.map((roomId) => {
                         const cards = canvasCard[roomId];
+                        console.log("Each_card--- ", cards);
                         if(!cards) return;
                         const userRole = cards.members.find((userId)=>userId.role === "ADMIN");
                         console.log("adminId: ", userRole?.userId);

@@ -8,7 +8,7 @@ import { History, Loader2, Menu, PlusIcon, UserRoundPlus, UsersRound } from "luc
 import { useHook } from "../../../../hook/useHook";
 import { JoinCanvasRoom } from "../../../../components/CanvasUI/JoinCanvasRoom";
 import api from "../../../../API/Interceptor";
-import { useCanvasStore } from "../../../../Storage/useCanvasStore";
+import { CanvasCardFormat, useCanvasStore } from "../../../../Storage/useCanvasStore";
 import { toast } from "sonner";
 import { useStore } from "../../../../Storage/useStore";
 import { CanvasRoomsCard } from "../../../../components/CanvasUI/CanvasRoomCard";
@@ -21,6 +21,7 @@ export default function CanvasRoomsPage() {
   const canvasOrder = useCanvasStore((state)=>state.canvasOrder);
   const setCanvasOrder = useCanvasStore((state)=>state.setCanvasOrder);
   const setCanvasCard = useCanvasStore((state)=>state.setCanvasCard);
+  const canvasCard = useCanvasStore((state)=>state.canvasCard);
   const user = useStore((state)=>state.user);
   const fetchRef = useRef(false);
 
@@ -54,7 +55,7 @@ export default function CanvasRoomsPage() {
         }
 
         setCanvasCard(val.id, value);
-        setCanvasOrder([...canvasOrder, val.id]);
+        setCanvasOrder(val.id);
 
         // createdAt : string,
         // roomId : number,

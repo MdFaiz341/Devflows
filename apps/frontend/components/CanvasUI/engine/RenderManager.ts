@@ -51,10 +51,9 @@ export class RenderManager{
 
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         const shapes = this.store.getAllShapes();
-        console.log("GetAllShapes---- ", shapes);
+        console.log("AllShapes----", shapes);
         const selected = this.store.getSelectedShapeId();
         for(const val of shapes){
-            console.log("Type--- ", val.type);
             const renderer = this.registery.get(val.type);
             console.log("Renderer--- ", renderer);
             renderer?.draw(val)

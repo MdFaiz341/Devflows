@@ -33,7 +33,7 @@ export const JoinCanvasRoom = ({active, setActive}:{
         const response = await api.post(`/join_member/${randomLink}/${adminId}/${roomId}`)
         console.log("JoinCanvasRoom res--- ", response.data);
         toast.success(response.data.message);
-        router.push(`/canvasroom/${adminId}/${roomId}`);
+        router.push(`/dashboard/canvas/canvasroom/${adminId}/${roomId}`);
       }
       catch(e:any){
         console.log(e);

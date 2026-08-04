@@ -257,10 +257,19 @@ app.post("/join_member/:randomLink/:adminId/:roomId", middleware, async(req, res
             })
         }
 
-        const userJoined = await client.canvasMember.create({
-            data:{
+        const userJoined = await client.canvasMember.upsert({
+            where:{
+                roomId_userId:{
+                    roomId,
+                    userId : req.userId,
+                },
+                role : "MEMBER"
+            },
+            update: {},
+            create:{
                 userId : req.userId,
                 role : "MEMBER",
+                roomId,
             }
         })
 
@@ -357,6 +366,8 @@ app.get("/allCanvasRooms", middleware, async(req, res)=>{
             }
         });
 
+        console.log("allRomms--- ", allRooms);
+
         return res.status(resStatus.Success).json({
             message: "Succssfully fetched rooms",
             allRooms,
@@ -421,7 +432,14 @@ app.get("/allCanvasRooms", middleware, async(req, res)=>{
 //     }
 // })
 
+app.post("/leaveCanvasRoom", async(req, res)=>{
+    try{
+        
+    }
+    catch(e){
 
+    }
+})
 
 app.get("/getShapesAtpage/:roomId/:page", middleware, async(req, res)=>{
     try{

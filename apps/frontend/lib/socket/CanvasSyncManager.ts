@@ -166,9 +166,10 @@ export class CanvasSyncManager{
 
     // server broadcast, now receiving:
     private receiveNewShape = (data:any)=>{
+        console.log("Canavs Receiving--- ", data);
         this.store
         .addShape(
-            data.page,
+            data.pageNo,
             data.shape,
             false
         );
@@ -176,7 +177,7 @@ export class CanvasSyncManager{
     private receiceDeleteShape = (data:any)=>{
         this.store
         .removeShape(
-            data.page,
+            data.pageNo,
             data.id,
             false
         );
@@ -185,7 +186,7 @@ export class CanvasSyncManager{
     private receiveUpdateShape = (data:any)=>{
         this.store
         .updateShape(
-            data.page,
+            data.pageNo,
             data.shape,
             false
         );
