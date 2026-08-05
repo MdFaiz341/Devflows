@@ -25,6 +25,7 @@ import { SelectionTool } from "../hitTest/SelectionTool";
 import { HitTestManager } from "../hitTest/HitTestManager";
 import { CursorManager } from "../cursor/CursorManager";
 import { CanvasSyncManager } from "../../../lib/socket/CanvasSyncManager";
+import { NotificationManager } from "../../../lib/socket/NotificationManager";
 
 
 
@@ -88,6 +89,7 @@ export class CanvasEngine{
     private onToolChange : (tool:ToolType)=>void
     private shapeSetting : (e : boolean)=>void;
     private canvasSyncManager : CanvasSyncManager
+    private notificationManager : NotificationManager;
 
     constructor(roomId:number, canvas:HTMLCanvasElement, onToolChange : (e:ToolType)=>void, shapeSetting:(e:boolean)=>void){
         this.currRoomId = roomId;
@@ -146,6 +148,8 @@ export class CanvasEngine{
         // listner on every changes in Shape[] of CanvasStore
         this.renderer = new RenderManager(this.registry, this.ctx, this.canvas, this.store);
 
+        this.notificationManager = new NotificationManager;
+        this.notificationManager.start();
         this.canvasSyncManager = new CanvasSyncManager(this.store);
         this.canvasSyncManager.start();
         this.canvasSyncManager.joinCnvasRoom(this.currRoomId);
@@ -159,6 +163,8 @@ export class CanvasEngine{
         // this.rc = rough.canvas(canvas);
 
         ctx.restore();
+
+        console.log("Engine Start------");
     }
 
     // private pointerEventHandler(){
@@ -197,8 +203,10 @@ export class CanvasEngine{
     }
 
     destroy(){
+        console.log("Engine close------");
         this.canvasSyncManager.leaveRoom(this.currRoomId);
         this.canvasSyncManager.stop();
+        this.notificationManager.stop();
         this.renderer.destroy();
         this.inputManager.destroy();
         window.removeEventListener("resize", this.resizeCanvas);

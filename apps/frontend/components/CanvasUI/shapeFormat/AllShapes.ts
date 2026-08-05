@@ -12,7 +12,7 @@ export interface Rectangle extends BaseShape{
 
     width : number,
     height : number,
-}
+}prisma
 
 
 export interface Circle extends BaseShape{

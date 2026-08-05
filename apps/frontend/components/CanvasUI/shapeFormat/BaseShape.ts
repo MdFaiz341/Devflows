@@ -1,3 +1,4 @@
+import { useStore } from "../../../Storage/useStore";
 
 
 type Shapes = 
@@ -12,5 +13,4 @@ export interface BaseShape{
     stroke : string;
 
     strokeWidth : number
-    
 }

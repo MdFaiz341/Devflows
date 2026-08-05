@@ -362,11 +362,9 @@ app.get("/allCanvasRooms", middleware, async(req, res)=>{
                 }
             },
             orderBy:{
-                createdAt : "desc"
+                createdAt : "asc"
             }
         });
-
-        console.log("allRomms--- ", allRooms);
 
         return res.status(resStatus.Success).json({
             message: "Succssfully fetched rooms",

@@ -53,11 +53,6 @@ export class CanvasSyncManager{
             this.receiveUpdateShape
         )
 
-        // socketManager.subscribe(
-        //     "pointer_move",
-        //     this.handlePointerMoving
-        // );
-
         socketManager.subscribe(
             "delete_Shape",
             this.receiceDeleteShape
@@ -149,8 +144,9 @@ export class CanvasSyncManager{
     }
 
     joinCnvasRoom(roomId:number){
+        console.log("Join-Canvas----");
         const payload = {
-            type : "join_canvasRoom",
+            type : "join_canvasroom",
             roomId
         }
         socketManager.send(payload);

@@ -12,6 +12,7 @@ import rough from "roughjs";
 import { CanvasEngine } from "./engine/CanvasEngine"
 import { Tool, ToolType } from "./tools/Tool"
 import { ShapeSetting } from "./ShapeSetting"
+import { NotificationCanvasUI } from "./NotificationCanvasUI"
 
 const Buttons = [
     {
@@ -54,6 +55,7 @@ export const Canvas = ({roomId, adminId}:{
     roomId:number,
     adminId:string,
 })=>{
+
     // const rc = rough.canvas(document.getElementById("canvas"));
     const socket = useSocket();
     const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -170,6 +172,8 @@ export const Canvas = ({roomId, adminId}:{
             <InviteGenerator open={open} setOpen={setOpen}/>
             
             <ShapeSetting active={active} removeShape={removeShape} currTool={currTool}/>
+
+            <NotificationCanvasUI/>
             
         </div>
     )

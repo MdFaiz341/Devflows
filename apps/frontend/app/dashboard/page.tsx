@@ -210,16 +210,14 @@ export default function DashboardPage() {
 
                 <NotificationUI openNotification={openNotification}/>
 
-                <div className="relative">
-                  <img onClick={()=>setOpen(!open)} src={user?.image}  
-                    className="w-10 h-10 rounded-full cursor-pointer shadow-xl border-2 border-white hidden md:block hover:scale-105 transition"
-                  />
-                  {
-                    open 
-                    &&  <DropdownProfile setOpen={setOpen}/>
-                  }
+                <img onClick={()=>setOpen(!open)} src={user?.image}  
+                  className="w-10 h-10 rounded-full cursor-pointer shadow-xl border-2 border-white hidden md:block hover:scale-105 transition"
+                />
+                {
+                  open 
+                  &&  <DropdownProfile setOpen={setOpen}/>
+                }
                   
-                </div>
                 
                 {/* mobile_UI */}
                 {/* <Button type="button" className={`block md:hidden float-end`} icon={<TextAlignJustify/>}/> */}

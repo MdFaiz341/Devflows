@@ -89,7 +89,7 @@ wss.on("connection", (socket, request)=>{
                 if(!parsed.roomId) return;
                 console.log("join_canvasroom-------Server");
                 console.log("parsed Data---", parsed);
-                joinCanvasRoom(socket, parsed.roomId, user.userId);
+                joinCanvasRoom(socket, Number(parsed.roomId), user.userId);
             }
 
             if(parsed.type === "new_Shape"){
@@ -141,6 +141,44 @@ wss.on("connection", (socket, request)=>{
                 })
 
                 broadCastInCanvas(payload, page.roomId);
+            }
+
+            if(parsed.type === "delete_Shape"){
+                console.log("delete_Shape-- ", parsed);
+                const roomId = Number(parsed.roomId);
+
+                const ownerOfTheShape = await client.shape.findUnique({
+                    where:{
+                        id : parsed.shapeId,
+                    }
+                })
+
+                if(ownerOfTheShape?.userId !== user.userId){
+                    socket.send(JSON.stringify({
+                        type: "canvas_DeleteShape_notify",
+                        message : "You don't have access to delete this shape"
+                    }))
+                    return;
+                }
+
+                const deltedShape = await client.shape.delete({
+                    where:{
+                        id : parsed.shapeId,
+                    },
+                    include:{
+                        user:true,
+                    }
+                })
+
+                // broadCast to all;
+                const payload = JSON.stringify({
+                    type : "delete_Shape",
+                    userName : deltedShape.user.firstname,
+                    image : deltedShape.user.image,
+                })
+
+                broadCastInCanvas(payload, roomId);
+                return;
             }
 
             if(parsed.type === "shape_History"){
@@ -591,6 +629,15 @@ async function joinCanvasRoom(socket:WebSocket, roomId:number, userId:string) {
                 roomId,
                 userId
             }
+        },
+        include:{
+            user : {
+                select:{
+                    image:true,
+                    firstname : true,
+                    email : true,
+                }
+            }
         }
     })
 
@@ -619,8 +666,14 @@ async function joinCanvasRoom(socket:WebSocket, roomId:number, userId:string) {
     const payload = JSON.stringify({
         type : "canvasRoom_online",
         message:{
-            onlineUsers : totalUserIDs.size,
             roomId,
+            onlineUsers : totalUserIDs.size,
+            user:{
+                image: userExist.user.image,
+                name : userExist.user.firstname,
+                email: userExist.user.email,
+                role: userExist.role
+            }
         }
     })
 

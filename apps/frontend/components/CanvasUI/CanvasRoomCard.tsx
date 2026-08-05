@@ -14,25 +14,19 @@ export const CanvasRoomsCard = ({rooms}:{
     rooms : CanvasCardFormat[]
 })=>{
     const router = useRouter();
-    const socket = useSocket();
-    const canvasCard = useCanvasStore((state)=>state.canvasCard);
-    const canvasOrder = useCanvasStore((state)=>state.canvasOrder);
     const setCurrentRoomId = useCanvasStore((state)=>state.setCurrentRoomId);
 
     async function joinCanvasRoon(roomId:number, adminId:string) {
         console.log("joinRoomId: ", roomId);
         setCurrentRoomId(roomId);
-        const payload = {
-            type : "join_canvasroom",
-            roomId,
-        }
-        socket.send(payload)
-        console.log("Join-canvas----");  
+        // const payload = {
+        //     type : "join_canvasroom",
+        //     roomId,
+        // }
+        // socket.send(payload)
+        // console.log("Join-canvas----");  
         router.push(`/dashboard/canvas/canvasroom/${adminId}/${roomId}`);
     }
-
-    console.log("canvasOrder-- ", canvasOrder);
-    console.log("canvasCARD------- ", canvasCard);
 
     return(
         <main className="max-w-7xl mx-auto px-6 py-10 mt-16">

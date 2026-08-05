@@ -27,6 +27,19 @@ interface CanvasData{
     data:any,
 }
 
+type UserDataFormat = {
+    image : string,
+    name : string,
+    email : string,
+    role : "MEMBER" | "ADMIN"
+}
+
+interface JoinedUserType{
+    roomId : number,
+    totalUser : number,
+    users : UserDataFormat[]
+}
+
 interface CanvasType{
     currentRoomId : number | null,
     setCurrentRoomId : (e : number)=>void,
@@ -51,6 +64,11 @@ interface CanvasType{
 
     canvasRoomData : Record<number, any[]>,    // pageNo, shapes
     setCanvasRoomData : (roomId:number, data:any, pageNo:number)=>void,
+
+    joinedUser : JoinedUserType | null,
+    setJoinedUser : (roomId:number, totalUser:number, userData:UserDataFormat)=>void,
+    notificationBar : string | null,
+    setNotificationBar : (e:string)=>void,
 }
 
 // stroke : "white",
@@ -63,12 +81,29 @@ export const useCanvasStore = create<CanvasType>(
         canvasOrder : [],
         canvasCard : {},
         canvasRoomData : {},
+        joinedUser : null,
+        notificationBar : null,
 
         stroke : "white",
         strokeWidth : 2,
         background : "transparent",
         textSize : "22px",
 
+        setNotificationBar : (message)=>set({
+            notificationBar : message
+        }),
+
+        setJoinedUser : (roomId, totalUser, userData)=>set((state)=>{
+
+            const existUsers = state.joinedUser?.users || [];
+            return{
+                joinedUser : {
+                    roomId,
+                    totalUser,
+                    users : [...existUsers, userData]
+                }
+            }
+        }),
 
         setTextSize : (val)=>set({textSize:val}),
 

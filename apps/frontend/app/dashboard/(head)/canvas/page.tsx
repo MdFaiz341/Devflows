@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@repo/ui/button";
 import { CreateCanvasRoom } from "../../../../components/CanvasUI/CreateCanvasRoom";
-import { History, Loader2, Menu, PlusIcon, UserRoundPlus, UsersRound } from "lucide-react";
+import { History, Loader, Loader2, Menu, PlusIcon, UserRoundPlus, UsersRound } from "lucide-react";
 import { useHook } from "../../../../hook/useHook";
 import { JoinCanvasRoom } from "../../../../components/CanvasUI/JoinCanvasRoom";
 import api from "../../../../API/Interceptor";
@@ -152,10 +152,10 @@ export default function CanvasRoomsPage() {
         <Menu className="h-8 w-8 md:hidden block" onClick={menuHandler}/>
 
         <div className="flex gap-5 items-center">
-          <Button type="button" design="redbtn" text="Join" 
+          <Button type="button" design="outline" text="Join" 
               icon={<UserRoundPlus size={20}/>}
               iconFirst={true}
-              className="rounded-xl hidden font-semibold md:flex px-6 py-2.5 items-center gap-2 shadow-[0_0_40px_rgba(99,102,241,0.55)] hover:scale-105 transition-all duration-300"
+              className="rounded-xl hidden font-semibold md:flex px-6 py-2.5 md:items-center gap-2 shadow-[0_0_40px_rgba(99,102,241,0.55)] hover:bg-gray-800 hover:scale-105 transition-all duration-300"
               onClick={()=>setActive(true)}
             />
           <Button type="button" design="designedPrimary" text="Create Room" 
@@ -173,7 +173,7 @@ export default function CanvasRoomsPage() {
         loading 
         ? 
           <div className="w-screen h-screen flex justify-center items-center">
-              <div className="designLoader w-20 h-10"></div>
+                <Loader size={30} className="animate-spin"/>
           </div>
         : !rooms
         ? <div className="w-screen h-screen flex justify-center items-center">
