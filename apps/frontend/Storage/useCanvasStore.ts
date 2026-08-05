@@ -28,10 +28,11 @@ interface CanvasData{
 }
 
 type UserDataFormat = {
-    image : string,
-    name : string,
-    email : string,
-    role : "MEMBER" | "ADMIN"
+    image? : string,
+    name? : string,
+    email? : string,
+    role? : "MEMBER" | "ADMIN",
+    userId : string,
 }
 
 interface JoinedUserType{
@@ -65,10 +66,12 @@ interface CanvasType{
     canvasRoomData : Record<number, any[]>,    // pageNo, shapes
     setCanvasRoomData : (roomId:number, data:any, pageNo:number)=>void,
 
-    joinedUser : JoinedUserType | null,
+    joinedUser : JoinedUserType | null;
     setJoinedUser : (roomId:number, totalUser:number, userData:UserDataFormat)=>void,
     notificationBar : string | null,
     setNotificationBar : (e:string)=>void,
+
+    clearCanvasRoom : ()=>void;
 }
 
 // stroke : "white",
@@ -89,6 +92,13 @@ export const useCanvasStore = create<CanvasType>(
         background : "transparent",
         textSize : "22px",
 
+        clearCanvasRoom : ()=>set({
+            joinedUser : null,
+            canvasCard : {},
+            canvasOrder : [],
+            notificationBar : null,
+        }),
+
         setNotificationBar : (message)=>set({
             notificationBar : message
         }),
@@ -96,11 +106,16 @@ export const useCanvasStore = create<CanvasType>(
         setJoinedUser : (roomId, totalUser, userData)=>set((state)=>{
 
             const existUsers = state.joinedUser?.users || [];
+            console.log("store existing user---", existUsers);
+            
+            const exist = existUsers.some((user)=>user.userId === userData.userId)
+            if(exist) return {};
+            
             return{
                 joinedUser : {
                     roomId,
                     totalUser,
-                    users : [...existUsers, userData]
+                    users : [...existUsers, userData],
                 }
             }
         }),

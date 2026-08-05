@@ -12,6 +12,7 @@ import api from "../../../../API/Interceptor";
 import { toast } from "sonner";
 import { useStore } from "../../../../Storage/useStore";
 import { CanvasRoomsCard } from "../../../../components/CanvasUI/CanvasRoomCard";
+import { useCanvasStore } from "../../../../Storage/useCanvasStore";
 
 
 export interface CanvasCardFormat{
@@ -117,6 +118,7 @@ export default function CanvasRoomsPage() {
 
   useEffect(()=>{
       getAllCanvas();
+      useCanvasStore.getState().clearCanvasRoom;
   }, []);
 
   function menuHandler(){

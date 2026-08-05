@@ -1,12 +1,13 @@
 
 
 
-import React from 'react'
+export default function Barin(){
 
-const page = () => {
+
+
   return (
-    <div className='bg-red-500'>Second Brain</div>
+    <div>
+      Hello brian
+    </div>
   )
 }
-
-export default page

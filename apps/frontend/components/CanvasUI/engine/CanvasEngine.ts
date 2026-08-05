@@ -26,6 +26,7 @@ import { HitTestManager } from "../hitTest/HitTestManager";
 import { CursorManager } from "../cursor/CursorManager";
 import { CanvasSyncManager } from "../../../lib/socket/CanvasSyncManager";
 import { NotificationManager } from "../../../lib/socket/NotificationManager";
+import { useCanvasStore } from "../../../Storage/useCanvasStore";
 
 
 
@@ -150,6 +151,7 @@ export class CanvasEngine{
 
         this.notificationManager = new NotificationManager;
         this.notificationManager.start();
+        console.log("NotificationManager Start----");
         this.canvasSyncManager = new CanvasSyncManager(this.store);
         this.canvasSyncManager.start();
         this.canvasSyncManager.joinCnvasRoom(this.currRoomId);
@@ -210,5 +212,6 @@ export class CanvasEngine{
         this.renderer.destroy();
         this.inputManager.destroy();
         window.removeEventListener("resize", this.resizeCanvas);
+        useCanvasStore.getState().clearCanvasRoom();
     }
 }
