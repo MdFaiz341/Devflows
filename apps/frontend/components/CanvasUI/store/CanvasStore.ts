@@ -224,13 +224,13 @@ export class CanvasStore{
     }
 
     removeShape(page:number, shapeId:string, broadcast:boolean){
-        const shapes = this.pageWithShape.get(page);
-        if(!shapes) return;
-        const index = shapes.findIndex(s => s.id === shapeId);
-        if(index == -1) return;
+        // const shapes = this.pageWithShape.get(page);
+        // if(!shapes) return;
+        // const index = shapes.findIndex(s => s.id === shapeId);
+        // if(index == -1) return;
 
-        shapes.splice(index, 1);
-        this.notify();
+        // shapes.splice(index, 1);
+        // this.notify();
 
         if(broadcast){
             this.emit(

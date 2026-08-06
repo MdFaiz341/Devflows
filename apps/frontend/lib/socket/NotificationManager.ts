@@ -50,10 +50,10 @@ export class NotificationManager{
     }
 
     private receiveUsersOnline = (data:any)=>{
-        console.log("canvas User Online---- ", data);
+        console.log("User Online---- ", data);
         const setJoinedUser = useCanvasStore.getState().setJoinedUser;
 
-        setJoinedUser(data.message.roomId, data.message.onlineUsers, data.message.user);
+        setJoinedUser(data.message.roomId, data.message.users);
     }
 
 

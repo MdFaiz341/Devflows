@@ -125,6 +125,8 @@ app.post("/signin", async(req, res)=>{
             id:user.id,
             firstname: user.firstname,
             lastname: user.lastname,
+            image : user.image,
+            email : user.email
         }, process.env.JWT_SECRET!, {
             expiresIn:30*60,
         });

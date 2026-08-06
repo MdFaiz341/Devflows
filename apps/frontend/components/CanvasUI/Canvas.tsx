@@ -12,7 +12,8 @@ import rough from "roughjs";
 import { CanvasEngine } from "./engine/CanvasEngine"
 import { Tool, ToolType } from "./tools/Tool"
 import { ShapeSetting } from "./ShapeSetting"
-import { NotificationCanvasUI } from "./NotificationCanvasUI"
+import { CanvasNotificationUI } from "./CanvasNotificationUI"
+import { CanvasGroupMember } from "./CanvasGroupMember"
 
 const Buttons = [
     {
@@ -173,7 +174,9 @@ export const Canvas = ({roomId, adminId}:{
             
             <ShapeSetting active={active} removeShape={removeShape} currTool={currTool}/>
 
-            <NotificationCanvasUI/>
+            <CanvasNotificationUI/>
+
+            <CanvasGroupMember/>
             
         </div>
     )

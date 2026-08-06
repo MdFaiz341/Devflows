@@ -126,6 +126,7 @@ export class CanvasSyncManager{
     }
 
     private handleDeleteShape = (payload:any)=>{
+        console.log("Client Send to delete Shape---")
         socketManager.send({
             type: "delete_Shape",
             roomId: payload.roomId,
@@ -171,6 +172,7 @@ export class CanvasSyncManager{
         );
     }
     private receiceDeleteShape = (data:any)=>{
+        console.log("Delete recive----", data);
         this.store
         .removeShape(
             data.pageNo,

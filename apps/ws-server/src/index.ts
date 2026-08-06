@@ -10,10 +10,14 @@ const wss = new WebSocketServer({port:8080});
 
 type UserInfo = {
     userId : string,
-    roomId : number[],
+    // roomId : number,
     firstname : string,
-    lastname : string
+    email : string,
+    image : string,
+    role? : string
 }
+
+
 
 // type CanvasUserInfo = {
 //     userId : number,
@@ -34,8 +38,9 @@ const groupUsers = new Map<string, WebSocket>();     // <user1, <{socke1}>>
 
 const canvasConversation = new Map<number, Set<WebSocket>>(); //<RoomId, <socket-1, socket-2>>
 
-const canvasRoomOnline = new Map<number, Set<string>>();   // <roomId, <user-1,, user-2>>
+const canvasRoomOnline = new Map<number,  Map<string, UserInfo>>();   // <roomId, <{user-1, name, image}, {user-2}>>
 
+const canvasSocketRooms = new Map<WebSocket, Set<number>>();// <Socket, <room1, room2..>>
 
 
 // const canvasUser = new Map<WebSocket, >();
@@ -68,9 +73,10 @@ wss.on("connection", (socket, request)=>{
     const userId = userData.id;
     console.log("userId--", userId);
     const firstname = userData.firstname;
-    const lastname = userData.lastname;
+    const email = userData.email;
+    const image = userData.image;
 
-    multiUsers.set(socket, { userId, firstname, lastname, roomId:[]});
+    multiUsers.set(socket, { userId, image, firstname, email});
 
     console.log("All set");
 
@@ -102,7 +108,7 @@ wss.on("connection", (socket, request)=>{
                 console.log("roomIdInt", roomIdInt);
 
                 
-                if(!user.roomId){
+                if(!roomIdInt){
                     return;
                 }
 
@@ -136,7 +142,7 @@ wss.on("connection", (socket, request)=>{
                     pageNo : saved.pageId,
                     roomId : page.roomId,
                     shape:saved.data,
-                    senderName : user.firstname+ " " +user.lastname,
+                    senderName : user.firstname,
                     senderImage : saved.user.image
                 })
 
@@ -175,10 +181,39 @@ wss.on("connection", (socket, request)=>{
                     type : "delete_Shape",
                     userName : deltedShape.user.firstname,
                     image : deltedShape.user.image,
+                    shapeType : deltedShape.type
                 })
 
                 broadCastInCanvas(payload, roomId);
                 return;
+            }
+
+            if(parsed.type === "leave_canvas"){
+                console.log("leave_canvas----", parsed);
+                const roomId = Number(parsed.roomId);
+                const allSocket = canvasConversation.get(roomId);
+                allSocket?.delete(socket);
+                if(allSocket?.size === 0){
+                    canvasConversation.delete(roomId);
+                }
+
+                const allUser = canvasRoomOnline.get(roomId)
+                // const filterActiveUser = allUser?.filter((val)=>val.userId !== user.userId);
+
+                allUser?.delete(user.userId);
+
+                if(!allUser) return;
+
+                const payload = JSON.stringify({
+                    type : "canvasRoom_online",
+                    message:{
+                        roomId,
+                        // onlineUsers : filterActiveUser?.length,
+                        users: [...allUser?.values()]
+                    }
+                })
+
+                broadCastInCanvas(payload, roomId);
             }
 
             if(parsed.type === "shape_History"){
@@ -615,6 +650,19 @@ wss.on("connection", (socket, request)=>{
         })
 
         multiUsers.delete(socket);
+
+        const allCanvasRooms = canvasSocketRooms.get(socket);
+        allCanvasRooms?.forEach((roomId)=>{
+            const allSockets = canvasConversation.get(roomId);
+            allSockets?.delete(socket);
+            if(allSockets?.size === 0){
+                canvasConversation.delete(roomId);
+            }
+
+            const canvasOnline = canvasRoomOnline.get(roomId);
+            // const filterActiveUser = canvasOnline?.filter((val)=>val.userId !== user.userId);
+            canvasOnline?.delete(userId);
+        })
     })
 
 })
@@ -655,25 +703,36 @@ async function joinCanvasRoom(socket:WebSocket, roomId:number, userId:string) {
     canvasConversation.get(roomId)?.add(socket);
 
     if(!canvasRoomOnline.has(roomId)){
-        canvasRoomOnline.set(roomId, new Set());
+        canvasRoomOnline.set(roomId, new Map());
     }
 
-    canvasRoomOnline.get(roomId)?.add(userId);
+    canvasRoomOnline
+    .get(roomId)!
+    .set(userId, {
+        userId,
+        image : userExist.user.image,
+        firstname : userExist.user.firstname,
+        email : userExist.user.email,
+        role : userExist.role
+    });
+
+    if(!canvasSocketRooms.has(socket)){
+        canvasSocketRooms.set(socket, new Set());
+    }
+    canvasSocketRooms.get(socket)?.add(roomId);
 
     const totalUserIDs = canvasRoomOnline.get(roomId);
     if(!totalUserIDs) return;
+
+    console.log("totalUser---", totalUserIDs);
+    // const onlineUsers = [...totalUserIDs];
 
     const payload = JSON.stringify({
         type : "canvasRoom_online",
         message:{
             roomId,
-            onlineUsers : totalUserIDs.size,
-            user:{
-                image: userExist.user.image,
-                name : userExist.user.firstname,
-                email: userExist.user.email,
-                role: userExist.role
-            }
+            // onlineUsers : totalUserIDs.length,
+            users: [...totalUserIDs.values()]
         }
     })
 

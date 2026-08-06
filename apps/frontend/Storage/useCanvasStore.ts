@@ -29,15 +29,15 @@ interface CanvasData{
 
 type UserDataFormat = {
     image? : string,
-    name? : string,
+    firstname? : string,
     email? : string,
-    role? : "MEMBER" | "ADMIN",
+    role : "MEMBER" | "ADMIN",
     userId : string,
 }
 
 interface JoinedUserType{
     roomId : number,
-    totalUser : number,
+    // totalUser : number,
     users : UserDataFormat[]
 }
 
@@ -67,11 +67,12 @@ interface CanvasType{
     setCanvasRoomData : (roomId:number, data:any, pageNo:number)=>void,
 
     joinedUser : JoinedUserType | null;
-    setJoinedUser : (roomId:number, totalUser:number, userData:UserDataFormat)=>void,
+    setJoinedUser : (roomId:number, usersData:UserDataFormat[])=>void,
     notificationBar : string | null,
     setNotificationBar : (e:string)=>void,
 
     clearCanvasRoom : ()=>void;
+    clearNotificationBar : ()=>void;
 }
 
 // stroke : "white",
@@ -103,20 +104,31 @@ export const useCanvasStore = create<CanvasType>(
             notificationBar : message
         }),
 
-        setJoinedUser : (roomId, totalUser, userData)=>set((state)=>{
+        clearNotificationBar : ()=>set({
+            notificationBar : null
+        }),
 
-            const existUsers = state.joinedUser?.users || [];
-            console.log("store existing user---", existUsers);
+        // setJoinedUser : (roomId, totalUser, usersData)=>set((state)=>{
+
+        //     const existUsers = state.joinedUser?.users || [];
+        //     console.log("store existing user---", existUsers);
             
-            const exist = existUsers.some((user)=>user.userId === userData.userId)
-            if(exist) return {};
+        //     const exist = existUsers.some((user)=>user.userId === userData.userId)
+        //     if(exist) return {};
             
-            return{
-                joinedUser : {
-                    roomId,
-                    totalUser,
-                    users : [...existUsers, userData],
-                }
+        //     return{
+        //         joinedUser : {
+        //             roomId,
+        //             totalUser,
+        //             users : [...existUsers, userData],
+        //         }
+        //     }
+        // }),
+
+        setJoinedUser : (roomId, usersData)=>set({
+            joinedUser : {
+                roomId,
+                users : [...usersData]
             }
         }),
 
