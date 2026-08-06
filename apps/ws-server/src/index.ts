@@ -99,7 +99,7 @@ wss.on("connection", (socket, request)=>{
             }
 
             if(parsed.type === "new_Shape"){
-                console.log("new_Shape");
+                console.log("new_Shape-- ", parsed);
                 console.log(parsed);
                 console.log("roomId: ", parsed.roomId);
                 console.log("pageNo: ", parsed.page);
@@ -129,6 +129,7 @@ wss.on("connection", (socket, request)=>{
                 // then ceate shape
                 const saved = await client.shape.create({
                     data:{
+                        id : parsed.shape.id,
                         type : parsed.shape.type,
                         pageId : page.id,
                         data: parsed.shape,
@@ -159,6 +160,9 @@ wss.on("connection", (socket, request)=>{
                     }
                 })
 
+                console.log(ownerOfTheShape?.userId);
+                console.log(user.userId);
+
                 if(ownerOfTheShape?.userId !== user.userId){
                     socket.send(JSON.stringify({
                         type: "canvas_DeleteShape_notify",
@@ -181,7 +185,11 @@ wss.on("connection", (socket, request)=>{
                     type : "delete_Shape",
                     userName : deltedShape.user.firstname,
                     image : deltedShape.user.image,
-                    shapeType : deltedShape.type
+                    shapeType : deltedShape.type,
+                    message: `${deltedShape.user.firstname} deleted ${deltedShape.type}`,
+                    page : deltedShape.pageId,
+                    roomId,
+                    shapeId : deltedShape.id
                 })
 
                 broadCastInCanvas(payload, roomId);

@@ -23,6 +23,11 @@ export class NotificationManager{
             "canvasRoom_online",
             this.receiveUsersOnline
         )
+
+        socketManager.subscribe(
+            "delete_Shape",
+            this.deletedShape
+        )
     }
     // notification receive nahi ho raha hai
     stop(){
@@ -39,6 +44,11 @@ export class NotificationManager{
             "canvasRoom_online",
             this.receiveUsersOnline
         )
+
+        socketManager.unsubscribe(
+            "delete_Shape",
+            this.deletedShape
+        )
     }
 
 
@@ -54,6 +64,13 @@ export class NotificationManager{
         const setJoinedUser = useCanvasStore.getState().setJoinedUser;
 
         setJoinedUser(data.message.roomId, data.message.users);
+    }
+
+    private deletedShape = (data:any)=>{
+        console.log("Sucess Delete Shape----", data);
+        const setNotificationBar = useCanvasStore.getState().setNotificationBar
+
+        setNotificationBar(data.message);
     }
 
 

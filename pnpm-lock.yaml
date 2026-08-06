@@ -32,6 +32,9 @@ importers:
       dotenv:
         specifier: ^17.4.2
         version: 17.4.2
+      framer-motion:
+        specifier: ^13.0.0
+        version: 13.0.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       lucide-react:
         specifier: ^1.14.0
         version: 1.14.0(react@19.2.5)
@@ -1253,6 +1256,17 @@ packages:
   fraction.js@5.3.4:
     resolution: {integrity: sha512-1X1NTtiJphryn/uLQz3whtY6jK3fTqoE3ohKs0tT+Ujr1W59oopxmoEh7Lu5p6vBaPbgoM0bzveAW4Qi5RyWDQ==}
 
+  framer-motion@13.0.0:
+    resolution: {integrity: sha512-nQGZXlsiigN48nzvE7AL1GLekql+etcphp8v+PQ0X04oxO20yVmV9rU9XQ25c136RdeIYoaWlKT9oAwvJza3mg==}
+    peerDependencies:
+      react: ^18.0.0 || ^19.0.0
+      react-dom: ^18.0.0 || ^19.0.0
+    peerDependenciesMeta:
+      react:
+        optional: true
+      react-dom:
+        optional: true
+
   fresh@2.0.0:
     resolution: {integrity: sha512-Rx/WycZ60HOaqLKAi6cHRKKI7zxWbJ31MhntmtwMoaTeF7XFH9hhBp8vITaMidfljRQ6eYWCKkaTK+ykVJHP2A==}
     engines: {node: '>= 0.8'}
@@ -1653,6 +1667,12 @@ packages:
   mongoose@9.5.0:
     resolution: {integrity: sha512-B4blGFkFL1s0G24URuMvx0qTlx+gRVLmfO7WcSz8NcmW/XHEJ3G69capdyW1iRsGKiycp1tkwKHnxHbnwjwmPw==}
     engines: {node: '>=20.19.0'}
+
+  motion-dom@13.0.0:
+    resolution: {integrity: sha512-Xk+SJas70uMAUIApg+m3lZDShxI3LBFHq7mFGbBKoRXc2PVPDyAKmzN64Bbzt4CZdP/CItTiJxWtn4TA0v53Ng==}
+
+  motion-utils@13.0.0:
+    resolution: {integrity: sha512-7DnN7TmbLcYXcG4RVadXIihWlyuM9afoUww8Y5Agg431kGKiuL2/OMyP4mJ5wLz+pvN3t5ySClLOaVXJ+wekRQ==}
 
   mpath@0.9.0:
     resolution: {integrity: sha512-ikJRQTk8hw5DEoFVxHG1Gn9T/xcjtdnOKIU1JTmGjZZlg9LST2mBLmcX3/ICIbgJydT2GOc15RnNy5mHmzfSew==}
@@ -3459,6 +3479,15 @@ snapshots:
 
   fraction.js@5.3.4: {}
 
+  framer-motion@13.0.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
+    dependencies:
+      motion-dom: 13.0.0
+      motion-utils: 13.0.0
+      tslib: 2.8.1
+    optionalDependencies:
+      react: 19.2.5
+      react-dom: 19.2.5(react@19.2.5)
+
   fresh@2.0.0: {}
 
   fsevents@2.3.3:
@@ -3854,6 +3883,12 @@ snapshots:
       - mongodb-client-encryption
       - snappy
       - socks
+
+  motion-dom@13.0.0:
+    dependencies:
+      motion-utils: 13.0.0
+
+  motion-utils@13.0.0: {}
 
   mpath@0.9.0: {}
 

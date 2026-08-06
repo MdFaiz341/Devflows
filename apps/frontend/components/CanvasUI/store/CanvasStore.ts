@@ -224,14 +224,6 @@ export class CanvasStore{
     }
 
     removeShape(page:number, shapeId:string, broadcast:boolean){
-        // const shapes = this.pageWithShape.get(page);
-        // if(!shapes) return;
-        // const index = shapes.findIndex(s => s.id === shapeId);
-        // if(index == -1) return;
-
-        // shapes.splice(index, 1);
-        // this.notify();
-
         if(broadcast){
             this.emit(
                 "shapeDeleted",
@@ -241,6 +233,18 @@ export class CanvasStore{
                     shapeId,
                 }
             )
+        }
+        else{
+            console.log("Yaha tak to aaya---");
+            const shapes = this.pageWithShape.get(page);
+            console.log(shapes);
+            if(!shapes) return;
+            const index = shapes.findIndex(s => s.id === shapeId);
+            console.log(index);
+            if(index == -1) return;
+
+            shapes.splice(index, 1);
+            this.notify();
         }
     }
 

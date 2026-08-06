@@ -175,8 +175,8 @@ export class CanvasSyncManager{
         console.log("Delete recive----", data);
         this.store
         .removeShape(
-            data.pageNo,
-            data.id,
+            data.page,
+            data.shapeId,
             false
         );
     }
@@ -184,7 +184,7 @@ export class CanvasSyncManager{
     private receiveUpdateShape = (data:any)=>{
         this.store
         .updateShape(
-            data.pageNo,
+            data.page,
             data.shape,
             false
         );
