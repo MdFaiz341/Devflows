@@ -7,7 +7,7 @@ import { WiDaySunny } from "react-icons/wi";
 import { FiSidebar } from "react-icons/fi";
 import { PlusCircle, RefreshCcw, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
-import { CreateContent } from "../../../../components/Brain/CreateContent";
+// import { CreateContent } from "../../../../components/Brain/CreateContent";
 import { useHook } from "../../../../hook/useHook";
 import { Card } from "../../../../components/Brain/Card";
 import { SidebarDown } from "../../../../components/Brain/SidebarDown";
@@ -16,6 +16,7 @@ import { useStore } from "../../../../Storage/useStore";
 import { Image } from "../../../../Icons/icon";
 import { BrainNavbar } from "../../../../components/Brain/BrainNavbar";
 import { Button } from "@repo/ui/button";
+import { CreateContent } from "../../../../components/Brain/CreateContent";
 
 
 

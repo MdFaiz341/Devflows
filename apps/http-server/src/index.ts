@@ -880,6 +880,33 @@ app.get("/messages/:conversationId", async(req, res)=>{
 })
 
 
+// app.post("/allcontent", middleware, async(req, res)=>{
+//     try{
+//         const search = req.body.type?.trim();
+        
+//         const data = await client.content.findFirst({
+//             userId: req.userId,
+//             ...(search && {
+//                 $or : [
+//                     {type: { $regex:search, $options:"i" }},
+//                     {title: { $regex:search, $options:"i" }}
+//                 ]
+//             })
+//         }).sort({createdAt:-1});        
+    
+//         return res.status(resStatus.Success).json({
+//             message:"Fetched All data",
+//             data,
+//         })
+//     }
+//     catch(e){
+//         return res.status(resStatus.Error).json({
+//             message:"Failed to get data"
+//          })
+//     }
+// })
+
+
 app.get("/profile", middleware, async(req, res)=>{
     try{
         const userId = req.userId;
