@@ -86,16 +86,7 @@ export default function Brain(){
             clearMemory();
         }
     }, [])
-    // useEffect(()=>{
-    //     const time = setTimeout(()=>{
-    //         contentHook.setType(val);
-    //         contentHook.getContentApi();
-    //     }, 700);
 
-    //     return ()=>{
-    //         clearTimeout(time);
-    //     }
-    // }, [val]);
 
     useEffect(()=>{
         if(theme == "dark"){

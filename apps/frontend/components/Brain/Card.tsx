@@ -312,8 +312,6 @@ export const Card = (props: ContentFormat) => {
         {urlInfo.type === "website" && (
           <WebsiteEmbed
             url={props.link}
-            // hasError={iframeError}
-            // setError={setIframeError}
           />
         )}
 
@@ -324,7 +322,7 @@ export const Card = (props: ContentFormat) => {
 
         {/* ================= UNKNOWN ================= */}
 
-        {urlInfo.type === "unknown" && <FallbackLink url={props.link} />}
+        {/* {urlInfo.type === "unknown" && <FallbackLink url={props.link} />} */}
       </div>
 
       {/* =================================================
@@ -374,6 +372,7 @@ export const Card = (props: ContentFormat) => {
 ========================================================= */
 
 function FallbackLink({ url }: { url: string }) {
+  console.log("Fallback me aaya--------");
   return (
     <a
       href={url}

@@ -50,22 +50,34 @@ export const CreateContent = ({open, setOpen, getContentApi}:{
             }
             setLoading(true);
 
-            // await new Promise((res) => setTimeout(res, 3000));
+            const finalTitle = title.charAt(0).toUpperCase() + title.slice(1).toLowerCase()
+            console.log("finalTitle--- ", finalTitle);
 
             const resposne = await api.post("/content", {
                 link,
-                title,
+                finalTitle,
                 type,
                 selectTags
             });
             toast.success(resposne.data.message);
             getContentApi();
-            // console.log(linkRef.current);
-            // linkRef.current = null;
-            // console.log(linkRef.current)
-            // titleRef.current = null;
-            // setType("");
-            // inputTagsRef.current = null;
+            // Clear form
+            if (titleRef.current) {
+              titleRef.current.value = "";
+            }
+            if (linkRef.current) {
+              linkRef.current.value = "";
+            }
+
+            if (inputTagsRef.current) {
+              inputTagsRef.current.value = "";
+            }
+
+            setType("");
+            
+            // clear tags state too, if you have one
+            setSelectTags([]);
+            
             setOpen(false);
         }
         catch(e:any){

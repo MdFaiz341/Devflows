@@ -12,6 +12,7 @@ interface WebsiteEmbedProps {
 export function WebsiteEmbed({
   url,
 }: WebsiteEmbedProps) {
+
   let hostname = "";
 
   try {
@@ -62,25 +63,9 @@ export function WebsiteEmbed({
           href={url}
           target="_blank"
           rel="noopener noreferrer"
-          className="
-            flex w-full
-            items-center
-            justify-center
-            gap-2
-            rounded-xl
-            bg-indigo-500
-            px-4
-            py-2.5
-            text-sm
-            font-medium
-            text-white
-            transition-all
-            duration-200
-            hover:bg-indigo-600
-            hover:shadow-lg
-            hover:shadow-indigo-500/20
-          "
-        >
+          className=" flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-500
+             px-4 py-2.5 text-sm font-medium text-white transition-all duration-200
+            hover:bg-indigo-600 hover:shadow-lg hover:shadow-indigo-500/20">
           Open Website
 
           <ExternalLink size={16} />
