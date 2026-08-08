@@ -907,6 +907,60 @@ app.get("/messages/:conversationId", async(req, res)=>{
 // })
 
 
+app.get("/allcontent", middleware, async(req, res)=>{
+    try{
+
+        const allContent = await client.content.findMany({
+            where:{
+                userId : req.userId
+            }
+        })
+
+        return res.status(resStatus.Success).json({
+            allContent,
+        })
+    }
+    catch(e){
+        console.log(e);
+        return res.status(resStatus.Error).json({
+            message : "Failed to fetch the content"
+        })
+    }
+})
+
+app.post("/content", middleware, async(req, res)=>{
+    try{
+        const userId = req.userId;
+        const {link, title, type, selectTags} = req.body;
+    
+        if(!link || !title || !type || selectTags.length === 0){
+            return res.status(resStatus.NotFound).json({
+                message:"All Details required"
+            })
+        }
+    
+        const content = await client.content.create({
+            data:{
+                link,
+                title,
+                type,
+                userId,
+                tags : selectTags
+            }
+        });
+    
+        return res.status(resStatus.Success).json({
+            message:"Content Added"
+        })
+    }
+    catch(e){
+        return res.status(resStatus.Error).json({
+            message:"Content Not Added"
+         })
+    }
+})
+
+
 app.get("/profile", middleware, async(req, res)=>{
     try{
         const userId = req.userId;

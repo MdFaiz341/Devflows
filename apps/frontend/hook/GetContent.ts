@@ -14,7 +14,7 @@ export const useContent = ()=>{
         try{
             setLoading(true);
             await new Promise((res)=> setTimeout(res, 1000));
-            const response = await api.post("/allcontent", {type});
+            const response = await api.get("/allcontent");
             setContent(response.data.data);
         }
         catch(e:any){

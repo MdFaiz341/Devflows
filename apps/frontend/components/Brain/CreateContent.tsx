@@ -3,8 +3,11 @@
 import { Button } from "@repo/ui/button"
 import { InputField } from "@repo/ui/input"
 import { motion, AnimatePresence } from "framer-motion"
-import { CirclePlus, Cross, Download, X } from "lucide-react"
+import { CirclePlus, Cross, Download, Loader, X } from "lucide-react"
 import { HtmlHTMLAttributes, useRef, useState } from "react"
+import { useHook } from "../../hook/useHook"
+import { toast } from "sonner"
+import api from "../../API/Interceptor"
 
 const allTags = [
   "Ai",
@@ -12,13 +15,18 @@ const allTags = [
   "Trends"
 ]
 
-export const CreateContent = ({open, setOpen}:{
+export const CreateContent = ({open, setOpen, getContentApi}:{
   open:boolean,
-  setOpen : (e:boolean)=>void
+  setOpen : (e:boolean)=>void,
+  getContentApi : ()=>void
 })=>{
 
   const [selectTags, setSelectTags] = useState<string[]>([]);
   const inputTagsRef = useRef<HTMLInputElement>(null);
+  const linkRef = useRef<HTMLInputElement>(null);
+  const titleRef = useRef<HTMLInputElement>(null);
+  const [type, setType] = useState("");
+  const {loading, setLoading} = useHook();
 
   function selectedTagsHandler(val:string){
     if(selectTags.includes(val)) return;
@@ -28,9 +36,35 @@ export const CreateContent = ({open, setOpen}:{
     ))
   }
 
-  function saveHandler(){
+  async function saveHandler(){
+        try{
+            const link = linkRef.current?.value;
+            const title = titleRef.current?.value;
+            if(!link || !title || selectTags.length === 0){
+                alert("Fill all requirements");
+                return;
+            }
+            setLoading(true);
 
-  }
+            await new Promise((res) => setTimeout(res, 3000));
+
+            const resposne = await api.post("/content", {
+                link,
+                title,
+                type,
+                selectTags
+            });
+            toast.success(resposne.data.message);
+            getContentApi();
+            setOpen(false);
+        }
+        catch(e:any){
+            toast.error(e.resposne?.data.message || "Not able to add content");
+        }
+        finally{
+            setLoading(false);
+        }
+    }
 
   function removeSelectTags(tag:string){
     const filterTags = selectTags.filter((val)=>val !== tag)
@@ -49,7 +83,7 @@ export const CreateContent = ({open, setOpen}:{
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
-            className="w-full max-w-md bg-[#0F172A] border border-white/10 rounded-3xl p-7 shadow-2xl"
+            className="w-full max-w-md bg-[#0F172A] border border-white/10 flex flex-col rounded-3xl p-7 shadow-2xl"
           >
             <div className="flex flex-col justify-between text-white">
               <p className="text-xl font-bold text-blue-600">Save into memory</p>
@@ -57,27 +91,27 @@ export const CreateContent = ({open, setOpen}:{
             </div>
 
             {/* Inputs */}
-            <div>
-              <div>
-                <InputField
-                  label="Title"
-                  type="text"
-                  placeholder="trending technology, gadgets, information etc."
-                />
-              </div>
+            <div className="mt-6">
+              <InputField
+                label="Title"
+                type="text"
+                ref={titleRef}
+                placeholder="trending technology, gadgets, information etc."
+              />
+            </div>
 
-              <div>
-                <InputField
-                  label="Link"
-                  type="text"
-                  placeholder="https://xyz.com"
-                />
-              </div>
+            <div>
+              <InputField
+                label="Link"
+                type="text"
+                ref={linkRef}
+                placeholder="https://xyz.com"
+              />
             </div>
 
             {/* Tags */}
-            <p className="text-gray-300 mb-2 text-sm">Tags:</p>
-            <div className={` text-gray-300 flex items-center gap-3 text-xs flex-wrap ${selectTags.length !== 0 && "mb-3" }`}>
+            <div className={` text-gray-300 flex items-center gap-3 text-xs flex-wrap`}>
+              <p className="text-gray-300 text-sm">Tags:</p>
               {
                 selectTags.map((tag, index)=>{
                   return(
@@ -92,7 +126,7 @@ export const CreateContent = ({open, setOpen}:{
               }
             </div>
 
-            <div className="flex w-full justify-between items-center">
+            <div className="flex w-full justify-between items-center mt-2">
               <div className="text-xs flex gap-2">
                 {allTags.map((tag, index)=>{
                   return(
@@ -120,20 +154,56 @@ export const CreateContent = ({open, setOpen}:{
                   type="text"
                   ref={inputTagsRef}
                   placeholder="#Tags"
-                  className="w-44 rounded-2xl border text-sm bg-white/[0.03] text-white px-2 py-1 outline-none transition border-white/10 focus:border-indigo-500"
+                  className="w-48 rounded-2xl border text-sm bg-white/[0.03] text-white px-2 py-1 outline-none transition border-white/10 focus:border-indigo-500"
                   autoFocus={true}
                 />
               </div>
             </div>
 
+            <div className="flex items-center mt-6 gap-3 text-gray-300 text-sm">
+              <div className="flex items-center space-x-1 ">
+                  <input type="radio" 
+                        id="Youtube" 
+                        name="linkType" 
+                        value="Youtube"/>
+                  <label htmlFor="Youtube" className="cursor-pointer" onClick={()=>setType("Youtube")}>Youtube</label>
+              </div>
+
+              <div className="flex items-center space-x-1">
+                  <input type="radio" 
+                        id="Tweeter" 
+                        name="linkType" 
+                        value="Tweeter"/>
+                  <label htmlFor="Tweeter" className="cursor-pointer" onClick={()=>setType("Tweeter")}>Tweeter</label>
+              </div>
+
+              <div className="flex items-center space-x-1">
+                  <input type="radio" 
+                        id="Github" 
+                        name="linkType" 
+                        value="Github"/>
+                  <label htmlFor="Github" className="cursor-pointer" onClick={()=>setType("Github")}>Github</label>
+              </div>
+
+              <div className="flex items-center space-x-1">
+                  <input type="radio" 
+                        id="Website" 
+                        name="linkType" 
+                        value="Website"/>
+                  <label htmlFor="Website" className="cursor-pointer" onClick={()=>setType("Website link")}>Website link</label>
+              </div>
+            </div>   
+              
+
+
             {/* // Submit Buttons */}
-            <div className="flex w-full">
-                <Button type="button" text="Cancle" icon={<Cross size={20}/>} 
-                iconFirst={true} className="flex gap-3 items-center justify-center rounded-lg"
+            <div className="flex w-full items-center justify-between gap-2 mt-5">
+                <Button type="button" text="Cancle" icon={<Cross size={17} className=" rotate-45"/>} 
+                iconFirst={true} className="flex w-full gap-3 py-1 items-center justify-center rounded-lg"
                 onClick={()=>setOpen(false)} design="outline"
                 />
-                <Button type="button" text="Save" icon={<Download size={20}/>} 
-                iconFirst={true} className="flex gap-3 items-center justify-center rounded-lg"
+                <Button type="button" text="Save" icon={loading ? <Loader size={20} className=" animate-spin"/> : <Download size={20}/>} 
+                iconFirst={true} className="flex w-full gap-3 py-1 items-center justify-center rounded-lg"
                 onClick={saveHandler} design="primary"
                 />
             </div>

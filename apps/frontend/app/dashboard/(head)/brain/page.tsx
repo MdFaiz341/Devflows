@@ -17,6 +17,9 @@ import { Image } from "../../../../Icons/icon";
 import { BrainNavbar } from "../../../../components/Brain/BrainNavbar";
 import { Button } from "@repo/ui/button";
 import { CreateContent } from "../../../../components/Brain/CreateContent";
+import api from "../../../../API/Interceptor";
+import { toast } from "sonner";
+import { useBrainStore } from "../../../../Storage/useBrainStore";
 
 
 
@@ -30,24 +33,57 @@ export default function Brain(){
     const { theme, setTheme, user } = useStore();
     const [sidebar, setSidebar] = useState(true);
     const contentHook = useContent();  // to keep only one instance for dashboard as well as sidebar
-    const {open, setOpen} = useHook();
+    const {open, setOpen, loading, setLoading} = useHook();
     const findRef = useRef<HTMLInputElement>(null);
     const [val, setVal] = useState<string>("");
+    // const [content, setContent] = useState([]);
+    const setContent = useBrainStore((state)=>state.setContent);
+    const content = useBrainStore((state)=>state.content);
+    const clearMemory = useBrainStore((state)=>state.clearMemory);
+
+    const [slctButton, setSlctButton] = useState("All");
 
 
     function changeHandler(e:ChangeEvent<HTMLInputElement>){
         setVal(e.target.value);
     }
-    useEffect(()=>{
-        const time = setTimeout(()=>{
-            contentHook.setType(val);
-            contentHook.getContentApi();
-        }, 700);
 
-        return ()=>{
-            clearTimeout(time);
+    async function getContentApi(){
+        try{
+            setLoading(true);
+            await new Promise((res)=> setTimeout(res, 1000));
+            const response = await api.get("/allcontent");
+            console.log("getAllContent--- ", response.data);
+            // setContent("All", response.data.allContent);
+            response.data.allContent.map((val:any)=>{
+                const type = val.type;
+                setContent(type, val);
+                setContent("All", val)
+            })
         }
-    }, [val]);
+        catch(e:any){
+            toast.error(e.response.data.message || "Couldn't able to fetch data");
+        }finally{
+            setLoading(false);
+        }
+    }
+    useEffect(()=>{
+
+        getContentApi();
+        return ()=>{
+            clearMemory();
+        }
+    }, [])
+    // useEffect(()=>{
+    //     const time = setTimeout(()=>{
+    //         contentHook.setType(val);
+    //         contentHook.getContentApi();
+    //     }, 700);
+
+    //     return ()=>{
+    //         clearTimeout(time);
+    //     }
+    // }, [val]);
 
     useEffect(()=>{
         if(theme == "dark"){
@@ -58,9 +94,9 @@ export default function Brain(){
         }
     }, [theme]);
 
-    useEffect(()=>{
-        contentHook.getContentApi();
-    }, [contentHook.type]);
+    // useEffect(()=>{
+    //     contentHook.getContentApi();
+    // }, [contentHook.type]);
 
     useEffect(() => {
         if (!document.getElementById("twitter-script")) {
@@ -73,10 +109,32 @@ export default function Brain(){
 
     
 
+    if(loading){
+        return(
+            <div className="flex justify-center items-center min-h-[80vh]">
+                <div className="spinner w-8 h-8 "></div>
+            </div>
+        )
+    }
+
+    if(!content){
+        return(
+            <div className="flex flex-col justify-center items-center min-h-[80vh] gap-4">
+                <p className="text-gray-400">No content found</p>
+
+                <div
+                    onClick={getContentApi}
+                    className="py-2 px-4 flex items-center gap-2 cursor-pointer border-2 border-white bg-blue-400 hover:bg-violet-500 transition rounded-xl"
+                >
+                    <RefreshCcw size={16}/> Refresh
+                </div>
+            </div>  
+        )
+    }
 
     return(
         <>
-        <CreateContent open={open} setOpen={setOpen}/>
+        <CreateContent open={open} setOpen={setOpen} getContentApi={getContentApi}/>
         <div className="flex min-h-screen bg-white overflow-hidden dark:bg-[#020617]">
             {/* Sidebar */}
             {/* <div  className={`fixed top-0 left-0 h-full w-52 md:block hidden shadow-lg transform transition-transform duration-300 
@@ -97,7 +155,7 @@ export default function Brain(){
                         <div className="text-2xl font-semibold dark:text-blue-500">Brain</div>
                     </div>
 
-                    <BrainNavbar/>
+                    <BrainNavbar setSlctButton={setSlctButton} slctButton={slctButton}/>
                     
                     <div className="flex gap-6 items-center pr-5">
                         {
@@ -140,37 +198,34 @@ export default function Brain(){
                 
                 
                 {/* Card */}
-                <div className="flex-1 overflow-y-auto">
+                {
+                    !content[slctButton] 
+                        ? <div className="flex  w-full h-full justify-center items-center ">
+                            <p className="hover:text-gray-200 text-gray-500 text-xl">No memory yet</p>
+                        </div>
+                    :
+                    <div className="flex-1 overflow-y-auto p-5 columns-1 md:columns-2 lg:columns-3 gap-4 space-y-4">
                     {
-                        contentHook.loading
-                        ? (<div className="flex justify-center items-center min-h-[80vh]">
-                                <div className="spinner w-8 h-8 "></div>
-                            </div>) 
-                        : contentHook.content.length !== 0   // here some thing problem while clicking on refresh
-                            ? <div className="p-5 columns-1 md:columns-2 lg:columns-3 gap-4 space-y-4">
-                                {
-                                    contentHook.content.map(({title, type, link, createdAt, _id}, index)=>{
-                                        return <Card contentHook={contentHook}
-                                            title={title} createdAt={createdAt}
-                                            type={type} id={_id}
-                                            link={link} 
-                                            key={index}
-                                        />
-                                    })
-                                }
-                            </div>
-                            : <div className="flex flex-col justify-center items-center min-h-[80vh] gap-4">
-                                <p className="text-gray-400">No content found</p>
-
-                                <div
-                                    onClick={()=>contentHook.getContentApi()}
-                                    className="py-2 px-4 flex items-center gap-2 cursor-pointer border-2 border-white bg-blue-400 hover:bg-violet-500 transition rounded-xl"
-                                >
-                                    <RefreshCcw size={16}/> Refresh
-                                </div>
-                            </div>  
-                    } 
+                        content[slctButton]?.map((val)=>{
+                            console.log("val---", val);
+                            return(
+                                <Card
+                                    key={val.id}
+                                    tags={val.tags}
+                                    title={val.title}
+                                    link={val.link}
+                                    createdAt={val.createdAt}
+                                    id={val.id}
+                                    userId={val.userId}
+                                    type={val.type}
+                                    
+                                />
+                            )
+                        })
+                    }
                 </div>
+                }
+                
             </div>
             
         </div>

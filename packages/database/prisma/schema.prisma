@@ -40,6 +40,8 @@ model Content {
   user                  User        @relation(fields: [userId], references: [id])
 
   createdAt             DateTime    @default(now())
+
+  @@index([userId])
 }
 
 model CanvasMember {

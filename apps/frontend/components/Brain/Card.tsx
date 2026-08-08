@@ -1,77 +1,444 @@
+"use client";
 
-import { Trash2 } from "lucide-react";
+import {
+  ExternalLink,
+  Plus,
+  Globe,
+  Loader2,
+  Trash2,
+  Loader,
+  Video,
+} from "lucide-react";
 import { FaYoutube } from "react-icons/fa";
-import { RiTwitterFill } from "react-icons/ri";
-import { useEffect } from "react";
+import { RiTwitterXFill } from "react-icons/ri";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import api from "../../API/Interceptor";
 
-interface CardProps{
-    title:string,
-    link:string,
-    type: "youtube" | "twitter",
-    createdAt:Date,
-    id:string,
-    contentHook:any
+import api from "../../API/Interceptor";
+import { ContentFormat, useBrainStore } from "../../Storage/useBrainStore";
+import { YoutubeEmbed } from "./Embed/YoutubeEmbed";
+import { TwitterEmbed } from "./Embed/TwitterEmbed";
+import { WebsiteEmbed } from "./Embed/WebsiteEmbed";
+import { GithubEmbed } from "./Embed/GithubEmbed";
+
+/* =========================================================
+   TYPES
+========================================================= */
+
+type ContentType = "youtube" | "twitter" | "github" | "website" | "unknown";
+
+interface UrlInfo {
+  type: ContentType;
+  url: string;
+  embedUrl?: string;
+  videoId?: string;
+  twitterUrl?: string;
 }
 
-export const Card = (props:CardProps)=>{
+/* =========================================================
+   URL HELPERS
+========================================================= */
 
-    useEffect(() => {
-        // const timeout = setTimeout(() => {
-        //     if (window?.twttr.widgets) {
-        //         window.twttr.widgets.load()
-        //     }
-        // }, 300)
+function normalizeUrl(value: string) {
+  try {
+    return new URL(value.startsWith("http") ? value : `https://${value}`);
+  } catch {
+    return null;
+  }
+}
 
-        // return () => clearTimeout(timeout)
-    }, [props.contentHook.content])
+/* =========================================================
+   YOUTUBE
+========================================================= */
 
+function getYoutubeVideoId(url: string): string | null {
+  try {
+    const parsed = new URL(url.startsWith("http") ? url : `https://${url}`);
 
-    async function delteHandler(id:string){
-        const toastId = toast.loading("Deleting...")
-        try{
-            const response = await api.post("/deleteContent", {id});
-            props.contentHook.getContentApi();
-            toast.success(response.data.message);
-        }
-        catch(e:any){
-            toast.error(e.response.data.message || "Failed");
-        } finally{
-            toast.dismiss(toastId);
-        }
+    const hostname = parsed.hostname.toLowerCase().replace("www.", "");
+
+    /*
+      youtube.com/watch?v=VIDEO_ID
+    */
+
+    if (hostname === "youtube.com") {
+      const videoId = parsed.searchParams.get("v");
+
+      if (videoId) {
+        return videoId;
+      }
+
+      /*
+        youtube.com/shorts/VIDEO_ID
+      */
+
+      if (parsed.pathname.startsWith("/shorts/")) {
+        return parsed.pathname.split("/shorts/")[1]?.split("/")[0] || null;
+      }
+
+      /*
+        youtube.com/embed/VIDEO_ID
+      */
+
+      if (parsed.pathname.startsWith("/embed/")) {
+        return parsed.pathname.split("/embed/")[1]?.split("/")[0] || null;
+      }
     }
 
-    return (
-        <div className="dark:bg-gray-800 backdrop-blur-2xl break-inside-avoid mb-4 w-full  bg-white p-4 flex flex-col gap-3 rounded-2xl shadow-lg hover:shadow-purple-500 transition-all duration-200">
-            <div className="flex items-center justify-between">
-                <div className="font-semibold text-xl dark:text-white">{props.title}</div>
-                {
-                    props.type == "youtube"
-                    ? <FaYoutube className="w-5 h-5 dark:text-green-400"/>
-                    : <RiTwitterFill className="w-5 h-5 dark:text-green-400"/>
-                }
-            </div>
-            <div>
-                {
-                    props.type == "youtube"
-                    ? <div className="w-full overflow-hidden rounded-xl">
-                        <iframe className="w-full aspect-video" src={props.link.replace("watch?v=", "embed/")} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
-                    </div>
-                    : <div className="object-contain overflow-hidden">
-                        <blockquote className="twitter-tweet">
-                            <a href={props.link.replace("x", "twitter")} target="_blank"></a>
-                        </blockquote> <script async src="https://platform.twitter.com/widgets.js" charSet="utf-8"></script>
-                    </div>
-                }
-            </div>
-            <div className="flex items-center justify-between">
-                <div className="flex gap-2 items-center font-semibold dark:text-green-400">
-                    <span>Date : </span>
-                    {new Date(props.createdAt).toLocaleDateString()}
-                </div>
-                <Trash2 onClick={()=>delteHandler(props.id)} size={20} className="text-violet-600 cursor-pointer hover:scale-125 transition-all duration-200 ease-in-out"/>
-            </div>
+    /*
+      youtu.be/VIDEO_ID
+    */
+
+    if (hostname === "youtu.be") {
+      return parsed.pathname.slice(1).split("/")[0] || null;
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+/* =========================================================
+   TWITTER / X
+========================================================= */
+
+function isTwitterUrl(url: string) {
+  const parsed = normalizeUrl(url);
+
+  if (!parsed) return false;
+
+  const hostname = parsed.hostname.toLowerCase().replace("www.", "");
+
+  return hostname === "twitter.com" || hostname === "x.com";
+}
+
+/* =========================================================
+   GITHUB
+========================================================= */
+
+function isGithubUrl(url: string) {
+  const parsed = normalizeUrl(url);
+
+  if (!parsed) return false;
+
+  const hostname = parsed.hostname.toLowerCase().replace("www.", "");
+
+  return hostname === "github.com";
+}
+
+/* =========================================================
+   URL DETECTOR
+========================================================= */
+
+function detectUrl(url: string): UrlInfo {
+  const normalized = normalizeUrl(url);
+
+  if (!normalized) {
+    return {
+      type: "unknown",
+      url,
+    };
+  }
+
+  /*
+    YOUTUBE
+  */
+
+  const youtubeId = getYoutubeVideoId(url);
+
+  if (youtubeId) {
+    return {
+      type: "youtube",
+
+      url,
+
+      videoId: youtubeId,
+
+      /*
+        plays inside iframe
+      */
+
+      embedUrl: `https://www.youtube.com/embed/${youtubeId}` + `?rel=0&modestbranding=1`,
+    };
+  }
+
+  /*
+    TWITTER / X
+  */
+
+  if (isTwitterUrl(url)) {
+    return {
+      type: "twitter",
+
+      url,
+
+      twitterUrl: url.replace("x.com", "twitter.com"),
+    };
+  }
+
+  /*
+    GITHUB
+  */
+
+  if (isGithubUrl(url)) {
+    return {
+      type: "github",
+
+      url,
+    };
+  }
+
+  /*
+    EVERYTHING ELSE
+  */
+
+  return {
+    type: "website",
+
+    url,
+  };
+}
+
+/* =========================================================
+   MAIN CARD
+========================================================= */
+
+export const Card = (props: ContentFormat) => {
+  const deleteContent = useBrainStore((state) => state.deleteContent);
+
+  const [deleting, setDeleting] = useState(false);
+
+  const [iframeError, setIframeError] = useState(false);
+
+  const urlInfo = useMemo(() => detectUrl(props.link), [props.link]);
+
+  /* =====================================================
+     DELETE
+  ===================================================== */
+
+  async function deleteHandler() {
+    if (deleting) return;
+
+    setDeleting(true);
+
+    const toastId = toast.loading("Deleting...");
+
+    try {
+      const response = await api.post("/deleteContent", {
+        id: props.id,
+      });
+
+      deleteContent(props.id, props.type);
+
+      toast.success(response.data.message);
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Failed to delete content");
+    } finally {
+      setDeleting(false);
+
+      toast.dismiss(toastId);
+    }
+  }
+
+  /* =====================================================
+     RESET IFRAME ERROR
+  ===================================================== */
+
+  useEffect(() => {
+    setIframeError(false);
+  }, [props.link]);
+
+  return (
+    <article
+      className=" group relative break-inside-avoid mb-5 w-full overflow-hidden 
+        rounded-3xl border border-white/10 bg-white/[0.04] backdrop-blur-2xl shadow-[0_10px_40px_rgba(0,0,0,0.25)] 
+        transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:shadow-[0_20px_60px_rgba(99,102,241,0.18)]">
+      {/* =================================================
+          HEADER
+      ================================================= */}
+
+      <div
+        className=" flex items-center justify-between gap-4 px-5 pt-5">
+        <div
+          className=" min-w-0 flex-1">
+          <h2
+            className=" truncate text-lg font-semibold text-white">
+            {props.title}
+          </h2>
+
+          <p
+            className=" mt-1 truncate text-xs text-white/40">
+            {props.link}
+          </p>
         </div>
-    )
+
+        <ContentIcon type={urlInfo.type} />
+      </div>
+
+      {/* =================================================
+          CONTENT
+      ================================================= */}
+
+      <div className="mt-4 px-5">
+        {/* ================= YOUTUBE ================= */}
+
+        {urlInfo.type === "youtube" && (
+          <YoutubeEmbed
+            embedUrl={urlInfo.embedUrl!}
+            title={props.title}
+            hasError={iframeError}
+            setError={setIframeError}
+          />
+        )}
+
+        {/* ================= TWITTER ================= */}
+
+        {urlInfo.type === "twitter" && (
+          <TwitterEmbed url={urlInfo.twitterUrl || props.link} />
+        )}
+
+        {/* ================= GITHUB ================= */}
+
+        {urlInfo.type === "github" && <GithubEmbed url={props.link} />}
+
+        {/* ================= WEBSITE ================= */}
+
+        {urlInfo.type === "website" && (
+          <WebsiteEmbed
+            url={props.link}
+            hasError={iframeError}
+            setError={setIframeError}
+          />
+        )}
+
+        {/* ================= UNKNOWN ================= */}
+
+        {urlInfo.type === "unknown" && <FallbackLink url={props.link} />}
+      </div>
+
+      {/* =================================================
+          FOOTER
+      ================================================= */}
+
+      <div
+        className="  flex items-center justify-between gap-4 px-5 py-4">
+        <div
+          className="flex items-center gap-2 text-sm font-medium text-white/50">
+          <span>{new Date(props.createdAt).toLocaleDateString()}</span>
+        </div>
+
+        <div
+          className=" flex items-center gap-3">
+          {/* OPEN */}
+
+          <a
+            href={props.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/5 text-white/50 transition  hover:bg-white/10 hover:text-white">
+            <ExternalLink size={17} />
+          </a>
+
+          {/* DELETE */}
+
+          <button
+            disabled={deleting}
+            onClick={deleteHandler}
+            className="flex h-9  w-9 items-center justify-center rounded-xl bg-violet-500/10 text-violet-400 transition hover:bg-red-500/10 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+            {deleting ? (
+              <Loader2 size={17} className="animate-spin" />
+            ) : (
+              <Trash2 size={17} />
+            )}
+          </button>
+        </div>
+      </div>
+    </article>
+  );
+};
+
+/* =========================================================
+   CONTENT ICON
+========================================================= */
+
+function ContentIcon({ type }: { type: ContentType }) {
+  if (type === "youtube") {
+    return (
+      <div
+        className=" flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-500/10 text-red-500">
+        <FaYoutube size={20} />
+      </div>
+    );
+  }
+
+  if (type === "twitter") {
+    return (
+      <div
+        className=" flex h-10 w-10 shrink-0 items-center justify-center rounded-xl  bg-white/10 text-white">
+        <RiTwitterXFill size={19} />
+      </div>
+    );
+  }
+
+  if (type === "github") {
+    return (
+      <div
+        className=" flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10 text-white">
+        <Loader size={20} />
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className=" flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-400">
+      <Globe size={20} />
+    </div>
+  );
+}
+
+/* =========================================================
+   FALLBACK
+========================================================= */
+
+function IframeFallback({ url, message }: { url: string; message: string }) {
+  return (
+    <div
+      className=" flex min-h-[220px] flex-col items-center justify-center gap-4 rounded-2xl border border-white/10 bg-black/20 p-6 text-center">
+      <Globe size={35} className="text-white/30" />
+      <p
+        className=" max-w-sm text-sm text-white/50">
+        {message}
+      </p>
+
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className=" flex items-center gap-2 rounded-xl bg-white/10 px-4 py-2 text-sm text-white transition hover:bg-white/20">
+            Open
+        <ExternalLink size={15} />
+      </a>
+    </div>
+  );
+}
+
+/* =========================================================
+   UNKNOWN URL
+========================================================= */
+
+function FallbackLink({ url }: { url: string }) {
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className=" flex min-h-[180px] flex-col items-center justify-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03]  text-white/60 transition hover:bg-white/[0.06] hover:text-white">
+      <Globe size={35} />
+
+      <span className="text-sm">Open content</span>
+    </a>
+  );
 }

@@ -35,19 +35,16 @@ export const SidebarButton = [
 ]
 
 
-export const BrainNavbar = ()=>{
+export const BrainNavbar = ({setSlctButton, slctButton}:{
+    slctButton : string,
+    setSlctButton : (val:string)=>void
+})=>{
 
     const router = useRouter();
     
 
     function clickHandler(name:string){
-        if(name === "Settings"){
-            router.push("/dashboard/profile");
-        }
-        else{
-            const value = name === "All" ? "" : name.toLowerCase();
-            // contentHook.setType(value);
-        }
+        const value = name === "All" ? "" : name.toLowerCase();
     }
 
 
@@ -56,9 +53,9 @@ export const BrainNavbar = ()=>{
             {
                     SidebarButton.map((items, index)=>(
                     <div 
-                        onClick={()=>clickHandler(items.name)}
-                        key={index} 
-                        className="flex py-1 font-semibold text-base dark:text-white items-center gap-2 cursor-pointer px-3 dark:hover:bg-gray-700 hover:bg-gray-600 rounded-xl transition-all duration-300 ease-in-out">
+                        onClick={()=>setSlctButton(items.name)}
+                        key={index}
+                        className={`flex py-1 font-semibold text-base dark:text-white items-center gap-2 cursor-pointer px-3 dark:hover:bg-gray-700 ${slctButton === items.name && "bg-gray-700"} hover:bg-gray-600 rounded-xl transition-all duration-300 ease-in-out`}>
                         {items.icon}
                         {items.name}
                     </div>
