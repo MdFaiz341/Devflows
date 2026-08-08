@@ -1,16 +1,7 @@
 "use client";
 
-import {
-  ExternalLink,
-  Plus,
-  Globe,
-  Loader2,
-  Trash2,
-  Loader,
-  Video,
-} from "lucide-react";
-import { FaYoutube } from "react-icons/fa";
-import { RiTwitterXFill } from "react-icons/ri";
+import { ExternalLink, Globe, Loader2, Trash2} from "lucide-react";
+
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
@@ -20,12 +11,14 @@ import { YoutubeEmbed } from "./Embed/YoutubeEmbed";
 import { TwitterEmbed } from "./Embed/TwitterEmbed";
 import { WebsiteEmbed } from "./Embed/WebsiteEmbed";
 import { GithubEmbed } from "./Embed/GithubEmbed";
+import { ContentIcon } from "./ContentIcons";
+import { LinkedinEmbed } from "./Embed/LinkedinEmbed";
 
 /* =========================================================
    TYPES
 ========================================================= */
 
-type ContentType = "youtube" | "twitter" | "github" | "website" | "unknown";
+export type ContentType = "youtube" | "twitter" | "github" | "website" | "unknown" | "linkedin";
 
 interface UrlInfo {
   type: ContentType;
@@ -100,6 +93,21 @@ function getYoutubeVideoId(url: string): string | null {
 }
 
 /* =========================================================
+   LinkedIn
+========================================================= */
+function isLinkedinUrl(url: string) {
+  const parsed = normalizeUrl(url);
+
+  if (!parsed) return false;
+
+  const hostname = parsed.hostname
+    .toLowerCase()
+    .replace("www.", "");
+
+  return hostname === "linkedin.com";
+}
+
+/* =========================================================
    TWITTER / X
 ========================================================= */
 
@@ -170,9 +178,7 @@ function detectUrl(url: string): UrlInfo {
   if (isTwitterUrl(url)) {
     return {
       type: "twitter",
-
       url,
-
       twitterUrl: url.replace("x.com", "twitter.com"),
     };
   }
@@ -184,7 +190,13 @@ function detectUrl(url: string): UrlInfo {
   if (isGithubUrl(url)) {
     return {
       type: "github",
+      url,
+    };
+  }
 
+  if(isLinkedinUrl(url)){
+    return {
+      type: "linkedin",
       url,
     };
   }
@@ -195,22 +207,15 @@ function detectUrl(url: string): UrlInfo {
 
   return {
     type: "website",
-
     url,
   };
 }
 
-/* =========================================================
-   MAIN CARD
-========================================================= */
 
 export const Card = (props: ContentFormat) => {
   const deleteContent = useBrainStore((state) => state.deleteContent);
-
   const [deleting, setDeleting] = useState(false);
-
   const [iframeError, setIframeError] = useState(false);
-
   const urlInfo = useMemo(() => detectUrl(props.link), [props.link]);
 
   /* =====================================================
@@ -229,7 +234,7 @@ export const Card = (props: ContentFormat) => {
         id: props.id,
       });
 
-      deleteContent(props.id, props.type);
+      deleteContent(props.id);
 
       toast.success(response.data.message);
     } catch (error: any) {
@@ -307,9 +312,14 @@ export const Card = (props: ContentFormat) => {
         {urlInfo.type === "website" && (
           <WebsiteEmbed
             url={props.link}
-            hasError={iframeError}
-            setError={setIframeError}
+            // hasError={iframeError}
+            // setError={setIframeError}
           />
+        )}
+
+        {/* ================= LINKEDIN ================= */}
+        {urlInfo.type === "linkedin" && (
+          <LinkedinEmbed url={props.link} />
         )}
 
         {/* ================= UNKNOWN ================= */}
@@ -358,72 +368,6 @@ export const Card = (props: ContentFormat) => {
     </article>
   );
 };
-
-/* =========================================================
-   CONTENT ICON
-========================================================= */
-
-function ContentIcon({ type }: { type: ContentType }) {
-  if (type === "youtube") {
-    return (
-      <div
-        className=" flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-500/10 text-red-500">
-        <FaYoutube size={20} />
-      </div>
-    );
-  }
-
-  if (type === "twitter") {
-    return (
-      <div
-        className=" flex h-10 w-10 shrink-0 items-center justify-center rounded-xl  bg-white/10 text-white">
-        <RiTwitterXFill size={19} />
-      </div>
-    );
-  }
-
-  if (type === "github") {
-    return (
-      <div
-        className=" flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10 text-white">
-        <Loader size={20} />
-      </div>
-    );
-  }
-
-  return (
-    <div
-      className=" flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-400">
-      <Globe size={20} />
-    </div>
-  );
-}
-
-/* =========================================================
-   FALLBACK
-========================================================= */
-
-function IframeFallback({ url, message }: { url: string; message: string }) {
-  return (
-    <div
-      className=" flex min-h-[220px] flex-col items-center justify-center gap-4 rounded-2xl border border-white/10 bg-black/20 p-6 text-center">
-      <Globe size={35} className="text-white/30" />
-      <p
-        className=" max-w-sm text-sm text-white/50">
-        {message}
-      </p>
-
-      <a
-        href={url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className=" flex items-center gap-2 rounded-xl bg-white/10 px-4 py-2 text-sm text-white transition hover:bg-white/20">
-            Open
-        <ExternalLink size={15} />
-      </a>
-    </div>
-  );
-}
 
 /* =========================================================
    UNKNOWN URL

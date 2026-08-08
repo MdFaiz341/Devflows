@@ -9,9 +9,10 @@ import { FaYoutube } from "react-icons/fa";
 import { RiTwitterFill } from "react-icons/ri";
 import { IoSettingsSharp } from "react-icons/io5";
 import { FaGithub } from "react-icons/fa6";
-import { Aperture, PlusCircle } from "lucide-react"
+import { Aperture, Globe, PlusCircle } from "lucide-react"
 import { Button } from "@repo/ui/button";
 import { Image } from "../../Icons/icon";
+import { LuLinkedin } from "react-icons/lu";
 
 
 
@@ -22,16 +23,24 @@ export const SidebarButton = [
     },
     {
         icon: <FaYoutube/>,
-        name: "Youtube"
+        name: "youtube"
     },
     {
         icon : <RiTwitterFill/>,
-        name: "Twitter"
+        name: "twitter"
     },
     {
         icon: <FaGithub/>,
-        name: "Github"
-    }
+        name: "github"
+    },
+    {
+        icon: <LuLinkedin/>,
+        name: "linkedin"
+    },
+    {
+        icon: <Globe size={15}/>,
+        name: "website"
+    },
 ]
 
 
@@ -39,14 +48,6 @@ export const BrainNavbar = ({setSlctButton, slctButton}:{
     slctButton : string,
     setSlctButton : (val:string)=>void
 })=>{
-
-    const router = useRouter();
-    
-
-    function clickHandler(name:string){
-        const value = name === "All" ? "" : name.toLowerCase();
-    }
-
 
     return(
         <div className="flex gap-3">

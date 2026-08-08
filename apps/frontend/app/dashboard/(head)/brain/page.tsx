@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import { GiNightSleep } from "react-icons/gi";
 import { WiDaySunny } from "react-icons/wi";
 import { FiSidebar } from "react-icons/fi";
-import { PlusCircle, RefreshCcw, Sparkles } from "lucide-react";
+import { Loader, PlusCircle, RefreshCcw, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 // import { CreateContent } from "../../../../components/Brain/CreateContent";
 import { useHook } from "../../../../hook/useHook";
@@ -19,7 +19,7 @@ import { Button } from "@repo/ui/button";
 import { CreateContent } from "../../../../components/Brain/CreateContent";
 import api from "../../../../API/Interceptor";
 import { toast } from "sonner";
-import { useBrainStore } from "../../../../Storage/useBrainStore";
+import { ContentFormat, useBrainStore } from "../../../../Storage/useBrainStore";
 
 
 
@@ -51,15 +51,27 @@ export default function Brain(){
     async function getContentApi(){
         try{
             setLoading(true);
-            await new Promise((res)=> setTimeout(res, 1000));
             const response = await api.get("/allcontent");
             console.log("getAllContent--- ", response.data);
-            // setContent("All", response.data.allContent);
-            response.data.allContent.map((val:any)=>{
-                const type = val.type;
-                setContent(type, val);
-                setContent("All", val)
-            })
+
+            const allContent = response.data.allContent;
+            const grouped : Record<string, ContentFormat[]> = {
+                All : allContent,
+                youtube: [],
+                twitter: [],
+                github: [],
+                website: [],
+                linkedin : []
+            }
+
+            allContent.forEach((item:ContentFormat) => {
+                console.log("item-type--- ", item.type);
+                if(grouped[item.type]){
+                    grouped[item.type]?.push(item);
+                }
+            });
+
+            setContent(grouped);
         }
         catch(e:any){
             toast.error(e.response.data.message || "Couldn't able to fetch data");
@@ -68,7 +80,7 @@ export default function Brain(){
         }
     }
     useEffect(()=>{
-
+        clearMemory();
         getContentApi();
         return ()=>{
             clearMemory();
@@ -107,30 +119,6 @@ export default function Brain(){
         }
     }, []);
 
-    
-
-    if(loading){
-        return(
-            <div className="flex justify-center items-center min-h-[80vh]">
-                <div className="spinner w-8 h-8 "></div>
-            </div>
-        )
-    }
-
-    if(!content){
-        return(
-            <div className="flex flex-col justify-center items-center min-h-[80vh] gap-4">
-                <p className="text-gray-400">No content found</p>
-
-                <div
-                    onClick={getContentApi}
-                    className="py-2 px-4 flex items-center gap-2 cursor-pointer border-2 border-white bg-blue-400 hover:bg-violet-500 transition rounded-xl"
-                >
-                    <RefreshCcw size={16}/> Refresh
-                </div>
-            </div>  
-        )
-    }
 
     return(
         <>
@@ -199,9 +187,23 @@ export default function Brain(){
                 
                 {/* Card */}
                 {
+                    loading 
+                    ?   <div className="flex justify-center items-center w-full h-full">
+                            <Loader size={30} className="animate-spin text-white"/>
+                        </div>
+                    :
                     !content[slctButton] 
                         ? <div className="flex  w-full h-full justify-center items-center ">
-                            <p className="hover:text-gray-200 text-gray-500 text-xl">No memory yet</p>
+                            <div className="flex flex-col justify-center items-center min-h-[80vh] gap-4">
+                                <p className="text-gray-400">No content found</p>
+
+                                <div
+                                    onClick={getContentApi}
+                                    className="py-2 px-4 flex items-center gap-2 cursor-pointer border-2 border-white bg-blue-400 hover:bg-violet-500 transition rounded-xl"
+                                >
+                                    <RefreshCcw size={16}/> Refresh
+                                </div>
+                            </div> 
                         </div>
                     :
                     <div className="flex-1 overflow-y-auto p-5 columns-1 md:columns-2 lg:columns-3 gap-4 space-y-4">

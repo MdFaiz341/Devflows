@@ -1,7 +1,7 @@
 import { create } from "zustand"
 
 
-type ContentType = "Youtube" | "Github" | "Website link" | "Tweeter"
+type ContentType = "youtube" | "github" | "website" | "twitter" | "All" | "linkedin"
 
 export type ContentFormat = {
     createdAt : string,
@@ -16,9 +16,9 @@ export type ContentFormat = {
 interface BrainType{
 
     content : Record<string, ContentFormat[]>
-    setContent : (type:string, data:ContentFormat)=>void
+    setContent : (contents : Record<ContentType, ContentFormat[]>)=>void
 
-    deleteContent : (id:string, type:string)=>void
+    deleteContent : (id:string)=>void
 
     clearMemory : ()=>void
 }
@@ -28,32 +28,21 @@ export const useBrainStore = create<BrainType>(
         content : {},
 
         
-        setContent : (type, data)=>set((state)=>{
-            const allContent = state.content[type] || [];
-            console.log("brianStore---", allContent);
-            const exist = allContent?.some((val)=>val.id === data.id);
-            if(exist) return{};
+        setContent : (data)=>set({content : data}),
+
+        deleteContent : (id)=>set((state)=>{
+            const updatedContent = {...state.content};
+
+            Object.keys(updatedContent).forEach((type)=>{
+                const contents = updatedContent[type];
+                if(!contents) return;
+
+                updatedContent[type] = contents.filter((content)=> content.id !== id);
+            })
 
             return{
-                content:{
-                    ...state.content,
-                    [type] : [...allContent, data]
-                }
+                content : updatedContent
             }
-        }),
-
-        deleteContent : (id, type)=>set((state)=>{
-            const allcontent = state.content[type]
-            if(!allcontent) return{};
-            const remContent = allcontent.filter((val)=> val.id !== id)
-
-            return{
-                content:{
-                    ...state.content,
-                    [type] : [...remContent]
-                }
-            }
-
         }),
 
         clearMemory : ()=>set({

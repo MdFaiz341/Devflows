@@ -40,13 +40,17 @@ export const CreateContent = ({open, setOpen, getContentApi}:{
         try{
             const link = linkRef.current?.value;
             const title = titleRef.current?.value;
-            if(!link || !title || selectTags.length === 0){
+            if(!link || !title){
                 alert("Fill all requirements");
                 return;
             }
+            if( selectTags.length === 0){
+              alert("Enter some #Tags")
+              return;
+            }
             setLoading(true);
 
-            await new Promise((res) => setTimeout(res, 3000));
+            // await new Promise((res) => setTimeout(res, 3000));
 
             const resposne = await api.post("/content", {
                 link,
@@ -56,6 +60,12 @@ export const CreateContent = ({open, setOpen, getContentApi}:{
             });
             toast.success(resposne.data.message);
             getContentApi();
+            // console.log(linkRef.current);
+            // linkRef.current = null;
+            // console.log(linkRef.current)
+            // titleRef.current = null;
+            // setType("");
+            // inputTagsRef.current = null;
             setOpen(false);
         }
         catch(e:any){
@@ -166,15 +176,15 @@ export const CreateContent = ({open, setOpen, getContentApi}:{
                         id="Youtube" 
                         name="linkType" 
                         value="Youtube"/>
-                  <label htmlFor="Youtube" className="cursor-pointer" onClick={()=>setType("Youtube")}>Youtube</label>
+                  <label htmlFor="Youtube" className="cursor-pointer" onClick={()=>setType("youtube")}>Youtube</label>
               </div>
 
               <div className="flex items-center space-x-1">
                   <input type="radio" 
-                        id="Tweeter" 
+                        id="Twitter" 
                         name="linkType" 
-                        value="Tweeter"/>
-                  <label htmlFor="Tweeter" className="cursor-pointer" onClick={()=>setType("Tweeter")}>Tweeter</label>
+                        value="Twitter"/>
+                  <label htmlFor="Twitter" className="cursor-pointer" onClick={()=>setType("twitter")}>Twitter</label>
               </div>
 
               <div className="flex items-center space-x-1">
@@ -182,7 +192,7 @@ export const CreateContent = ({open, setOpen, getContentApi}:{
                         id="Github" 
                         name="linkType" 
                         value="Github"/>
-                  <label htmlFor="Github" className="cursor-pointer" onClick={()=>setType("Github")}>Github</label>
+                  <label htmlFor="Github" className="cursor-pointer" onClick={()=>setType("github")}>Github</label>
               </div>
 
               <div className="flex items-center space-x-1">
@@ -190,7 +200,14 @@ export const CreateContent = ({open, setOpen, getContentApi}:{
                         id="Website" 
                         name="linkType" 
                         value="Website"/>
-                  <label htmlFor="Website" className="cursor-pointer" onClick={()=>setType("Website link")}>Website link</label>
+                  <label htmlFor="Website" className="cursor-pointer" onClick={()=>setType("website")}>Website</label>
+              </div>
+              <div className="flex items-center space-x-1">
+                  <input type="radio" 
+                        id="Linkedin" 
+                        name="linkType" 
+                        value="Linkedin"/>
+                  <label htmlFor="Linkedin" className="cursor-pointer" onClick={()=>setType("linkedin")}>Linkedin</label>
               </div>
             </div>   
               
