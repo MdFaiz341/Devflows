@@ -125,6 +125,7 @@ export default function CanvasRoomsPage() {
 
   }
 
+  console.log("Rooms--- ", rooms);
 
   return (
     <div className="min-h-screen bg-[#05070D] text-white overflow-hidden">
@@ -177,7 +178,7 @@ export default function CanvasRoomsPage() {
           <div className="w-screen h-screen flex justify-center items-center">
                 <Loader size={30} className="animate-spin"/>
           </div>
-        : !rooms
+        : !rooms || rooms?.length === 0
         ? <div className="w-screen h-screen flex justify-center items-center">
             <Button
               type="button"

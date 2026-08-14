@@ -22,7 +22,6 @@ model User {
   createdAt             DateTime    @default(now())
   image                 String
   contents              Content[]
-  // canvasrooms           CanvasRoom[]
   canvasmember          CanvasMember[]             
   shapes                Shape[]
   messages              Message[]
@@ -81,7 +80,6 @@ model Page {
   id                    Int         @id @default(autoincrement())
   pageNo                Int
   roomId                Int
-  // room                  CanvasRoom        @relation(fields: [roomId], references: [id])
   shapes                Shape[]
 
   @@unique([roomId, pageNo])
@@ -120,7 +118,7 @@ model Conversation {
 model ConversationMember {
   id                    Int                 @id  @default(autoincrement())
   userId                String
-  conversationId        Int                 //Joined WHAT? -> Group?, DM?  -> which room?
+  conversationId        Int                
 
   unreadCount           Int?                @default(0)
 

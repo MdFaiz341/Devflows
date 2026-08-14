@@ -18,7 +18,7 @@ import { LuLinkedin } from "react-icons/lu";
 
 export const SidebarButton = [
     {
-        icon: <Aperture size={15}/>,
+        icon: <Aperture size={13}/>,
         name: "All"
     },
     {
@@ -56,7 +56,7 @@ export const BrainNavbar = ({setSlctButton, slctButton}:{
                     <div 
                         onClick={()=>setSlctButton(items.name)}
                         key={index}
-                        className={`flex py-1 font-semibold text-base dark:text-white items-center gap-2 cursor-pointer px-3 dark:hover:bg-gray-700 ${slctButton === items.name && "bg-gray-700"} hover:bg-gray-600 rounded-xl transition-all duration-300 ease-in-out`}>
+                        className={`flex py-1 text-sm dark:text-white items-center gap-2 cursor-pointer px-3 dark:hover:bg-gray-700 ${slctButton === items.name && "bg-gray-700"} hover:bg-gray-600 rounded-xl transition-all duration-300 ease-in-out`}>
                         {items.icon}
                         {items.name}
                     </div>

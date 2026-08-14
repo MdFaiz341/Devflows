@@ -87,11 +87,11 @@ export const SidebarConversations = ({chat, unreads, setUnreads}:{
         
         // hit backend if unreadMessage not zero
         try{
-        await api.put("/clearCount", {conversationId : chat.conversationId})
-        console.log("count remove");
+            await api.put("/clearCount", {conversationId : chat.conversationId})
+            console.log("count remove");
         }
         catch(e){
-        console.log("error:", e);
+            console.log("error:", e);
         }
     }
 

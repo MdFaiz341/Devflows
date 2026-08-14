@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import { GiNightSleep } from "react-icons/gi";
 import { WiDaySunny } from "react-icons/wi";
 import { FiSidebar } from "react-icons/fi";
-import { Loader, PlusCircle, RefreshCcw, Sparkles } from "lucide-react";
+import { History, Loader, PlusCircle, RefreshCcw, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 // import { CreateContent } from "../../../../components/Brain/CreateContent";
 import { useHook } from "../../../../hook/useHook";
@@ -110,6 +110,7 @@ export default function Brain(){
         }
     }, []);
 
+    console.log("Content-- ", content);
 
     return(
         <>
@@ -183,17 +184,19 @@ export default function Brain(){
                             <Loader size={30} className="animate-spin text-white"/>
                         </div>
                     :
-                    !content[slctButton] 
+                    content[slctButton]?.length === 0
                         ? <div className="flex  w-full h-full justify-center items-center ">
                             <div className="flex flex-col justify-center items-center min-h-[80vh] gap-4">
                                 <p className="text-gray-400">No content found</p>
-
-                                <div
-                                    onClick={getContentApi}
-                                    className="py-2 px-4 flex items-center gap-2 cursor-pointer border-2 border-white bg-blue-400 hover:bg-violet-500 transition rounded-xl"
-                                >
-                                    <RefreshCcw size={16}/> Refresh
-                                </div>
+                                <Button
+                                type="button"
+                                icon={<History size={20}/>}
+                                iconFirst={true}
+                                design="outline"
+                                text="Refresh"
+                                className="px-4 py-2 flex items-center font-semibold gap-3 shadow-[0_0_40px_rgba(99,102,241,0.65)]"
+                                onClick={getContentApi}
+                                />
                             </div> 
                         </div>
                     :

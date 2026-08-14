@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import api from "../../../../API/Interceptor";
 import { Button } from "@repo/ui/button";
 import { motion } from "framer-motion";
-import { EllipsisVertical, Loader2, MessageCircleCheck, MessagesSquare, Plus } from "lucide-react";
+import { EllipsisVertical, History, Loader2, MessageCircleCheck, MessagesSquare, Plus } from "lucide-react";
 import { FormatChatDate, FormatMessageTime } from "../../../../formatter/FormatTime";
 import { useSocket } from "../../../../providers/SocketProvider";
 import CreateGroupModal from "../../../../components/ChatsUI/CreateGroupModal";
@@ -290,9 +290,9 @@ export default function DevFlowChatUI() {
                           />
                         </div>
                     </div> 
-                    : <div>
-                        <div><Loader2 size={40} className=" animate-spin"/></div>
-                      </div>
+                    : <div className="w-screen h-screen flex justify-center items-center">
+                        <p className="text-gray-400">No friends</p>
+                    </div>
                   }
                 </div>
               : <div>

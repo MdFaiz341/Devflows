@@ -82,9 +82,6 @@ wss.on("connection", (socket, request)=>{
 
     socket.on("message", async(data)=>{
         try{
-            // console.log("MESSAGE RECEIVED", Date.now());
-            // console.log("Total clients:", wss.clients.size);
-            // console.log("message handler triggered");
             const parsed = JSON.parse(data as unknown as string);
             console.log("parsed: ", parsed);
 
