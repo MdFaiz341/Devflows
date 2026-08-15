@@ -1,7 +1,7 @@
 import { motion } from "framer-motion"
 import { useChatStore } from "../../Storage/useChatStore";
 import { useStore } from "../../Storage/useStore";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { FormatMessageTime } from "../../formatter/FormatTime";
 import api from "../../API/Interceptor";
 import { useSocket } from "../../providers/SocketProvider";
@@ -19,28 +19,32 @@ export const SidebarConversations = ({chat, unreads, setUnreads}:{
     setUnreads : (e: number[])=>void
     unreads : number[]
 })=>{
-    const socket = useSocket();
+    // const socket = useSocket();
     const user = useStore((state)=>state.user);
-    const conversationIdRef = useRef<number | null>(null)
     const setSelectedConversation = useChatStore((state)=>state.setSelectedConversation);
     const conversationId = useChatStore((state)=>state.selectedConversation);
     const setConversationId = useChatStore((state)=>state.setSelectedConversation);
     const unreadMessage = useChatStore((state)=>state.unreadMessage);
     const messageByConversation = useChatStore((state)=>state.messageByConversation);
     const clearCount = useChatStore((state)=>state.clearCount);
+    // const conversationIdRef = useRef<number | null>(conversationId)
+    // const [prevId, setPrevId] = useState<number | null>(null);
 
     async function socketStartHandler(chat:any){
-        console.log("socket:", socket);
+        // console.log("socket:", socket);
         // if(!socket || socket.readyState !== WebSocket.OPEN) return;
 
         // leave previous room before joining new room
-        if(conversationIdRef.current){
-            const payload = {
-                type : "leave_conversation",
-                conversationId : conversationIdRef.current
-            };
-            chatManager.sendMessage(payload);
-        }
+        // console.log("conversationIdRef---", conversationIdRef.current);
+        // console.log("PrevId---", prevId);
+        // if(prevId){
+        //     const payload = {
+        //         type : "leave_conversation",
+        //         conversationId : prevId
+        //     };
+        //     console.log("Leave conversation hit hua--", prevId);
+        //     chatManager.sendMessage(payload);
+        // }
 
 
         // leave conversation hata diya jisse server ke Map me socket / user present hai and broad cast
@@ -67,7 +71,7 @@ export const SidebarConversations = ({chat, unreads, setUnreads}:{
 
         // // new join coversation
         const payload = {    
-        type : "joinLiveUser" ,                     // uper laga diya jaise conversation update hoga waise hi all room active(dms, group)
+        type : "joinLiveUser",                     // uper laga diya jaise conversation update hoga waise hi all room active(dms, group)
         conversationId : chat.conversationId,    
         }
         chatManager.sendMessage(payload);
@@ -77,8 +81,9 @@ export const SidebarConversations = ({chat, unreads, setUnreads}:{
         //     ...payload
         // }))
         
-        conversationIdRef.current = chat.conversationId;
-
+        // conversationIdRef.current = chat.conversationId;
+        // setPrevId(chat.conversationId);
+        // console.log("SetP PrevId---");
         clearCount(chat.conversationId);
 
         // setSelectedChat(chat);

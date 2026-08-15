@@ -6,6 +6,7 @@ import { useStore } from "../Storage/useStore";
 import api from "../API/Interceptor";
 import { useChatStore } from "../Storage/useChatStore";
 import { chatHistory, joinUser } from "../lib/socket/socket-emit";
+import { useHook } from "../hook/useHook";
 // import { socketEventListner } from "../lib/socket/socket-events";
 
 
@@ -141,74 +142,62 @@ export const SocketProvider = ({children}:{children:React.ReactNode})=>{
     // }, [])
 
     // const [isSocketActive, setIsSocketActive] = useState<WebSocket | null>(null);
+    // const {active, setActive} = useHook();
+
     useEffect(()=>{
         if(!user) return;
         console.log("Uper ayya---");
         socketManager.connect();
-        // const socket = socketManager.getSocket();
-        // console.log("Result---", socket);
-        // if(socket){
-        //     setIsSocketActive(socket);
-        // }
         
-        // if(fetchConversation.current || !socket){
-        //     fetchDmsAnsGroupChat();
-        //     fetchConversation.current = false;
-        // }
+        // setActive(true);
 
         return ()=>{
             socketManager.disconnect();
-            // setIsSocketActive(null)
         }
-
-        // test karke dekhlo sab thik chal raha hi ya nahi bcz all thing set in SocketManager
 
     }, [user])
 
-    // useEffect(()=>{
-    //     if(!user) return;
-        
-    //     if(socketRef.current) return;
+    // useEffect(() => {
+    // if (!user) return;
 
-    //     const ws = createSocket();
-    //     console.log("ws Provider: ", ws);
-    //     if(!ws) return;
+    // let cancelled = false;
 
-    //     ws.onopen = async()=>{
-    //         console.log("User connected")  
+    // const initializeSocket = async () => {
+    //     try {
+    //     console.log("🔌 Connecting socket...");
 
-    //         socketRef.current = ws;
-    //         setSocket(ws);
-    //     }
+    //     setActive(false);
 
-    //     ws.onerror = (err)=>{
-    //         console.log("WS Error", err);
-    //     }
+    //     await socketManager.connect();
 
-    //     ws.onclose = (event) => {
-    //         console.log(
-    //             "🔌 Socket Closed",
-    //             event.code,
-    //             event.reason
-    //         );
-    //         if (socketRef.current === ws) {
-    //             socketRef.current = null;
-    //             setSocket(null);
+    //     if (cancelled) return;
+
+    //     console.log("🟢 Socket fully connected");
+
+    //     setActive(true);
+
+    //     } 
+    //     catch (error) {
+    //         console.log("❌ Socket connection failed:", error);
+
+    //         if (!cancelled) {
+    //             setActive(false);
     //         }
-    //     };
+    //     }
+    // };
 
-    //     return () => {
-    //         console.log(
-    //             "Cleaning up socket..."
-    //         );
-    //         ws.close();
-    //         socketRef.current = null;
-    //         setSocket(null);
-    //     };
+    // initializeSocket();
+
+    // return () => {
+    //     cancelled = true;
+    //     socketManager.disconnect();
+    //     setActive(false);
+    // };
 
     // }, [user]);
-    // console.log("isSocketActive---", isSocketActive);
-    // if(!isSocketActive){
+
+
+    // if(!active){
     //     return(
     //         <div className="absolute inset-0 z-10 w-screen h-screen flex flex-col justify-center items-center backdrop-blur-xs">
     //             <div className="connection w-20"></div>

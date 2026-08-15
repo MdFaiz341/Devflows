@@ -23,7 +23,7 @@ export default function DevFlowChatUI() {
   const {active, setActive, loading, setLoading} = useHook();
 
   const [isChatAdd, setIsChatAdd] = useState(false);
-  const socket = useSocket();
+  // const socket = useSocket();
   const [openGroupModal, setOpenGroupModal] = useState(false);
   const [addContact, setAddContact] = useState(false);
   const [groups, setGroups] = useState<number[]>([]);

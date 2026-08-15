@@ -1,9 +1,11 @@
 
 // let socket: WebSocket | null = null;
 
+import api from "../../API/Interceptor";
 import { useCanvasStore } from "../../Storage/useCanvasStore";
 import { useChatStore } from "../../Storage/useChatStore";
 import { useStore } from "../../Storage/useStore";
+import { chatManager } from "./ChatManager";
 
 
 export class SocketManager {
@@ -25,6 +27,8 @@ export class SocketManager {
     return SocketManager.instance;
   }
 
+
+
   connect(){
 
     this.shouldReconnect = true;
@@ -41,16 +45,19 @@ export class SocketManager {
     this.socket = new WebSocket(`${process.env.NEXT_PUBLIC_WS_SERVER_URL}`);
 
     this.attachEventListner();
+
   }
 
   private attachEventListner(){
     if(!this.socket) return;
 
-    this.socket.onopen = ()=>{
+    this.socket.onopen = async ()=>{
       console.log("WS-CONNECTED");
       this.isConnecting = false;
       this.reconnectAttempts = 0;
-      // this.joinAllChats();
+      await this.fetchConversations();
+                  
+      chatManager.start();
     }
 
     this.socket.onmessage = this.eventHandler;
@@ -59,10 +66,12 @@ export class SocketManager {
       console.log("WS CLOSED");
       this.isConnecting = false;
       this.reconnect();
+      chatManager.stop();
     }
 
     this.socket.onerror = (err)=>{
       console.log("Error: ", err);
+      chatManager.stop();
     }
   }
 
@@ -132,21 +141,67 @@ export class SocketManager {
   }
 
 
-  private joinAllChats(){
-    const conversationIds = useChatStore.getState().sideConversationOrder
-    if(!this.socket || this.socket.readyState !== WebSocket.OPEN) return;
+  // private joinAllChats(){
+  //   const conversationIds = useChatStore.getState().sideConversationOrder
+  //   if(!this.socket || this.socket.readyState !== WebSocket.OPEN) return;
     
-    // socketEventListner(this.socket);
-    // console.log("Event-Listners---")
+  //   // socketEventListner(this.socket);
+  //   // console.log("Event-Listners---")
 
-    conversationIds.forEach((id)=>{
-      const payload = {
-        type: "join_conversation",
-        conversationId : id,
-      }
-      this.send(payload);
-    })
-  }
+  //   conversationIds.forEach((id)=>{
+  //     const payload = {
+  //       type: "join_conversation",
+  //       conversationId : id,
+  //     }
+  //     this.send(payload);
+  //   })
+  // }
+
+  private async fetchConversations(){
+        try{
+                const response = await api.get("/conversations");
+                console.log("allchatsWithRoom: ", response.data.conversation);
+                const user = useStore.getState().user;
+                const chatStore = useChatStore.getState();
+
+                chatStore.setBackendConversation(response.data.conversation)
+
+                const val = response.data.conversation.map((v:any)=> v.id)
+                chatStore.setSideConversationOrder(val);
+
+                response.data.conversation.forEach((v:any)=> {
+                    const friendDetails = v.members.filter((users:any) => users.userId !== user?.id);
+                    const data = {
+                        conversationId : v.id,
+                        createdAt : v.createdAt,
+                        image : v.image || null,
+                        // member : {
+                        //     senderId : friendDetails[0].userId,
+                        //     firstname : friendDetails[0].user.firstname,
+                        //     image : friendDetails[0].user.image,
+                        // },
+                        member : friendDetails,
+                        lastMessage : v.messages.length > 0 ? v.messages[0].text.includes("joined") ? "" : v.messages[0].text : "",
+                        type : v.type,
+                        name : v.name || null,
+                        updatedAt : v.updatedAt,
+                    } 
+                    chatStore.setSidebarDefaultConversation(v.id, data);
+
+                    //set default unread Messages:
+                    const currUser = v.members.find((admin:any)=>admin.userId === user?.id)
+                    // console.log("msg-members", v.members.find((val:any)=>val.userId === user?.id))
+                    if(currUser.unreadCount > 0){
+                        chatStore.setUnreadMessage(currUser.conversationId, currUser.unreadCount);
+                    }
+                })
+
+                // setConversation(response.data.conversation);
+            }
+            catch(e:any){
+                console.log(e);
+            }
+    }
 
   send(payload:any){
     if(!this.socket || this.socket.readyState !== WebSocket.OPEN){

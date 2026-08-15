@@ -1,23 +1,23 @@
-"use client";
+// "use client";
 
-import { useEffect } from "react";
+// import { useEffect } from "react";
 
-import { dashboardManager } from "../lib/socket/DashboardManager"
+// import { dashboardManager } from "../lib/socket/DashboardManager"
 
-export function DashboardProvider({children}:{children:React.ReactNode}){
+// export function DashboardProvider({children}:{children:React.ReactNode}){
 
-    useEffect(()=>{
+//     useEffect(()=>{
 
-        dashboardManager.initialize();
+//         // dashboardManager.initialize();
 
-        return ()=>{
+//         return ()=>{
 
-            dashboardManager.destroy();
+//             // dashboardManager.destroy();
 
-        };
+//         };
 
-    },[]);
+//     },[]);
 
-    return children;
+//     return children;
 
-}
+// }

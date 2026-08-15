@@ -25,7 +25,7 @@ import { chatManager } from "../../lib/socket/ChatManager";
 
 
 export const ChatArea = ()=>{
-    const socket = useSocket();
+  
     const conversationId = useChatStore((state)=>state.selectedConversation);
     const setConversationId = useChatStore((state)=>state.setSelectedConversation);
     const user = useStore((state)=>state.user);
@@ -66,9 +66,9 @@ export const ChatArea = ()=>{
     }, [storeMessages])
 
     function sendMessage(){
-        console.log("hiii---", socket);
-        if(!socket) return;
-        console.log("nyee---", socket);
+        // console.log("hiii---", socket);
+        // if(!socket) return;
+        // console.log("nyee---", socket);
         try{
             const message = inputMessageRef.current?.value
             if(!message){
@@ -126,7 +126,7 @@ export const ChatArea = ()=>{
           type:"typing",
           conversationId,
         }
-        socket.send(payload);
+        chatManager.sendMessage(payload);
         // const type = "typing"
         // sendUserTyping(socket, type, payload);
 
@@ -140,7 +140,7 @@ export const ChatArea = ()=>{
             type : "stop_typing",
             conversationId,
           }
-          socket.send(payload);
+          chatManager.sendMessage(payload);
           // const type = "stop_typing";
           // sendUserTyping(socket, type, payload);
         }, 2000);

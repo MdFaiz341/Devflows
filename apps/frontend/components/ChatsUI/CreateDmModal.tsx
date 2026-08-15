@@ -31,7 +31,7 @@ export const CreateDmModal = (props:PropsTye)=>{
     const setSideConversationOrder = useChatStore((state)=>state.setSideConversationOrder);
     const sideConversationOrder = useChatStore((state)=>state.sideConversationOrder);
     // const { socket } = useSocket();
-    const socket = useSocket();
+    // const socket = useSocket();
 
     async function chatHandler(){
       const email = emailInput.current?.value

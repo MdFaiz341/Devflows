@@ -33,7 +33,7 @@ export default function CreateGroupModal({openGroupModal , setOpenGroupModalActi
   const sideConversationOrder = useChatStore((state)=>state.sideConversationOrder);
   const setSideConversationOrder = useChatStore((state)=>state.setSideConversationOrder);
   // const { socket } = useSocket();
-  const socket = useSocket();
+  // const socket = useSocket();
 
 
   // const filteredFriends = useMemo(() => {

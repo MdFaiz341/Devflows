@@ -127,6 +127,7 @@ class ChatManager{
         console.log("CoversationIds-------", conversationIds);
 
         conversationIds.forEach((id)=>{
+            console.log("Join_Conver---");
             const payload = {
                 type: "join_conversation",
                 conversationId : id,

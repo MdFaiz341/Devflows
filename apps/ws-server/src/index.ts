@@ -253,6 +253,7 @@ wss.on("connection", async(socket, request)=>{
             if(parsed.type === "leave_conversation"){
                 const { conversationId } = parsed;
                 if(!conversationId) return;
+                console.log("Leave-conversation--", parsed);
 
                 // const room = conversation.get(conversationId);
                 // if(!room) return;
@@ -271,24 +272,25 @@ wss.on("connection", async(socket, request)=>{
                     if(usersIdSet?.size === 0){
                         onlineUsers.delete(conversationId);
                     }
-                    else    // leave karne pe message jana chahiye Or Shayad delete_chat se hoga
+                    // leave karne pe message jana chahiye Or Shayad delete_chat se hoga
+                
+                    // totalUser ka set ko return karado bcz usme active user ka ID hai
+                    // and frontend pe map chala kar check kar lenge jo bhi userid match wo online else offline
+                    // and uska size bhi top pe dikhane ke liye
+                    if(!usersIdSet) return;
+                    const totalUserIDs = [...usersIdSet]
+                    const activeUser = usersIdSet?.size;
+                    const payload = JSON.stringify({
+                        type : "totalUser",
+                        message: {
+                            activeUser,
+                            totalUserIDs,
+                            conversationId,
+                        },
+                    })
+                    console.log("Leave_conversation hit---");
+                    broadCastConversation(payload, conversationId); 
                     
-                        // totalUser ka set ko return karado bcz usme active user ka ID hai
-                        // and frontend pe map chala kar check kar lenge jo bhi userid match wo online else offline
-                        // and uska size bhi top pe dikhane ke liye
-                        if(!usersIdSet) return;
-                        const totalUserIDs = [...usersIdSet]
-                        const activeUser = usersIdSet?.size;
-                        const payload = JSON.stringify({
-                            type : "totalUser",
-                            message: {
-                                activeUser,
-                                totalUserIDs,
-                                conversationId,
-                            },
-                        })
-                        broadCastConversation(payload, conversationId); 
-                    }
                 // }
             }
 
@@ -301,6 +303,10 @@ wss.on("connection", async(socket, request)=>{
                 }
 
                 onlineUsers.get(conversationId)?.add(user.userId);
+                // if(!conversation.has(conversationId)){
+                //     conversation.set(conversationId, new Set());
+                // }
+                // conversation.get(conversationId)?.add(socket);
 
                 const usersIdSet = onlineUsers.get(conversationId);
 
@@ -324,7 +330,7 @@ wss.on("connection", async(socket, request)=>{
                 const {conversationId} = parsed;
                 if(!conversationId) return;
 
-                console.log("parsed---", parsed);
+                console.log("join-conversation---", parsed);
 
                 joinConversation(conversationId, socket);
             }
@@ -341,7 +347,7 @@ wss.on("connection", async(socket, request)=>{
                 })
 
                 if(!member) return;
-
+                console.log("new messae tak ayay--");
                 // save in DB
                 const savedMessages = await client.message.create({
                     data:{
@@ -405,7 +411,7 @@ wss.on("connection", async(socket, request)=>{
 
             if(parsed.type === "delete_chat"){
                 const {conversationId} = parsed;
-                console.log("delete_chat");
+                console.log("delete_chat", parsed);
                 if(!conversationId) return;
 
                 const member = await client.conversationMember.delete({
@@ -461,6 +467,21 @@ wss.on("connection", async(socket, request)=>{
                 
                 // broadcast
                 broadCastConversation(payload, conversationId);
+
+                const live_user = onlineUsers.get(conversationId);
+                if(!live_user) return;
+                const totalUser = [...live_user];
+                const payload2 = JSON.stringify({
+                    type : "totalUser",
+                    message: {
+                        activeUser : live_user.size,
+                        totalUserIDs : totalUser,
+                        conversationId
+                    },
+                });
+
+                broadCastConversation(payload2, conversationId);                
+
                 console.log("Yaha tak aaye");
             }
 
@@ -525,7 +546,7 @@ wss.on("connection", async(socket, request)=>{
                 console.log("members: ", data.member);
 
                 data.member.forEach((ids:any)=>{
-                    console.log("broadcast to:",ids.userId, "socket:", groupUsers.get(ids.userId));
+                    // console.log("broadcast to:",ids.userId, "socket:", groupUsers.get(ids.userId));
                     console.log("conversationId--- ", conversationId);
                     console.log("data==conversationId--- ", data.conversationId);
                     const clientSocket = groupUsers.get(ids.userId);
@@ -533,7 +554,11 @@ wss.on("connection", async(socket, request)=>{
                     console.log("hiii");
 
                     conversation.get(data.conversationId)?.add(clientSocket);
-                    socketRooms.get(clientSocket)?.add(data.conversationId);
+                    if(!socketRooms.has(clientSocket)){
+                        console.log("SocketRoom me present nahi tha---");
+                        socketRooms.set(clientSocket, new Set());
+                    }
+                    socketRooms.get(clientSocket)!.add(data.conversationId);
 
                     clientSocket.send(JSON.stringify({
                         type : "chatCreation",
@@ -792,6 +817,7 @@ function broadCastInCanvas(payload:string, roomId:number){
 
 async function joinConversation(conversationId : number, socket : WebSocket){
     const user = multiUsers.get(socket);
+    console.log("JoinConevrsation func hit uper me---");
     if(!user) return;
 
     const member = await client.conversationMember.findFirst({
@@ -845,7 +871,7 @@ async function joinConversation(conversationId : number, socket : WebSocket){
             conversationId
         },
     });
-
+    console.log("Join wala function hit hua----");
     broadCastConversation(payload, conversationId);
 }
 
@@ -901,6 +927,7 @@ async function joinConversation(conversationId : number, socket : WebSocket){
 
 function broadCastConversation(payload : string, conversationId:number){
     const roomSockets = conversation.get(conversationId);
+    // console.log("roomSockets--", roomSockets);
     if(!roomSockets) return;
     // console.log("BROADCASTING", conversationId);
 
