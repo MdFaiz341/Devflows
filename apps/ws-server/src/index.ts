@@ -44,7 +44,6 @@ const canvasSocketRooms = new Map<WebSocket, Set<number>>();
 
 wss.on("connection", async(socket, request)=>{
     socket.on("error", console.error);
-    console.log("user connected-ws");
 
     const cookie = parse(request.headers.cookie || "");
     const token = cookie.accessToken;
@@ -54,7 +53,6 @@ wss.on("connection", async(socket, request)=>{
         return;
     }
     const userData = await verifyToken(token);
-    console.log("token")
 
     if(!userData || !userData.id){
         socket.close();
@@ -77,27 +75,17 @@ wss.on("connection", async(socket, request)=>{
     socket.on("message", async(data)=>{
         try{
             const parsed = JSON.parse(data as unknown as string);
-            console.log("parsed: ", parsed);
 
             const user = multiUsers.get(socket);
             if(!user) return;
 
             if(parsed.type === "join_canvasroom"){
                 if(!parsed.roomId) return;
-                console.log("join_canvasroom-------Server");
-                console.log("parsed Data---", parsed);
                 joinCanvasRoom(socket, Number(parsed.roomId), user.userId);
             }
 
             if(parsed.type === "new_Shape"){
-                console.log("new_Shape-- ", parsed);
-                // console.log(parsed);
-                console.log("roomId: ", parsed.roomId);
-                console.log("pageNo: ", parsed.page);
-
                 const roomIdInt = Number(parsed.roomId);
-                console.log("roomIdInt", roomIdInt);
-
                 
                 if(!roomIdInt){
                     return;
@@ -142,7 +130,6 @@ wss.on("connection", async(socket, request)=>{
             }
 
             if(parsed.type === "delete_Shape"){
-                console.log("delete_Shape-- ", parsed);
                 const roomId = Number(parsed.roomId);
 
                 const ownerOfTheShape = await client.shape.findUnique({
@@ -150,9 +137,6 @@ wss.on("connection", async(socket, request)=>{
                         id : parsed.shapeId,
                     }
                 })
-
-                console.log(ownerOfTheShape?.userId);
-                console.log(user.userId);
 
                 if(ownerOfTheShape?.userId !== user.userId){
                     socket.send(JSON.stringify({
@@ -189,7 +173,6 @@ wss.on("connection", async(socket, request)=>{
             }
 
             if(parsed.type === "leave_canvas"){
-                console.log("leave_canvas----", parsed);
                 const roomId = Number(parsed.roomId);
                 const allSocket = canvasConversation.get(roomId);
                 allSocket?.delete(socket);
@@ -217,8 +200,6 @@ wss.on("connection", async(socket, request)=>{
             }
 
             if(parsed.type === "shape_History"){
-                console.log("Shape_History--- ", parsed);
-
 
                 const historyData = await client.page.findUnique({
                     where:{
@@ -242,7 +223,6 @@ wss.on("connection", async(socket, request)=>{
             if(parsed.type === "leave_conversation"){
                 const { conversationId } = parsed;
                 if(!conversationId) return;
-                console.log("Leave-conversation--", parsed);
 
                 // const room = conversation.get(conversationId);
                 // if(!room) return;
@@ -277,7 +257,7 @@ wss.on("connection", async(socket, request)=>{
                             conversationId,
                         },
                     })
-                    console.log("Leave_conversation hit---");
+
                     broadCastConversation(payload, conversationId); 
                     
                 // }
@@ -319,8 +299,6 @@ wss.on("connection", async(socket, request)=>{
                 const {conversationId} = parsed;
                 if(!conversationId) return;
 
-                console.log("join-conversation---", parsed);
-
                 joinConversation(conversationId, socket);
             }
 
@@ -336,7 +314,7 @@ wss.on("connection", async(socket, request)=>{
                 })
 
                 if(!member) return;
-                console.log("new messae tak ayay--");
+
                 // save in DB
                 const savedMessages = await client.message.create({
                     data:{
@@ -400,7 +378,6 @@ wss.on("connection", async(socket, request)=>{
 
             if(parsed.type === "delete_chat"){
                 const {conversationId} = parsed;
-                console.log("delete_chat", parsed);
                 if(!conversationId) return;
 
                 const member = await client.conversationMember.delete({
@@ -418,10 +395,7 @@ wss.on("connection", async(socket, request)=>{
                 conversation.get(conversationId)?.delete(socket);
                 onlineUsers.get(conversationId)?.delete(user.userId);
 
-                // console.log("conversation-Socket--", conversation.get(conversationId));
-
                 const allRooms = socketRooms.get(socket);
-                console.log("allRooms: ", allRooms);
                 if(!allRooms?.has(conversationId)) return;
 
                 allRooms.delete(conversationId);
@@ -437,7 +411,6 @@ wss.on("connection", async(socket, request)=>{
                         conversation:true,
                     }
                 })
-                console.log("delete ke uper")
                 const payload = JSON.stringify({
                     type : "delete_chat",
                     message : {
@@ -470,52 +443,15 @@ wss.on("connection", async(socket, request)=>{
                 });
 
                 broadCastConversation(payload2, conversationId);                
-
-                console.log("Yaha tak aaye");
             }
 
             if(parsed.type === "chatCreation"){
                 const {conversationId, data} = parsed;
-                // const {groupName, memberIds} = parsed;
                 if(!conversationId || !data) return;
-
-                // if(!groupName || memberIds.length === 0) return;
-                // console.log("groupName:", groupName);
-                // console.log("membersIds:", memberIds);
 
                 if(!conversation.has(conversationId)){
                     conversation.set(conversationId, new Set());
                 };
-
-                // if(!groupUsers.has(user.userId)){
-                //     console.log("Group User me set nahi tha----");
-                //     groupUsers.set(user.userId, socket);
-                // }
-
-                // friendDetails abhi nahi zustand me filter karna hoga Shayd bcz yaha filter kar diya faiz ko to sab ko bina faiz ke friend pahunchega like harkirat ko harkirat bhi pahunch jayega but faiz pahunchna chiye the 
-                // so i think UI pe member ko filter karna much better according to their user.id;
-
-                // member open karke dekhlo same User dikh raha hai or curr userId ke ilava other member dikh rahe hai 
-
-                // http me dm/creation ko fix karlo like "group/create" ki tarah only return data ={}; not whole Object See "group/create"
-
-                // const group = await createGroup(groupName, memberIds, socket);
-                // if(!group) return;
-
-                // const data = {
-                //     conversationId : group.id,
-                //     createdAt : group.createdAt,
-                //     image : group.image || null,
-                //     member : group.members,
-                //     lastMessage : "",
-                //     type : group.type,
-                //     name : group.name,
-                //     updatedAt : group.updatedAt,
-                // }
-
-                // if(!conversation.has(data.conversationId)){
-                //     conversation.set(data.conversationId, new Set());
-                // };
 
                 const savedMessages = await client.message.create({
                     data:{
@@ -528,23 +464,12 @@ wss.on("connection", async(socket, request)=>{
                     }
                 })
 
-                // 1)  Event listner fail ho jaa rha hai baar baar when i am creating new-group/DM maybe groupUsers me socket insert nahi ho raha hai
-                //     Or apna Event-listner sahi se kaam nahi kar rah hai
-                // 2)  Jab user dlete kar rah hai chat ko to other user ko member me wo deleted user nahi dikhna chaiye so filter that user
-
-                console.log("members: ", data.member);
-
                 data.member.forEach((ids:any)=>{
-                    // console.log("broadcast to:",ids.userId, "socket:", groupUsers.get(ids.userId));
-                    console.log("conversationId--- ", conversationId);
-                    console.log("data==conversationId--- ", data.conversationId);
                     const clientSocket = groupUsers.get(ids.userId);
                     if(!clientSocket) return;
-                    console.log("hiii");
 
                     conversation.get(data.conversationId)?.add(clientSocket);
                     if(!socketRooms.has(clientSocket)){
-                        console.log("SocketRoom me present nahi tha---");
                         socketRooms.set(clientSocket, new Set());
                     }
                     socketRooms.get(clientSocket)!.add(data.conversationId);
@@ -554,7 +479,6 @@ wss.on("connection", async(socket, request)=>{
                         conversationId : data.conversationId,
                         message:{
                             data : {
-                                // conversationId : data.conversationId,
                                 ...data
                             }
                         }
@@ -659,13 +583,12 @@ wss.on("connection", async(socket, request)=>{
     socket.on("close", (code, reason)=>{
         const user = multiUsers.get(socket);
         if(!user) return;
-        console.log("user disconnected");
+
         // When websocket disconnects Remove socket from ALL rooms.
         // remove from allrooms to prevent memory leak
         groupUsers.delete(user.userId);
 
         const rooms = socketRooms.get(socket);
-        console.log("user disconnected server", code, reason.toString());
  
         rooms?.forEach((conversationId)=>{
             const roomsSocket = conversation.get(conversationId);
@@ -702,8 +625,6 @@ wss.on("connection", async(socket, request)=>{
 
 
 async function joinCanvasRoom(socket:WebSocket, roomId:number, userId:string) {
-    console.log("userId-- ", userId);
-    console.log("roomId-- ", roomId);
     const userExist = await client.canvasMember.findUnique({
         where:{
             roomId_userId:{
@@ -757,14 +678,10 @@ async function joinCanvasRoom(socket:WebSocket, roomId:number, userId:string) {
     const totalUserIDs = canvasRoomOnline.get(roomId);
     if(!totalUserIDs) return;
 
-    console.log("totalUser---", totalUserIDs);
-    // const onlineUsers = [...totalUserIDs];
-
     const payload = JSON.stringify({
         type : "canvasRoom_online",
         message:{
             roomId,
-            // onlineUsers : totalUserIDs.length,
             users: [...totalUserIDs.values()]
         }
     })
@@ -806,7 +723,6 @@ function broadCastInCanvas(payload:string, roomId:number){
 
 async function joinConversation(conversationId : number, socket : WebSocket){
     const user = multiUsers.get(socket);
-    console.log("JoinConevrsation func hit uper me---");
     if(!user) return;
 
     const member = await client.conversationMember.findFirst({
@@ -860,7 +776,6 @@ async function joinConversation(conversationId : number, socket : WebSocket){
             conversationId
         },
     });
-    console.log("Join wala function hit hua----");
     broadCastConversation(payload, conversationId);
 }
 
@@ -916,17 +831,10 @@ async function joinConversation(conversationId : number, socket : WebSocket){
 
 function broadCastConversation(payload : string, conversationId:number){
     const roomSockets = conversation.get(conversationId);
-    // console.log("roomSockets--", roomSockets);
+
     if(!roomSockets) return;
-    // console.log("BROADCASTING", conversationId);
 
     roomSockets.forEach((clientSocket)=>{
-        // if(clientSocket.readyState === WebSocket.OPEN){
-        // }
-        // websocket se connect bas ho jaye ham usko broadcast karte jayega bcz initially 
-        // hitted joi_conversation on dashboard button (chat-rooms) so socket connected now broadcast
-        // freely and i have removed leave conversation bcz when user remove from Map of conversation
-        // then new meesgae not appaer at top when friend send message
 
         clientSocket.send(payload);
     });

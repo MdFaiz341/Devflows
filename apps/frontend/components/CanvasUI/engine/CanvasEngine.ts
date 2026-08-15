@@ -99,22 +99,13 @@ export class CanvasEngine{
         // const socket = useSocket();
         if(!ctx) throw new Error("canvas not supported");
         this.ctx = ctx;
-        console.log("inside Engine-------");
-        // this.pointerEventHandler();
-        // this.pageShape = {};
         this.onToolChange = onToolChange;
         this.shapeSetting = shapeSetting;
 
-        // first initialize store where the shape is going to store
+        // ============= First initialize store where the shape is going to store =======================
         this.store = new CanvasStore(this.currRoomId);
-        // fetch all shapes and shapes[] and send to RenderManagaer and it send to ShapeRenderManager
 
         this.cursor = new CursorManager(canvas);
-
-        console.log("Engine Store", this.store);
-
-        // // create instance of shapeRenderManager once;
-        // this.shapeRender = new ShapeRenderManager(ctx);
 
         // ---------------------Registry Instance:-----------
         const registry = new Map<ToolType, ShapeRender<Shape>>();
@@ -142,36 +133,25 @@ export class CanvasEngine{
 
         this.inputManager = new InputManager(this.cursor, canvas, this.toolManager, this.onToolChange);
 
-        console.log("inputManager created:---")
-        
-        // send whole CanvasStore instance bcz on every update or add Shape[] will change so direct 
-        // whole shape access and and store RenderManager instance into listner()=>void then call that 
-        // listner on every changes in Shape[] of CanvasStore
+
         this.renderer = new RenderManager(this.registry, this.ctx, this.canvas, this.store);
 
+        // ====================== Notification Manager ===================================
         this.notificationManager = new NotificationManager;
         this.notificationManager.start();
-        console.log("NotificationManager Start----");
+
+        // ====================== Canvas_Sync_Manager =======================================
         this.canvasSyncManager = new CanvasSyncManager(this.store);
         this.canvasSyncManager.start();
         this.canvasSyncManager.joinCnvasRoom(this.currRoomId);
         
         this.resizeCanvas();
-        console.log("Render Store", this.store);
         
-        // this.renderer.start();
 
         window.addEventListener("resize", this.resizeCanvas);
-        // this.rc = rough.canvas(canvas);
 
         ctx.restore();
-
-        console.log("Engine Start------");
     }
-
-    // private pointerEventHandler(){
-    //     this.canvas.onpointerdown(e:PointerEvent)
-    // }
 
     setTool(shape : ToolType){
         this.toolManager.setCurrentTool(shape);
@@ -190,15 +170,11 @@ export class CanvasEngine{
     removeShape(){
         const selectedShapeId = this.store.getSelectedShapeId();
         if(!selectedShapeId) return;
-        console.log(this.store.getCurrentPage());
         this.store.removeShape(this.store.getCurrentPage(), selectedShapeId, true);
     }
 
 
-
     private resizeCanvas = ()=>{
-        // this.canvas.width = this.canvas.clientWidth;
-        // this.canvas.height = this.canvas.clientHeight;
         const dpr = window.devicePixelRatio || 1;
         this.canvas.width = this.canvas.clientWidth * dpr;
         this.canvas.height = this.canvas.clientHeight * dpr;
@@ -206,7 +182,6 @@ export class CanvasEngine{
     }
 
     destroy(){
-        console.log("Engine close------");
         this.canvasSyncManager.leaveRoom(this.currRoomId);
         this.canvasSyncManager.stop();
         this.notificationManager.stop();

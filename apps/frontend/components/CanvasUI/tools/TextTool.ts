@@ -19,14 +19,12 @@ export class TextTool{
         private ctx : CanvasRenderingContext2D,
         private onToolChange : (tool:ToolType)=>void,
     ){}
-    // add undo/redo, move shape, select shape, delet shape, add chatbox and websocket
+ 
     pointerDown(e:PointerEvent){
 
         const stroke = useCanvasStore.getState().stroke;
         const strokeWidth = useCanvasStore.getState().strokeWidth;
         const textSize = useCanvasStore.getState().textSize;
-
-        console.log("TextSize---", textSize);
 
         this.startX = Math.round(e.offsetX);
         this.startY = Math.round(e.offsetY);
@@ -95,7 +93,7 @@ export class TextTool{
         }
 
         if(this.activeTextArea){
-            console.log("trim:- ", this.activeTextArea.value.trim());
+
             if(this.activeTextArea.value.trim()){
                 save(this.activeTextArea, this.prevX, this.prevY);
             }

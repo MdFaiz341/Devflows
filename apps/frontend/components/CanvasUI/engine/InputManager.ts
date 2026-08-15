@@ -14,7 +14,6 @@ export class InputManager {
     constructor(cursor:CursorManager, canvas:HTMLCanvasElement, toolManager:ToolManager, onToolChange : (e:ToolType)=>void) {
         this.canvas = canvas
         this.toolManager = toolManager;
-        console.log("InputManager instance", this);
         this.attachListeners();
         this.onToolChange = onToolChange;
         this.cursor = cursor;
@@ -65,7 +64,6 @@ export class InputManager {
 
 
     destroy(){
-        console.log("Destroy InputManager", this);
         this.canvas.removeEventListener(
             "pointerdown",
             this.handlePointerDown

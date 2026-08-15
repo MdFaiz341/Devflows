@@ -130,7 +130,6 @@ export class ShapeRenderManager{
     private drawText(shape:Text){
         this.ctx.textBaseline = "top"
         this.ctx.font = `${shape.fontWeight} ${shape.fontSize}px ${shape.fontFamily}`;
-        console.log("Text Render me hai-----");
         this.ctx.fillStyle = shape.color;
         this.ctx.textAlign = shape.textAlign;
         this.ctx.fillText(

@@ -27,8 +27,6 @@ export class RectangleTool{
         const width = e.offsetX - this.startX;
         const height = e.offsetY - this.startY;
 
-        console.log(width, height);
-        console.log("Rectangle store", this.store);
         // Create preview rectangle
         const preview : Rectangle = {
             id : "preview",

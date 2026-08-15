@@ -11,13 +11,11 @@ export class RectangleRenderer implements ShapeRender<Rectangle>{
     ){}
 
     draw(shape: Rectangle): void {
-        console.log("Draw--- ", shape);
         this.ctx.save();
 
         this.ctx.strokeStyle = shape.stroke;
 
         this.ctx.lineWidth = shape.strokeWidth;
-        console.log(shape.fill);
         this.ctx.fillStyle = shape.fill;
         this.ctx.fillRect(shape.x, shape.y, shape.width, shape.height);
 

@@ -28,12 +28,7 @@ export default function CreateGroupModal({openGroupModal , setOpenGroupModalActi
   const [search, setSearch] = useState("");
   const sidebarDefaultConversation = useChatStore((state)=>state.sidebarDefaultConversation);
   const [dmsIds, setDmsIds] = useState<number[]>(dms);
-  const user = useStore((state)=>state.user);
-  const setSidebarDefaultConversation = useChatStore((state)=>state.setSidebarDefaultConversation)
-  const sideConversationOrder = useChatStore((state)=>state.sideConversationOrder);
-  const setSideConversationOrder = useChatStore((state)=>state.setSideConversationOrder);
-  // const { socket } = useSocket();
-  // const socket = useSocket();
+
 
 
   // const filteredFriends = useMemo(() => {
@@ -50,9 +45,7 @@ export default function CreateGroupModal({openGroupModal , setOpenGroupModalActi
 
 
   function searchUser(){
-    // console.log("search: ", searchRef.current?.value);
-    // const search = searchRef.current?.value;
-    console.log("search: ", search);
+
     if(!search){
       setDmsIds(dms);
       return;
@@ -60,10 +53,8 @@ export default function CreateGroupModal({openGroupModal , setOpenGroupModalActi
 
     const filteredFriendsIds = dms.filter((ids)=>{
       const friend = sidebarDefaultConversation[ids];
-      console.log("friend Filter: ", friend);
       return friend?.member[0].user.firstname.toLowerCase().includes(search.toLowerCase());
     })
-    console.log("fliter-Friends: ", filteredFriendsIds);
     setDmsIds(filteredFriendsIds);
   }
 
@@ -88,7 +79,6 @@ export default function CreateGroupModal({openGroupModal , setOpenGroupModalActi
         return;
     }
     try{
-        // if(!socket || socket.readyState !== WebSocket.OPEN) return;
 
         setLoading(true);
         const payloadData = {
@@ -98,7 +88,6 @@ export default function CreateGroupModal({openGroupModal , setOpenGroupModalActi
 
         const response = await api.post("/group/create", payloadData);
         
-        console.log("response-group: ", response.data.conversation);
         const val = response.data.conversation;
 
         const payload = {
@@ -107,7 +96,6 @@ export default function CreateGroupModal({openGroupModal , setOpenGroupModalActi
             data : val,
         }
         chatManager.sendMessage(payload);
-        // chatCreation(socket, payload);
 
         await new Promise((res)=> setTimeout(res, 2000));
         toast.success(response.data.message);

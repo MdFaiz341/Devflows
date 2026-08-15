@@ -40,20 +40,11 @@ export const ChatArea = ()=>{
     const sideConversationOrder = useChatStore((state)=>state.sideConversationOrder);
     const selectedChat = useChatStore((state)=>state.sidebarDefaultConversation[conversationId || -1]);
 
-    console.log("conversationId:--- ", conversationId)
-    console.log("selectedChat2:--- ", selectedChat)
-    console.log("StoreMessage: ", storeMessages);
 
-    // message load nahi ho raha hai and listner ka issue abhi bhi hai
-
-  // Two ways to write AddMember logic:-
-  //   1) => when member added so it should appear at members list on ChatArea Page so we can write backend logic in ws-Server and broadCast to all so user click on memeber button so it shows all member wo is previously and recently added but it is fast to appear on page
-  //   2) => add login in http-backend and again hit "/allConversation" and setSelectedChat = null so when user click on dev-community so modified chat get selected with all user (prev and recent) may be it takes time 
 
     const typing = useChatStore((state)=>state.typing[conversationId || -1])
     const typingIds = Object.keys(typing || {});
     const data = Object.entries(typing || {})
-    // console.log("Typing Entries: ", data);
 
     const typingTimeOut = useRef<NodeJS.Timeout | null>(null);
     const bottomRef = useRef<HTMLDivElement | null>(null);
@@ -66,18 +57,15 @@ export const ChatArea = ()=>{
     }, [storeMessages])
 
     function sendMessage(){
-        // console.log("hiii---", socket);
-        // if(!socket) return;
-        // console.log("nyee---", socket);
+
         try{
             const message = inputMessageRef.current?.value
             if(!message){
                 return;
             }
 
-            console.log("message: ", message);
 
-            if(conversationId){     // selectedChat?.conversationId
+            if(conversationId){  
                 if(!user || !conversationId) return;
 
                 const clientID  = crypto.randomUUID();
@@ -156,11 +144,9 @@ export const ChatArea = ()=>{
       setLoading(true);
       const payload = {
         type : "delete_chat",
-        conversationId,  // : selectedChat.conversationId,
+        conversationId, 
       }
       chatManager.sendMessage(payload);
-      // deleteConversation(socket, payload);
-      console.log("delete-conversation", sideConversationOrder);
 
       await new Promise((res)=>setTimeout(res, 2000));
 
@@ -168,27 +154,12 @@ export const ChatArea = ()=>{
       setSideConversationOrder(filterIds);
 
       setConversationId(null);
-      // setSelectedChatAction(null);
 
       toast.success("Successfully deleted")
       setActive(false);
       setLoading(false);
 
-      
-      // delete karna UI pe direct yaha per defaultSIde se delete karde and conversationOrder me se bhi and backend mese to conversation delete ho hi gaya hai
-      // or clientID bhejo with conversationId (delete_chat) and server return back clientID if match then useChatStore me ek void func bana ke update kar dege
-
     }
-
-  // console.log(
-  //   storeMessages?.map(msg => ({
-  //         id: msg.id,
-  //         clientId: msg.clientID
-  //       }))
-  //     );
-    
-  //  we can update the conversationMember after copy all previous member and add new one into the conversationMember with same conversationId so that conversationMembers [] becomes [...prev, {newUser}]
-  // Add Leave room logic so user can leave that group or dm
 
     return(
         <main className="flex-1 flex flex-col bg-[#0B141A] relative">

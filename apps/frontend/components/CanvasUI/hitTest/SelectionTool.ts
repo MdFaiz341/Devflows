@@ -20,9 +20,8 @@ export class SelectionTool{
     ){}
 
     pointerDown(e:PointerEvent){
-        console.log("Seletion Tool----");
         const shape = this.testManager.findShape(e.offsetX, e.offsetY);
-        console.log("PointDown Select---- ", shape);
+        
         if(!shape){
             this.store.selectShape(null);
             return;

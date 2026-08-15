@@ -25,10 +25,8 @@ export class CanvasStore{
     constructor(
         private currRoomId : number,
     ){
-        // this.shape = [];
         this.pageWithShape.set(1, []);
         this.preview = null;
-        console.log("CanvasStore created", this);
     }
     getCurrentPage(){
         return this.currentPage;
@@ -41,11 +39,7 @@ export class CanvasStore{
     setCurrentPage(page:number){
         this.currentPage = page;
         if(!this.pageWithShape.has(page)){
-            console.log("SetCurrPage hitt--- ");
-            // this.pageWithShape.set(page, []);
-            // fet data from backend is shape exir return shape[] else [];
-            // const shapes = await GetAllShapes(this.currRoomId, this.currentPage);
-            // this.pageWithShape.set(this.currentPage, shapes);
+
             this.emit(
                 "currPageHistory",
                 {
@@ -58,7 +52,6 @@ export class CanvasStore{
     }
 
     setPreview(shape:Shape){
-        console.log("Preview Updated", shape);
         this.preview = shape;
         this.notify();
     }
@@ -73,7 +66,6 @@ export class CanvasStore{
     }
 
     selectShape(id:string | null){
-        console.log("set Shape ID:--- ", id);
         this.selectedShapeId = id;
         this.notify();
     }
@@ -136,7 +128,6 @@ export class CanvasStore{
 
     subscribe(listener : ()=>void){
         this.listeners.add(listener);
-        console.log("Subscribed")
 
         return ()=>{
             this.listeners.delete(listener);
@@ -148,7 +139,6 @@ export class CanvasStore{
     }
 
     private notify(){
-        // console.log("notify size: ", this.listeners.size)
         for(const listener of this.listeners){
             listener();
         }
@@ -202,16 +192,13 @@ export class CanvasStore{
             this.pageWithShape.set(page, []);
         }
         const allShapes = this.pageWithShape.get(page);
-        console.log("Add Shape page--- ", page, shape, broadcast);
         const isExist = allShapes?.some((val)=>val.id === shape.id);
         if(isExist === false){
-            console.log("Not Exit, so Add Shape----");
             allShapes?.push(shape);
         }
         this.notify();
 
         if(broadcast){
-            console.log("Broadcast---");
             this.emit(
                 "shapeAdded", 
                 {
@@ -235,13 +222,12 @@ export class CanvasStore{
             )
         }
         else{
-            console.log("Yaha tak to aaya---");
             const shapes = this.pageWithShape.get(page);
-            console.log(shapes);
+
             if(!shapes) return;
-            console.log("ShapeId--- ", shapeId);
+
             const index = shapes.findIndex(s => s.id === shapeId);
-            console.log(index);
+        
             if(index == -1) return;
 
             shapes.splice(index, 1);
@@ -272,13 +258,6 @@ export class CanvasStore{
     }
 
     shapeHistory(shape:Shape[], page:number){
-        // if(!this.pageWithShape.has(page)){
-        //     this.pageWithShape.set(page, []);
-        // }
-        // this.pageWithShape.set
-        // // allShapes = shapes
-        // const allShapes = shape;
-        console.log("Shapes-- ", shape);
         this.pageWithShape.set(page, shape);
         this.notify();
     }

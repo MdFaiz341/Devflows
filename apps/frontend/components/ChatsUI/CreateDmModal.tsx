@@ -41,10 +41,9 @@ export const CreateDmModal = (props:PropsTye)=>{
         return;
       }
       try{ 
-        // if(!socket || socket.readyState !== WebSocket.OPEN) return;
+
         setLoading(true);
         const response = await api.post("/dm/create", {email});
-        console.log("response-DM: ", response.data.conversation);
 
         const val = response.data.conversation;
         
@@ -62,7 +61,6 @@ export const CreateDmModal = (props:PropsTye)=>{
         props.setAddContact(false)
       }
       catch(e:any){
-        console.log(e);
         if(e.status === 500){
           toast.error(e.response.data.message);
         }else{

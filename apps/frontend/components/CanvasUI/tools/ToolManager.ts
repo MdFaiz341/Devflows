@@ -14,7 +14,6 @@ export class ToolManager{
 
     setCurrentTool(val : ToolType){
         this.currentTool = val;
-        console.log("currntTool----", this.currentTool);
         const textTool = this.allTools.get("text");
     }
 
@@ -24,7 +23,7 @@ export class ToolManager{
 
     pointerDown(e:PointerEvent){
         const tool = this.getTool();
-        console.log("ToolManager tool:--- ", tool);
+
         if(!tool) return;
         tool.pointerDown(e);
     }
@@ -32,14 +31,14 @@ export class ToolManager{
     pointerMove(e:PointerEvent){
         if(this.currentTool == "text") return;
         const tool = this.getTool();
-        console.log("ToolManager tool:--- ", tool);
+
         if(!tool) return;
         tool.pointerMove(e);
     }
 
     pointerUp(e:PointerEvent){
         const tool = this.getTool();
-        console.log("ToolManager tool:--- ", tool);
+       
         if(!tool) return;
         tool.pointerUp(e);
     }
