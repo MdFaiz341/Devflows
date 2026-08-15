@@ -1,159 +1,101 @@
-# Turborepo starter
+# 🚀 DevFlows
 
-This Turborepo starter is maintained by the Turborepo core team.
+> A real-time collaborative developer workspace designed to bring communication, collaboration, and visual thinking into one platform.
 
-## Using this example
+DevFlows is a full-stack collaborative workspace where developers can communicate with their team, create conversations, and work together on a real-time collaborative canvas.
 
-Run the following command:
+The project was built to explore how real-time applications work internally — from authentication and WebSocket communication to synchronized canvas state, room management, message delivery, and collaborative editing.
 
-```sh
-npx create-turbo@latest
-```
+---
 
-## What's inside?
+## 🌐 Overview
 
-This Turborepo includes the following packages/apps:
+Modern development often requires switching between multiple applications for communication, brainstorming, documentation, and collaboration.
 
-### Apps and Packages
+DevFlows aims to bring these workflows together into a single workspace.
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+The platform provides:
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+- 💬 Real-time one-to-one and group communication
+- 🎨 Collaborative canvas for visual brainstorming
+- 🔄 Real-time synchronization between users
+- 👥 Online user presence
+- 🔔 Real-time notifications
+- 🧠 Persistent conversations and canvas data
+- 🔐 Authentication and protected application routes
+- 📄 Multiple canvas pages
+- ↩️ Shape manipulation and synchronization
+- 🏠 Centralized dashboard for managing the workspace
 
-### Utilities
+The main focus of the project is **real-time collaboration and scalable application architecture**.
 
-This Turborepo has some additional tools already setup for you:
+---
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+# ✨ Features
 
-### Build
+## 🔐 Authentication
 
-To build all apps and packages, run the following command:
+DevFlows provides an authentication system for users.
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
+Users can:
 
-```sh
-cd my-turborepo
-turbo build
-```
+- Create an account
+- Sign in
+- Access protected dashboard routes
+- Maintain an authenticated session
+- Access conversations and collaborative rooms based on their account
 
-Without global `turbo`, use your package manager:
+Protected routes prevent unauthenticated users from accessing the main workspace.
 
-```sh
-cd my-turborepo
-npx turbo build
-pnpm dlx turbo build
-pnpm exec turbo build
-```
+---
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+# 💬 Real-Time Chat
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+DevFlows includes a real-time communication system.
 
-```sh
-turbo build --filter=docs
-```
+Users can:
 
-Without global `turbo`:
+- Send direct messages
+- Participate in group conversations
+- Receive messages instantly
+- See conversation updates in real time
+- Track unread messages
+- See the latest conversation preview
+- Receive typing indicators
+- Receive real-time conversation creation events
+- Handle deleted messages/events
 
-```sh
-npx turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
+Messages are delivered through a persistent WebSocket connection.
 
-### Develop
+---
 
-To develop all apps and packages, run the following command:
+# 🎨 Collaborative Canvas
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
+DevFlows includes a real-time collaborative canvas that allows multiple users to work together in the same workspace. Users can create, edit, move, and delete shapes, while changes are synchronized with other users through WebSockets.
 
-```sh
-cd my-turborepo
-turbo dev
-```
+Key Features:
+- Real-time collaboration — Canvas changes are instantly synchronized between connected users.
+- Multiple canvas pages — Users can work with shapes organized across different pages.
+- Drawing tools — Supports rectangles, circles, lines, arrows, pencil drawings, and text.
+- Shape manipulation — Select, move, update, and delete individual shapes.
+- Real-time shape synchronization — New, updated, and deleted shapes are broadcast to users in the same canvas room.
+- Implemented server-side authorization and shape ownership, preventing users from modifying or deleting shapes owned by other users.
+- Canvas rooms — Users join a specific canvas room and only receive updates related to that workspace.
+- Online presence — Displays users currently active in a canvas room.
+- Persistent canvas data — Shapes are stored in the database and restored when users join the canvas.
+- Page-based synchronization — Shapes are maintained separately for each canvas page.
+- Event-driven architecture — CanvasStore manages local canvas state, while CanvasSyncManager handles synchronization between the store and WebSocket server.
 
-Without global `turbo`, use your package manager:
+---
 
-```sh
-cd my-turborepo
-npx turbo dev
-pnpm exec turbo dev
-pnpm exec turbo dev
-```
+# 🧠 Second Brain
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+Second Brain is a personal knowledge management application designed to help users save, organize, and revisit useful digital content in one centralized workspace. The application allows users to collect content such as YouTube videos and Twitter/X posts, making it easier to build a personal knowledge library instead of losing valuable information across different platforms.
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo dev --filter=web
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo login
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo login
-pnpm exec turbo login
-pnpm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo link
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo link
-pnpm exec turbo link
-pnpm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+Key Features:
+- Save useful content — Store YouTube videos and Twitter/X posts for future reference.
+- Centralized knowledge library — Keep saved resources organized in one place.
+- Dashboard — View and manage saved content through a dedicated dashboard.
+- Content organization — Manage collected resources based on their type and purpose.
+- Easy access — Quickly revisit previously saved resources whenever needed.
+- Personal knowledge base — Build a long-term collection of useful learning and development resources.
