@@ -59,7 +59,8 @@ export const CreateContent = ({open, setOpen, getContentApi}:{
                 type,
                 selectTags
             });
-            toast.success(resposne.data.message);
+        
+            // toast.success(resposne.data.message);
             getContentApi();
             // Clear form
             if (titleRef.current) {

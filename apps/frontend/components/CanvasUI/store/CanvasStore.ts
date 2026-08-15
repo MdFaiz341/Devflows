@@ -202,7 +202,7 @@ export class CanvasStore{
             this.pageWithShape.set(page, []);
         }
         const allShapes = this.pageWithShape.get(page);
-
+        console.log("Add Shape page--- ", page, shape, broadcast);
         const isExist = allShapes?.some((val)=>val.id === shape.id);
         if(isExist === false){
             console.log("Not Exit, so Add Shape----");
@@ -239,6 +239,7 @@ export class CanvasStore{
             const shapes = this.pageWithShape.get(page);
             console.log(shapes);
             if(!shapes) return;
+            console.log("ShapeId--- ", shapeId);
             const index = shapes.findIndex(s => s.id === shapeId);
             console.log(index);
             if(index == -1) return;

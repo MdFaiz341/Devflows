@@ -103,7 +103,7 @@ wss.on("connection", async(socket, request)=>{
 
             if(parsed.type === "new_Shape"){
                 console.log("new_Shape-- ", parsed);
-                console.log(parsed);
+                // console.log(parsed);
                 console.log("roomId: ", parsed.roomId);
                 console.log("pageNo: ", parsed.page);
 
@@ -143,7 +143,7 @@ wss.on("connection", async(socket, request)=>{
 
                 const payload = JSON.stringify({
                     type : "new_Shape",
-                    pageNo : saved.pageId,
+                    pageNo : parsed.page,
                     roomId : page.roomId,
                     shape:saved.data,
                     senderName : user.firstname,
@@ -186,11 +186,12 @@ wss.on("connection", async(socket, request)=>{
                 // broadCast to all;
                 const payload = JSON.stringify({
                     type : "delete_Shape",
+                    userId : user.userId,
                     userName : deltedShape.user.firstname,
                     image : deltedShape.user.image,
                     shapeType : deltedShape.type,
                     message: `${deltedShape.user.firstname} deleted ${deltedShape.type}`,
-                    page : deltedShape.pageId,
+                    page : parsed.page,
                     roomId,
                     shapeId : deltedShape.id
                 })

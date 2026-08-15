@@ -905,8 +905,14 @@ app.get("/allcontent", middleware, async(req, res)=>{
 app.post("/content", middleware, async(req, res)=>{
     try{
         const userId = req.userId;
-        const {link, title, type, selectTags} = req.body;
+        const {link, finalTitle, type, selectTags} = req.body;
+        const title = finalTitle;
     
+        console.log(link);
+        console.log(title);
+        console.log(type);
+        console.log(selectTags);
+        
         if(!link || !title || !type || selectTags.length === 0){
             return res.status(resStatus.NotFound).json({
                 message:"All Details required"

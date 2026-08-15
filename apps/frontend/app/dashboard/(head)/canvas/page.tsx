@@ -197,7 +197,7 @@ export default function CanvasRoomsPage() {
       
 
       {/* Create Room Modal */}
-      <CreateCanvasRoom open={open} setOpen={setOpen} setRommCreated={setRommCreated}/>
+      <CreateCanvasRoom open={open} setOpen={setOpen} setRommCreated={setRommCreated} getAllCanvas={getAllCanvas}/>
       <JoinCanvasRoom active={active} setActive={setActive}/>
       {/* { 3 dot pe click karege to ek popUp open ho jisme URL generate hoga like http://localhost:3003/dashboard/canvas/{UserId_In_String}
        In backend:-

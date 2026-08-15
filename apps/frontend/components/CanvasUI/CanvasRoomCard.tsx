@@ -28,6 +28,8 @@ export const CanvasRoomsCard = ({rooms}:{
         router.push(`/dashboard/canvas/canvasroom/${adminId}/${roomId}`);
     }
 
+    console.log("rooms--- ", rooms);
+
     return(
         <main className="max-w-7xl mx-auto px-6 py-10 mt-16">
             {/* Rooms Grid */}
@@ -53,17 +55,17 @@ export const CanvasRoomsCard = ({rooms}:{
                                         </img>
 
                                         <span className="text-xs text-green-400">
-                                        {/* ● {room.online} online */}  2 Online
+                                        {/* ● {room.online} online */}  {new Date(val.createdAt).toLocaleDateString()}
                                         </span>
                                     </div>
 
-                                    <h2 className="text-lg font-semibold mb-2">{val.name}</h2>
+                                    <h2 className="text-lg font-semibold">{val.name}</h2>
 
-                                    <p className="text-sm text-gray-400 line-clamp-2">
-                                        {/* {room.description}  */} Description.......
-                                    </p>
+                                    {/* <p className="text-sm text-gray-400 line-clamp-2">
+                                        {room.description} Description.......
+                                    </p> */}
 
-                                    <div className="mt-6 flex items-center justify-between text-sm">
+                                    <div className="mt-2 flex items-center justify-between text-sm">
                                         <span className="text-gray-500">
                                         {val.members.length} members
                                         </span>

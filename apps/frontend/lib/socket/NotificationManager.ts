@@ -1,4 +1,5 @@
 import { useCanvasStore } from "../../Storage/useCanvasStore";
+import { useStore } from "../../Storage/useStore";
 import { socketManager } from "./SocketManager";
 
 
@@ -67,10 +68,12 @@ export class NotificationManager{
     }
 
     private deletedShape = (data:any)=>{
-        console.log("Sucess Delete Shape----", data);
+        const user = useStore((state)=>state.user);
+        console.log("Success Delete Shape----", data);
         const setNotificationBar = useCanvasStore.getState().setNotificationBar
-
-        setNotificationBar(data.message);
+        if(data.userId !== user?.id){
+            setNotificationBar(data.message);
+        }
     }
 
 

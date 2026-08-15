@@ -190,6 +190,7 @@ export class CanvasEngine{
     removeShape(){
         const selectedShapeId = this.store.getSelectedShapeId();
         if(!selectedShapeId) return;
+        console.log(this.store.getCurrentPage());
         this.store.removeShape(this.store.getCurrentPage(), selectedShapeId, true);
     }
 

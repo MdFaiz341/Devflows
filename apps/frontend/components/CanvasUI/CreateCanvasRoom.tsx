@@ -13,6 +13,7 @@ interface PropsTye{
     open : boolean,
     setOpen : (e:boolean)=>void
     setRommCreated : (e:boolean)=>void
+    getAllCanvas : ()=>void
 } 
 
 export const CreateCanvasRoom = (props:PropsTye)=>{
@@ -43,6 +44,7 @@ export const CreateCanvasRoom = (props:PropsTye)=>{
 
         props.setRommCreated(true);
         toast.success(response.data.message);
+        props.getAllCanvas();
         props.setOpen(false);
       }
       catch(e:any){
@@ -98,7 +100,7 @@ export const CreateCanvasRoom = (props:PropsTye)=>{
                   />
                 </div>
 
-                <div>
+                {/* <div>
                   <label className="text-sm text-gray-400 block mb-2">
                     Description
                   </label>
@@ -108,7 +110,7 @@ export const CreateCanvasRoom = (props:PropsTye)=>{
                     placeholder="Write room description"
                     className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 outline-none resize-none focus:border-indigo-500 transition"
                   />
-                </div>
+                </div> */}
 
                 <Button
                   type="button"
