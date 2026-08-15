@@ -33,33 +33,21 @@ export default function AuthProvider({children}:{
                     email : response.data.user.email,
                     id:response.data.user.id
                 });
-                console.log("user Set")
+
                 setLoading(false);
             }
             catch(e:any){
-                console.log(e);
                 logout();
                 router.push("/signin");
                 return;
             }
 
-            //  WE CAN ADD TIME OF 10S TO CAL AAGAIN THE PROFILE 
-            // Loading lagana hai
         }
         
         if(!fetchProfileRef.current){
-            console.log("Auth privider---");
             fetchProfile();
             fetchProfileRef.current = true;
         }
-
-        // const times = setInterval(()=>{
-        //     fetchProfile();
-        // }, 20000);
-        
-        // return ()=>{
-        //     clearInterval(times);
-        // }
         
     }, []);
 

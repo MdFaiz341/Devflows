@@ -76,7 +76,6 @@ class ChatManager{
             this.handleChatCreation
         );
 
-        console.log("Start Hua----");
         this.joinAllChats();
 
     }
@@ -84,7 +83,7 @@ class ChatManager{
     stop() {
         if (!this.started) return;
         this.started = false;
-        console.log("Stop hua---");
+
         socketManager.unsubscribe(
             "new_message",
             this.handleChatMessage
@@ -124,10 +123,10 @@ class ChatManager{
 
     private joinAllChats(){
         const conversationIds = useChatStore.getState().sideConversationOrder
-        console.log("CoversationIds-------", conversationIds);
+
 
         conversationIds.forEach((id)=>{
-            console.log("Join_Conver---");
+
             const payload = {
                 type: "join_conversation",
                 conversationId : id,
@@ -137,26 +136,26 @@ class ChatManager{
     }
 
     sendMessage(payload:any){
-        console.log("ChatManager Sendmessage---", payload);
+
         socketManager.send(payload);
     }
 
 
     private handleChatMessage(data:any){
-        console.log("new Message receiving----", data);
+
         const store = useChatStore.getState();
         const current = store.messageByConversation[data.message.conversationId] || []
         
         const exists = current?.some((msg)=> (msg.clientID === data.clientID))
-        console.log("exist:---------", exists);
+
         if(exists){
-            console.log("replace---")
+
             store.replaceInstantMessage(data.message.conversationId, data.message, data.clientID)
         }
         else{
             const cached = store.messageByConversation[data.message.conversationId];
             if(cached){
-                console.log("add into new---")
+
                 store.addMessage(data.message.conversationId, data.message)
             }
         }
@@ -165,9 +164,6 @@ class ChatManager{
         store.updateConversationPreview(data.message.conversationId, data.message.text, data.message.createdAt);
     
         const conversationId = store.selectedConversation || 0;
-    
-        console.log("event-ConversId", conversationId);
-        console.log("data-ConversId", data.message.conversationId);
     
         if(data.message.conversationId !== conversationId){
             store.incrementCount(data.message.conversationId);
@@ -192,24 +188,22 @@ class ChatManager{
 
     private handleDeleteChat(data:any){
         const store = useChatStore.getState();
-        console.log("delete_chat Event---)")
-        console.log("delete_chat Event---)*******")
-        console.log("delete_chat Event---))))))))")
+
         const cached = store.messageByConversation[data.message.conversationId];
         if(cached){
         store.addMessage(data.message.conversationId, data.message);
         }
-        console.log("User---id:) ", data.message.sender.id);
+
         const defaultData = store.sidebarDefaultConversation[data.message.conversationId];
-        console.log("defULTdATA: ", defaultData);
+
         const filterFriends = defaultData?.member.filter((ids)=> ids.user.id !== data.message.sender.id);
-        console.log("FliteredFriends: ", filterFriends);
+
         if(!filterFriends) return;
         const updatedFriends = {
             ...defaultData,
             member : filterFriends,
         }
-        console.log("UpdatedFriends: ", updatedFriends);
+
         store.setSidebarDefaultConversation(data.message.conversationId, updatedFriends as any);
     }
 
@@ -220,10 +214,8 @@ class ChatManager{
             ...data.message.data,
             member : data.message.data.member.filter((ids:any)=> ids.userId !== user?.id) 
         }
-        console.log("UpdateDAta: ", updateVal);
         store.setSidebarDefaultConversation(data.conversationId, updateVal)
         store.setSideConversationOrder([data.conversationId, ...store.sideConversationOrder])
-        console.log("group-create-Event---");
     }
 }
 

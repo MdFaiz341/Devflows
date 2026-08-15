@@ -83,7 +83,6 @@ app.post("/signup", async(req, res)=>{
         })
     }
     catch(e){
-        console.log(e);
         return res.status(resStatus.Error).json({
             message:"User Not Created!"
         })
@@ -94,8 +93,7 @@ app.post("/signup", async(req, res)=>{
 app.post("/signin", async(req, res)=>{
     try{
         const {email, password} = req.body;
-        console.log(email)
-        console.log(password)
+
         if(!email || !password){
             return res.status(resStatus.NotFound).json({
                 message: "Fill all credential"
@@ -112,7 +110,7 @@ app.post("/signin", async(req, res)=>{
                 message:"User not Exist"
             })
         }
-        console.log("hi-------------");
+
         const verifyPass = await bcrypt.compare(password, user.password);
 
         if(!verifyPass){
@@ -146,7 +144,6 @@ app.post("/signin", async(req, res)=>{
         })
     }
     catch(e){
-        console.log(e);
         return res.status(resStatus.Error).json({
             message:"Login failed"
         })
@@ -156,14 +153,13 @@ app.post("/signin", async(req, res)=>{
 app.post("/link_generation", middleware, async(req, res)=>{
     try{
         const roomId = req.body.roomId;
-        console.log("roomId: ", roomId);
+
         if(!roomId){
             return res.status(resStatus.NotFound).json({
                 message: "roomId required"
             })
         }
         const randomString = await LinkGenerator();
-        console.log(randomString);
 
         await client.linkDuration.upsert({
             where:{
@@ -188,7 +184,6 @@ app.post("/link_generation", middleware, async(req, res)=>{
         })
     }
     catch(e){
-        console.log(e);
         return res.status(resStatus.Error).json({
             message:"Failed to generate the Link"
         }) 
@@ -200,9 +195,6 @@ app.post("/join_member/:randomLink/:adminId/:roomId", middleware, async(req, res
         const adminId = req.params.adminId as string;
         const randomLink = req.params.randomLink;
         const roomId = Number(req.params.roomId);
-        console.log("adminId:---", adminId)
-        console.log("roomId:---", roomId)
-        console.log("randomLink:---", randomLink)
 
         if(!adminId || !roomId || !randomLink){
             return res.status(resStatus.NotFound).json({
@@ -281,7 +273,6 @@ app.post("/join_member/:randomLink/:adminId/:roomId", middleware, async(req, res
         })
     }
     catch(e){
-        console.log(e);
         return res.status(resStatus.Error).json({
             message:"Failed to Join Member"
         })
@@ -333,7 +324,6 @@ app.post("/createCanvasRoom", middleware, async(req, res)=>{
         })
     }
     catch(e){
-        console.log(e);
         return res.status(resStatus.Error).json({
             message:"Failed to create room"
         })
@@ -374,7 +364,6 @@ app.get("/allCanvasRooms", middleware, async(req, res)=>{
         })
     }
     catch(e){
-        console.log(e);
         return res.status(resStatus.Error).json({
             success: false,
             message: "Failed to fetch Rooms",
@@ -400,7 +389,6 @@ app.post("/leaveCanvasRoom", middleware, async(req, res)=>{
         })
     }
     catch(e){
-        console.log(e);
         return res.status(resStatus.Error).json({
             message: "Failed to leave the room"
         })
@@ -433,13 +421,11 @@ app.get("/getShapesAtpage/:roomId/:page", middleware, async(req, res)=>{
             }
         })
 
-        console.log("shapes----", shapes);
         return res.status(resStatus.Success).json({
             shapes,
         });
     }
     catch(e){
-        console.log(e);
         return res.status(resStatus.Error).json({
             message:"No shapes"
         })
@@ -511,7 +497,6 @@ app.post("/group/create", middleware, async(req, res)=>{
         })
     }
     catch(e){
-        console.log(e);
         return res.status(resStatus.Error).json({
             message:"Failed to create group Or this name is already exist",
         })
@@ -626,7 +611,6 @@ app.post("/dm/create", middleware, async(req, res)=>{
 
     }
     catch(e){
-        console.log(e);
         return res.status(resStatus.Error).json({
             message: "Failed to create contact"
         })
@@ -677,7 +661,6 @@ app.get("/conversations", middleware, async(req, res)=>{
         });
     }
     catch(e){
-        console.log(e)
         return res.status(resStatus.Error).json({
             message: "Failed to fetch conversation"
         });
@@ -717,7 +700,6 @@ app.post("/leaveChat", middleware, async(req, res)=>{
         })
     }
     catch(e){
-        console.log(e);
         return res.status(resStatus.Error).json({
             message : "Failed to leave conversation"
         })
@@ -745,7 +727,6 @@ app.put("/clearCount", middleware, async(req, res)=>{
         })
     }
     catch(e){
-        console.log(e);
         return res.status(resStatus.Error).json({
             message : "Failed to fetch unread_count"
         })
@@ -785,7 +766,6 @@ app.post("/message/send", async(req, res)=>{
         })
     }
     catch(e){
-        console.log(e);
         return res.status(resStatus.Error).json({
             message: "Failed message creation",
         })
@@ -815,7 +795,6 @@ app.get("/messages/:conversationId", async(req, res)=>{
 
     } 
     catch (e) {
-        console.log(e);
         return res.status(resStatus.Error).json({
             success: false,
             message: "Failed to fetch messages",
@@ -837,7 +816,6 @@ app.get("/allcontent", middleware, async(req, res)=>{
         })
     }
     catch(e){
-        console.log(e);
         return res.status(resStatus.Error).json({
             message : "Failed to fetch the content"
         })
@@ -849,11 +827,6 @@ app.post("/content", middleware, async(req, res)=>{
         const userId = req.userId;
         const {link, finalTitle, type, selectTags} = req.body;
         const title = finalTitle;
-    
-        console.log(link);
-        console.log(title);
-        console.log(type);
-        console.log(selectTags);
         
         if(!link || !title || !type || selectTags.length === 0){
             return res.status(resStatus.NotFound).json({
@@ -903,7 +876,6 @@ app.post("/deleteContent", async(req, res)=>{
         })
     }
     catch(e){
-        console.log(e);
         return res.status(resStatus.Error).json({
             message : "Deletion Failed"
         })
@@ -942,7 +914,6 @@ app.get("/profile", middleware, async(req, res)=>{
         })
     }
     catch(e){ 
-        console.log(e);
         return res.status(resStatus.Error).json({
             message:"Failed to find user"
         })
@@ -952,7 +923,7 @@ app.get("/profile", middleware, async(req, res)=>{
 app.post("/logout", async(req, res)=>{
     try{
         const token = req.cookies.accessToken;
-        console.log("logout token --- ", token);
+
         if (!req.cookies || !req.cookies.accessToken) {
             return res.status(400).json({ success: false, message: "No active session found" });
         }
@@ -961,14 +932,13 @@ app.post("/logout", async(req, res)=>{
             httpOnly:true,
             sameSite:"lax"
         })
-        console.log("Logout aaya hai");
+
         return res.status(resStatus.Success).json({ 
             success: true, 
             message: "Logged out successfully." 
         });
     }
     catch(e){
-        console.log(e);
         return res.status(resStatus.Error).json({
             message: "Failed to logout"
         })

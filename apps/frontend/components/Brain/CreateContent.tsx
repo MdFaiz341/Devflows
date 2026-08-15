@@ -52,7 +52,6 @@ export const CreateContent = ({open, setOpen, getContentApi}:{
 
             const finalTitle = title.charAt(0).toUpperCase() + title.slice(1).toLowerCase()
             
-            console.log(link, finalTitle, type, selectTags);
             const resposne = await api.post("/content", {
                 link,
                 finalTitle,

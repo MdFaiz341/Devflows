@@ -31,7 +31,7 @@ export const GroupMembers = ({selectedChat, open, setOpen}:{
                 </div>
                 {
                     sidebarDefaultConversation?.member.map((v:any)=>{
-                        console.log("FilteredFriendsMemebrs: ", v);
+
                         return(
                             <div
                                 key={v.id} 

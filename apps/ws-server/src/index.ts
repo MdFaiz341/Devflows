@@ -224,43 +224,34 @@ wss.on("connection", async(socket, request)=>{
                 const { conversationId } = parsed;
                 if(!conversationId) return;
 
-                // const room = conversation.get(conversationId);
-                // if(!room) return;
+                const room = conversation.get(conversationId);
+                if(!room) return;
 
-                // room?.delete(socket);
+                room?.delete(socket);
 
-                // if(room.size === 0){
-                //     conversation.delete(conversationId);
+                if(room.size === 0){
+                    conversation.delete(conversationId);
+                }
+                // broadCast
+                const usersIdSet = onlineUsers.get(conversationId);
+                usersIdSet?.delete(user.userId)
+                if(usersIdSet?.size === 0){
+                    onlineUsers.delete(conversationId);
+                }
 
-                //     console.log("room deleted", conversationId);
-                // }
-                // else{
-                    // broadCast
-                    const usersIdSet = onlineUsers.get(conversationId);
-                    usersIdSet?.delete(user.userId)
-                    if(usersIdSet?.size === 0){
-                        onlineUsers.delete(conversationId);
-                    }
-                    // leave karne pe message jana chahiye Or Shayad delete_chat se hoga
-                
-                    // totalUser ka set ko return karado bcz usme active user ka ID hai
-                    // and frontend pe map chala kar check kar lenge jo bhi userid match wo online else offline
-                    // and uska size bhi top pe dikhane ke liye
-                    if(!usersIdSet) return;
-                    const totalUserIDs = [...usersIdSet]
-                    const activeUser = usersIdSet?.size;
-                    const payload = JSON.stringify({
-                        type : "totalUser",
-                        message: {
-                            activeUser,
-                            totalUserIDs,
-                            conversationId,
-                        },
-                    })
+                if(!usersIdSet) return;
+                const totalUserIDs = [...usersIdSet]
+                const activeUser = usersIdSet?.size;
+                const payload = JSON.stringify({
+                    type : "totalUser",
+                    message: {
+                        activeUser,
+                        totalUserIDs,
+                        conversationId,
+                    },
+                })
 
-                    broadCastConversation(payload, conversationId); 
-                    
-                // }
+                broadCastConversation(payload, conversationId); 
             }
 
             if(parsed.type === "joinLiveUser"){
@@ -569,7 +560,6 @@ wss.on("connection", async(socket, request)=>{
             }
 
             if(parsed.type === "close"){
-                // handleDisconnect(socket, parsed.roomId);
                 console.log("user disconnected TYPE-CLOSE");
             }
         }
@@ -838,45 +828,8 @@ function broadCastConversation(payload : string, conversationId:number){
 
         clientSocket.send(payload);
     });
-
-    console.log("Server send Back-- ", payload);
 }
 
-
-// function handleDisconnect(socket:WebSocket, roomId:number){
-//     const user = multiUsers.get(socket);
-//     if(!user) return;
-//     if(user?.roomId.includes(roomId)){
-//         const restRoom = user.roomId.filter((v) => v !== roomId);
-//         user.roomId = restRoom;
-//         const room = rooms.get(roomId);
-//         if(!room) return;
-//         room.delete(socket);
-//         if(room.size == 0){
-//             rooms.delete(roomId);
-//         }
-//         const payload = JSON.stringify({
-//             type: "disconnected",
-//             message : `${user.firstname+ " " +user.lastname} disconnected`,
-//             userID: user.userId
-//         })
-//         broadCast(roomId, payload, user.userId);
-//     }
-// }
-
-
-// function broadCast(roomId:number, payload:string, senderId:number){
-//     const room = rooms.get(roomId);
-//     if(!room) return;
-
-//     room.forEach((clientSocket)=>{
-//         const userInRoom = multiUsers.get(clientSocket);
-
-//         if(userInRoom && userInRoom.userId != senderId && clientSocket.readyState == WebSocket.OPEN){
-//             clientSocket.send(payload);
-//         }
-//     })
-// }
 
 async function verifyToken(token:string):Promise<JwtPayload | null> {
     try{

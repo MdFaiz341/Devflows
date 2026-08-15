@@ -108,23 +108,6 @@ export const useCanvasStore = create<CanvasType>(
             notificationBar : null
         }),
 
-        // setJoinedUser : (roomId, totalUser, usersData)=>set((state)=>{
-
-        //     const existUsers = state.joinedUser?.users || [];
-        //     console.log("store existing user---", existUsers);
-            
-        //     const exist = existUsers.some((user)=>user.userId === userData.userId)
-        //     if(exist) return {};
-            
-        //     return{
-        //         joinedUser : {
-        //             roomId,
-        //             totalUser,
-        //             users : [...existUsers, userData],
-        //         }
-        //     }
-        // }),
-
         setJoinedUser : (roomId, usersData)=>set({
             joinedUser : {
                 roomId,

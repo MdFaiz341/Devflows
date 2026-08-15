@@ -103,7 +103,6 @@ export default function CreateGroupModal({openGroupModal , setOpenGroupModalActi
         setOpenGroupModalAction(false)
     }
     catch(e:any){
-      console.log(e);
       toast.error(e.response.data.message)
     }finally{
       setLoading(false);
@@ -163,7 +162,7 @@ export default function CreateGroupModal({openGroupModal , setOpenGroupModalActi
                               {dmsIds?.map((ids) => {
                                 const friend = sidebarDefaultConversation[ids];
                                 const checked = selectedUsers.includes(friend?.member[0].user.id!);
-                                console.log("checked:", checked);
+
                                 return (
                                     <label
                                       key={friend?.member[0].user.id}

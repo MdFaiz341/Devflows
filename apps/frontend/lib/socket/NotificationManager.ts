@@ -12,7 +12,7 @@ export class NotificationManager{
 
     start(){
         if(this.started) return;
-        console.log("Notification Started------");
+        
         this.started = true;
 
         socketManager.subscribe(
@@ -54,14 +54,12 @@ export class NotificationManager{
 
 
     private receiveCanvasDeleteShape = (data:any)=>{
-        console.log("Delete Data Notify---- ", data);
         const setNotificationBar = useCanvasStore.getState().setNotificationBar;
 
         setNotificationBar(data.message);
     }
 
     private receiveUsersOnline = (data:any)=>{
-        console.log("User Online---- ", data);
         const setJoinedUser = useCanvasStore.getState().setJoinedUser;
 
         setJoinedUser(data.message.roomId, data.message.users);

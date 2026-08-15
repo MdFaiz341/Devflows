@@ -89,125 +89,60 @@ export class SocketManager {
 
   private eventHandler = (event : MessageEvent)=>{
     const data = JSON.parse(event.data);
-    console.log("Socket-Receive-- ", data);
 
     const listeners = this.handlers.get(data.type)
     listeners?.forEach( listen =>{
       listen(data);
     })
-    // switch(data.type){
-
-    //   case "new_message":
-    //     this.handleChatMessage(data);
-    //     break;
-
-    //   case "history":
-    //     this.handleHistory(data);
-    //     break;
-
-    //   case "totalUser":
-    //     this.handleTotalUser(data);
-    //     break;
-
-    //   case "typing":
-    //     this.handleTyping(data);
-    //     break;
-
-    //   case "stop_typing":
-    //     this.handleStopTyping(data);
-    //     break;
-
-    //   case "delete_chat":
-    //     this.handleDeleteChat(data);
-    //     break;
-
-    //   case "chatCreation":
-    //     this.handleChatCreation(data);
-    //     break;
-      
-    //   case "canvas_History":
-    //     this.canvasHistory(data);
-    //     break;
-
-    //   case "canvasRoom_online":
-    //     this.canvasOnlineUser(data);
-    //     break;
-
-    //   case "canvas_msg":
-    //     this.saveShape(data);
-    //     break;
-      
-    // }
   }
 
 
-  // private joinAllChats(){
-  //   const conversationIds = useChatStore.getState().sideConversationOrder
-  //   if(!this.socket || this.socket.readyState !== WebSocket.OPEN) return;
-    
-  //   // socketEventListner(this.socket);
-  //   // console.log("Event-Listners---")
-
-  //   conversationIds.forEach((id)=>{
-  //     const payload = {
-  //       type: "join_conversation",
-  //       conversationId : id,
-  //     }
-  //     this.send(payload);
-  //   })
-  // }
 
   private async fetchConversations(){
         try{
-                const response = await api.get("/conversations");
-                console.log("allchatsWithRoom: ", response.data.conversation);
-                const user = useStore.getState().user;
-                const chatStore = useChatStore.getState();
+          const response = await api.get("/conversations");
 
-                chatStore.setBackendConversation(response.data.conversation)
+          const user = useStore.getState().user;
+          const chatStore = useChatStore.getState();
 
-                const val = response.data.conversation.map((v:any)=> v.id)
-                chatStore.setSideConversationOrder(val);
+          chatStore.setBackendConversation(response.data.conversation)
 
-                response.data.conversation.forEach((v:any)=> {
-                    const friendDetails = v.members.filter((users:any) => users.userId !== user?.id);
-                    const data = {
-                        conversationId : v.id,
-                        createdAt : v.createdAt,
-                        image : v.image || null,
-                        // member : {
-                        //     senderId : friendDetails[0].userId,
-                        //     firstname : friendDetails[0].user.firstname,
-                        //     image : friendDetails[0].user.image,
-                        // },
-                        member : friendDetails,
-                        lastMessage : v.messages.length > 0 ? v.messages[0].text.includes("joined") ? "" : v.messages[0].text : "",
-                        type : v.type,
-                        name : v.name || null,
-                        updatedAt : v.updatedAt,
-                    } 
-                    chatStore.setSidebarDefaultConversation(v.id, data);
+          const val = response.data.conversation.map((v:any)=> v.id)
+          chatStore.setSideConversationOrder(val);
 
-                    //set default unread Messages:
-                    const currUser = v.members.find((admin:any)=>admin.userId === user?.id)
-                    // console.log("msg-members", v.members.find((val:any)=>val.userId === user?.id))
-                    if(currUser.unreadCount > 0){
-                        chatStore.setUnreadMessage(currUser.conversationId, currUser.unreadCount);
-                    }
-                })
+          response.data.conversation.forEach((v:any)=> {
+              const friendDetails = v.members.filter((users:any) => users.userId !== user?.id);
+              const data = {
+                  conversationId : v.id,
+                  createdAt : v.createdAt,
+                  image : v.image || null,
+                  member : friendDetails,
+                  lastMessage : v.messages.length > 0 ? v.messages[0].text.includes("joined") ? "" : v.messages[0].text : "",
+                  type : v.type,
+                  name : v.name || null,
+                  updatedAt : v.updatedAt,
+              } 
+              chatStore.setSidebarDefaultConversation(v.id, data);
 
-                // setConversation(response.data.conversation);
-            }
-            catch(e:any){
-                console.log(e);
-            }
+              //set default unread Messages:
+              const currUser = v.members.find((admin:any)=>admin.userId === user?.id)
+
+              if(currUser.unreadCount > 0){
+                  chatStore.setUnreadMessage(currUser.conversationId, currUser.unreadCount);
+              }
+          })
+
+      }
+      catch(e:any){
+          console.log(e);
+      }
     }
 
   send(payload:any){
     if(!this.socket || this.socket.readyState !== WebSocket.OPEN){
       return;
     }
-    console.log("SocketManager Send()-- ", payload);
+
     this.socket.send(JSON.stringify({
       ...payload,
     }))

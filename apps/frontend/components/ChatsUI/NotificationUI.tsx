@@ -22,7 +22,7 @@ export const NotificationUI = ({openNotification}:{
                 {
                     conversationOrderIds.map((ids)=>{
                         const count = unreadMessage[ids];
-                        console.log("count: ", count);
+
                         if(!count) return;
 
                         const chat = sidebarDefaultConversation[ids];

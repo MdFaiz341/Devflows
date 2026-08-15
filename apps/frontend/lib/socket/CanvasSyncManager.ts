@@ -108,7 +108,7 @@ export class CanvasSyncManager{
 
     // Client send:-
     private  handleNewShape = (payload:any)=>{
-        console.log("handleNewShape:--- ", payload);
+
         socketManager.send({
             type: "new_Shape",
             roomId: payload.roomId,
@@ -126,7 +126,7 @@ export class CanvasSyncManager{
     }
 
     private handleDeleteShape = (payload:any)=>{
-        console.log("Client Send to delete Shape---")
+
         socketManager.send({
             type: "delete_Shape",
             roomId: payload.roomId,
@@ -145,7 +145,7 @@ export class CanvasSyncManager{
     }
 
     joinCnvasRoom(roomId:number){
-        console.log("Join-Canvas----");
+
         const payload = {
             type : "join_canvasroom",
             roomId
@@ -163,7 +163,7 @@ export class CanvasSyncManager{
 
     // server broadcast, now receiving:
     private receiveNewShape = (data:any)=>{
-        console.log("Canavs Receiving--- ", data);
+
         this.store
         .addShape(
             data.pageNo,
@@ -172,7 +172,7 @@ export class CanvasSyncManager{
         );
     }
     private receiceDeleteShape = (data:any)=>{
-        console.log("Delete recive----", data);
+
         this.store
         .removeShape(
             data.page,
@@ -191,11 +191,9 @@ export class CanvasSyncManager{
     }
 
     private receiveHistory = (data:any)=>{
-        console.log("history--- ", data);
-        console.log("historyData--- ", data.historyData);
+
         if(data.historyData){
             const finalShape = data.historyData.shapes.map((v:any)=>v.data)
-            console.log("FinalShape--- ", finalShape);
     
             this.store
             .shapeHistory(

@@ -31,31 +31,6 @@ export const SidebarConversations = ({chat, unreads, setUnreads}:{
     // const [prevId, setPrevId] = useState<number | null>(null);
 
     async function socketStartHandler(chat:any){
-        // console.log("socket:", socket);
-        // if(!socket || socket.readyState !== WebSocket.OPEN) return;
-
-        // leave previous room before joining new room
-        // console.log("conversationIdRef---", conversationIdRef.current);
-        // console.log("PrevId---", prevId);
-        // if(prevId){
-        //     const payload = {
-        //         type : "leave_conversation",
-        //         conversationId : prevId
-        //     };
-        //     console.log("Leave conversation hit hua--", prevId);
-        //     chatManager.sendMessage(payload);
-        // }
-
-
-        // leave conversation hata diya jisse server ke Map me socket / user present hai and broad cast
-        // karta jayega sabhi ko whoever is just open WebSocket
-
-        // bar bar join karane se and leave conversation bhi hata diya hai to map me may be double entry 
-        // ban sakti hai socket/user ka, so when user click on chat-room on dashboard hit "join_conversation" for all
-        // and friend send message it will appear on both the side
-
-
-        console.log("Handler Chat--- ", chat);
 
         setSelectedConversation(chat.conversationId);
 
@@ -75,18 +50,9 @@ export const SidebarConversations = ({chat, unreads, setUnreads}:{
         conversationId : chat.conversationId,    
         }
         chatManager.sendMessage(payload);
-        // joinUser(socket, payload)
-        // socket.send(JSON.stringify({
-        //     type : "joinLiveUser",
-        //     ...payload
-        // }))
-        
-        // conversationIdRef.current = chat.conversationId;
-        // setPrevId(chat.conversationId);
-        // console.log("SetP PrevId---");
+ 
         clearCount(chat.conversationId);
 
-        // setSelectedChat(chat);
         setConversationId(chat.conversationId);
 
         const removeUnreadCount = unreads.filter((id)=> id !== chat.conversationId);
@@ -95,7 +61,6 @@ export const SidebarConversations = ({chat, unreads, setUnreads}:{
         // hit backend if unreadMessage not zero
         try{
             await api.put("/clearCount", {conversationId : chat.conversationId})
-            console.log("count remove");
         }
         catch(e){
             console.log("error:", e);
