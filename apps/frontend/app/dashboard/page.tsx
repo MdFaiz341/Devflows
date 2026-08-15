@@ -84,7 +84,6 @@ export default function DashboardPage() {
 
 
   const totalMessage = conversationIds.reduce((sum, ids)=> sum + (unreadMessage[ids] ?? 0), 0)
-  console.log("totalMessage: ", totalMessage);
 
   const stats = [
     {
@@ -109,20 +108,6 @@ export default function DashboardPage() {
     },
   ];
 
-  // useEffect(()=>{
-  //   if(!socket) return;
-  //   // if(!socketListnerRef.current){
-  //   // }
-  //   // socketEventListner(socket);
-  //   console.log("socket Listner Active-----):")
-  //   // socketListnerRef.current = true;
-  //   socket.addEventListener("message", eventHandler);
-
-  //   return ()=>{
-  //     socket.removeEventListener("message", eventHandler);
-  //     console.log("Listner_Removed----")
-  //   }
-  // }, []);
 
   return (
     <>  

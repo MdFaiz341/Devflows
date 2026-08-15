@@ -50,7 +50,6 @@ export const AuthForm = ({mode} : AuthFormProps)=>{
             router.push(`${mode === "signin" ? '/dashboard' : '/signin'}`);
         } 
         catch (error:any) {
-            console.log("error:-- ", error);
             toast.error(error.response.data.message || "Something went wrong")
         }
     }

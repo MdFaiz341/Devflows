@@ -27,12 +27,10 @@ export const InviteGenerator = ({open, setOpen}:{
       try{
         setActive(true);
         const response = await api.post("/link_generation", {roomId : currentRoomId});
-        console.log("response: ", response);
         setLinkVal(response.data.link);
         toast.success(response.data.message);
       }
       catch(e:any){
-        console.log(e);
         toast.error(e.response.data.message || "Something went wrong");
       }finally{
         setActive(false);

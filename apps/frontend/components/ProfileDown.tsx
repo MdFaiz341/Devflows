@@ -25,7 +25,6 @@ export const DropdownProfile = ({setOpen}:{
             router.push("/signin");
         }
         catch(e:any){
-            console.log(e);
             toast.error(e?.response?.data.message);
         }finally{
             toast.dismiss(toastId);

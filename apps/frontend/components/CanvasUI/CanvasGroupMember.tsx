@@ -22,12 +22,7 @@ export const CanvasGroupMember = ()=>{
 
     const sortJoinedUser = joinedUser?.users.sort((a, b)=> rolePriority[a.role] - rolePriority[b.role]);
 
-    // const [joinedUser, setJoinedUser] = useState<JoinedUserType>();
-
-    console.log("JoinedUser---- ", joinedUser);
     if(!sortJoinedUser) return;
-
-
 
     return(
         <div className="absolute top-3 left-3 z-50 rounded-lg">
@@ -44,7 +39,6 @@ export const CanvasGroupMember = ()=>{
             <div className={`rounded-lg bg-gray-900 mt-3 h-[30%] p-2 overflow-auto ${active ? "block" : "hidden"}`}>
                 {
                     sortJoinedUser?.map((data, index)=>{
-                        console.log("data---", data);
                         return(
                             <div key={index} className="rounded-lg py-3 px-2 hover:bg-gray-800">
                                 <div className="flex gap-2 items-center text-gray-300">

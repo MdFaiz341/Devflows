@@ -41,7 +41,7 @@ export default function CanvasRoomsPage() {
   const [roomCreated, setRommCreated] = useState(false);
   const [rooms, setRooms] = useState<CanvasCardFormat[]>()
 
-  // best filter
+  // filter
   // const filteredRooms = useMemo(() => {
   //   return rooms.filter((room) =>
   //     room.name.toLowerCase().includes(search.toLowerCase())
@@ -52,7 +52,6 @@ export default function CanvasRoomsPage() {
     try{
       setLoading(true);
       const response = await api.get("/allCanvasRooms");
-      console.log(response.data.allRooms);
 
       const data = response.data.allRooms.map((val:any)=>({
           createdAt : val.createdAt,
@@ -63,53 +62,8 @@ export default function CanvasRoomsPage() {
       }))
 
       setRooms(data);
-      
-      // const dataVal = response.data.allRooms;
-      // // const filteredFriend = dataVal.member.filter((adminId:any)=>adminId.userId !== user?.id)
-      // dataVal.forEach((val:any)=>{
-      //   console.log("val: ", val);
-
-      //   // const filteredFriend = val.members.filter((adminId:any)=>{
-      //   //     adminId.userId !== user?.id
-      //   // })
-      //   const value = {
-      //     createdAt : val.createdAt,
-      //     roomId : val.id,
-      //     image : val.image,
-      //     name : val.name,
-      //     members: val.members //filteredFriend,
-      //   }
-
-      //   setRooms((prev)=>{
-      //     if(prev){
-      //       [...prev, value]
-      //     }else{
-      //       value
-      //     }
-      //   });
-      //   // setCanvasCard(val.id, value);
-      //   // setCanvasOrder(val.id);
-
-      //   // createdAt : string,
-      //   // roomId : number,
-      //   // image : string,
-      //   // name : string,
-      //   // members : [
-      //   //     {
-      //   //         userId : string,
-      //   //         role : "ADMIN" | "MEMBER",
-      //   //         firstname : string,
-      //   //         email : string,
-      //   //         image : string,
-      //   //         joinedAt : string,
-      //   //     },
-      //   // ]
-
-      // })
-      // // toast.success(response.data.message);
     }
     catch(e:any){
-      console.log(e);
       toast.error(e?.response?.data.message || "Something went wrong");
     }finally{
       setLoading(false);
@@ -124,8 +78,6 @@ export default function CanvasRoomsPage() {
   function menuHandler(){
 
   }
-
-  console.log("Rooms--- ", rooms);
 
   return (
     <div className="min-h-screen bg-[#05070D] text-white overflow-hidden">

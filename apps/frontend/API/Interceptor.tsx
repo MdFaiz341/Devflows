@@ -28,7 +28,6 @@ api.interceptors.response.use(
     async(error)=>{
 
         if(error.response?.status === 401){
-            console.log("Invalid Token");
             useStore.getState().logout();
             try{
                 await axios.post(`${process.env.NEXT_PUBLIC_HTTP_SERVER_URL}/logout`, {}, { withCredentials: true });

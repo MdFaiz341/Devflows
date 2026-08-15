@@ -29,7 +29,6 @@ export const LeaveCanvasUI = ({showLeave, setShowLeave, roomId}:{
             toast.success(response.data.message);
         }
         catch(e:any){
-            console.log(e);
             toast.error(e?.response.data.message || "Something went wrong")
         }finally{
             setActive(false);

@@ -4,8 +4,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(req:NextRequest){
 
-    console.log("middleware dashboard--");
-
     const token = req.cookies.get("accessToken")?.value;
 
     const path = req.nextUrl.pathname;

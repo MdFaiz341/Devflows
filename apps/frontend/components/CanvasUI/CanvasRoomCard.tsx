@@ -17,18 +17,11 @@ export const CanvasRoomsCard = ({rooms}:{
     const setCurrentRoomId = useCanvasStore((state)=>state.setCurrentRoomId);
 
     async function joinCanvasRoon(roomId:number, adminId:string) {
-        console.log("joinRoomId: ", roomId);
         setCurrentRoomId(roomId);
-        // const payload = {
-        //     type : "join_canvasroom",
-        //     roomId,
-        // }
-        // socket.send(payload)
-        // console.log("Join-canvas----");  
+        // =============Canvas Engine Handle send request to WebSocket to join_Canvas=================== 
         router.push(`/dashboard/canvas/canvasroom/${adminId}/${roomId}`);
     }
 
-    console.log("rooms--- ", rooms);
 
     return(
         <main className="max-w-7xl mx-auto px-6 py-10 mt-16">
@@ -36,10 +29,7 @@ export const CanvasRoomsCard = ({rooms}:{
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {
                     rooms.map((val) => {
-                        // const cards = canvasCard[roomId];
-                        console.log("Each_card--- ", val);
                         const userRole = val.members.find((userId)=>userId.role === "ADMIN");
-                        console.log("adminId: ", userRole?.userId);
                         return(
                             <motion.div
                                 key={val.roomId}

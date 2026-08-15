@@ -1,14 +1,12 @@
 
 "use client"
 
-import { Circle, Ellipse, Ellipsis, MousePointer, MoveUpRight, PencilLine, Slash, Square, TextCursor, UserRoundPlus } from "lucide-react"
+import { Circle, MousePointer, MoveUpRight, PencilLine, Slash, Square, TextCursor, UserRoundPlus } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { useHook } from "../../hook/useHook"
 import { InviteGenerator } from "./InviteGenerator"
 import { Button } from "@repo/ui/button"
 import { LeaveCanvasUI } from "./LeaveCanvasUI"
-import { useSocket } from "../../providers/SocketProvider"
-import rough from "roughjs";
 import { CanvasEngine } from "./engine/CanvasEngine"
 import { Tool, ToolType } from "./tools/Tool"
 import { ShapeSetting } from "./ShapeSetting"
@@ -57,39 +55,14 @@ export const Canvas = ({roomId, adminId}:{
     adminId:string,
 })=>{
 
-    // const rc = rough.canvas(document.getElementById("canvas"));
-    const socket = useSocket();
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const [showFriend, setShowFriend] = useState(false);
     const [showLeave, setShowLeave] = useState(false);
     const {open, setOpen, active, setActive} = useHook();
-    const joinRef = useRef(false);
     const [currTool, setCurrTool] = useState<ToolType>("select");
     const engineRef = useRef<CanvasEngine | null>(null);
     const [page, setPage] = useState(1);
-    // const ref = useRef<HTMLInputElement>(true);
 
-    // useEffect(()=>{
-    //     function hitJoinCanvasRoom(){
-    //         const payload = {
-    //             type : "join_canvasroom",
-    //             roomId,
-    //             adminId
-    //         }
-    //         socket.send(payload)
-    //         console.log("Join-canvas----");    
-    //     }
-        
-    //     if(joinRef.current === false){
-    //         hitJoinCanvasRoom();
-    //         joinRef.current = true;
-    //     }
-    // }, []);
-
-    // function selectButton(id:number){
-    //     console.log("btnId: ", id);
-    //     setCurrTool(id);
-    // }
 
     useEffect(()=>{
         if(!canvasRef.current) return;
@@ -102,7 +75,6 @@ export const Canvas = ({roomId, adminId}:{
     }, []);
 
     function removeShape(){
-        console.log("removeSHape call---");
         engineRef.current?.removeShape();
     }
 

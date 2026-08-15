@@ -2,28 +2,19 @@
 
 import {useEffect, useRef, useState } from "react";
 import { useHook } from "../../../../hook/useHook";
-import { toast } from "sonner";
-import api from "../../../../API/Interceptor";
 import { Button } from "@repo/ui/button";
-import { motion } from "framer-motion";
-import { EllipsisVertical, History, Loader2, MessageCircleCheck, MessagesSquare, Plus } from "lucide-react";
-import { FormatChatDate, FormatMessageTime } from "../../../../formatter/FormatTime";
-import { useSocket } from "../../../../providers/SocketProvider";
+import { EllipsisVertical, MessageCircleCheck, Plus } from "lucide-react";
 import CreateGroupModal from "../../../../components/ChatsUI/CreateGroupModal";
 import { CreateDmModal } from "../../../../components/ChatsUI/CreateDmModal";
-import { chatHistory, joinUser } from "../../../../lib/socket/socket-emit";
 import { useChatStore } from "../../../../Storage/useChatStore";
-import { useStore } from "../../../../Storage/useStore";
 import { ChatArea } from "../../../../components/ChatsUI/ChatArea";
 import { SidebarConversations } from "../../../../components/ChatsUI/SidebarConversations";
 
 
 
 export default function DevFlowChatUI() {
-  const {active, setActive, loading, setLoading} = useHook();
+  const {active, setActive} = useHook();
 
-  const [isChatAdd, setIsChatAdd] = useState(false);
-  // const socket = useSocket();
   const [openGroupModal, setOpenGroupModal] = useState(false);
   const [addContact, setAddContact] = useState(false);
   const [groups, setGroups] = useState<number[]>([]);
@@ -35,19 +26,8 @@ export default function DevFlowChatUI() {
   const conversationOrder = useChatStore((state)=>state.sideConversationOrder);
   const [conversationOrderIds, setConversationOrderIds] = useState<number[]>(conversationOrder);
   
-  // const user = useStore((state)=>state.user);
-  // const conversationIdRef = useRef<number | null>(null)
-  // const [selectedChat, setSelectedChat] = useState<any | null>(null);
-  // const setSelectedConversation = useChatStore((state)=>state.setSelectedConversation);
-  // const conversationId = useChatStore((state)=>state.selectedConversation);
-
-  // const setSidebarDefaultConversation = useChatStore((state)=>state.setSidebarDefaultConversation);
-  // const setSideConversationOrder = useChatStore((state)=>state.setSideConversationOrder);
   const sidebarDefaultConversation = useChatStore((state)=>state.sidebarDefaultConversation);
-  // const messageByConversation = useChatStore((state)=>state.messageByConversation);
   const unreadMessage = useChatStore((state)=>state.unreadMessage);
-  // const clearCount = useChatStore((state)=>state.clearCount);
-  const socketListnerRef = useRef(false);
 
   const totalMessage = conversationOrder.reduce((sum, ids)=> sum + (unreadMessage[ids] ?? 0), 0)
 
@@ -66,154 +46,17 @@ export default function DevFlowChatUI() {
       (id) => unreadMessage[id]! > 0
     )
 
-    console.log("unreadIds: ", unreadIds);
     setUnreads(unreadIds);
 
-    console.log("dms: ", dmIds);
     setGroups(groupIds);
     setDms(dmIds);
     setAllChat(allIds);
     setConversationOrderIds(conversationOrder)
 
-    // const groups = conversation.filter((c:any) => c.type === "Group");
-    // const dms = conversation.filter((c:any) => c.type === "DM");
-    // setDms(dms);
-    // setGroups(groups);
-
-    // const val = conversation.map((v:any)=> v.id)
-    // setSideConversationOrder(val);
-
-    // conversation.forEach((v:any)=> {
-    //   const friendDetails = v.members.find((users:any) => users.userId !== user?.id);
-    //   const data = {
-    //     conversationId : v.id,
-    //     createdAt : v.createdAt,
-    //     image : v.image || null,
-    //     member : {
-    //       senderId : friendDetails.userId,
-    //       firstname : friendDetails.user.firstname,
-    //       image : friendDetails.user.image,
-    //     },
-    //     lastMessage : v.messages[0].text,
-    //     type : v.type,
-    //     name : v.name || null,
-    //     updatedAt : v.updatedAt,
-    //   } 
-    //   setSidebarDefaultConversation(v.id, data);
-    // })
-
-    // if(!socket || socket.readyState !== WebSocket.OPEN) return;
-    // conversation.map((v:any)=>{
-    //     // new join coversation
-    //     const payload = {
-    //       conversationId : v.id,    
-    //     }
-    //     joinUser(socket, payload)
-    // })
-
-    console.log("conversationOrder---", conversationOrder)
-
   }, [conversationOrder]);
 
-  console.log("default sidebar: ", sidebarDefaultConversation);
 
 
-  // useEffect(()=>{
-  //   async function fetchDmsAnsGroupChat() {
-  //     try{
-  //       setLoading(true);
-  //       const response = await api.get("/conversations");
-  //       console.log("allchatsWithRoom: ", response.data.conversation);
-  //       // setConversation(response.data.conversation);
-        
-  //       setAllChat(response.data.conversation);
-  //     }
-  //     catch(e:any){
-  //       console.log(e);
-  //       toast.error(e.response.data.message);
-  //     } finally{
-  //       setLoading(false);
-  //     }
-  //   }
-
-  //   fetchDmsAnsGroupChat();
-  // }, [isChatAdd]);
-
-
-  // async function socketStartHandler(chat:any){
-  //   console.log("socket:", socket);
-  //   // if(!socket || socket.readyState !== WebSocket.OPEN) return;
-
-  //   // leave previous room before joining new room
-  //   if(conversationIdRef.current){
-  //     const payload = {
-  //       type : "leave_conversation",
-  //       conversationId : conversationIdRef.current
-  //     };
-  //     socket.send(payload);
-  //   }
-
-
-  //   // leave conversation hata diya jisse server ke Map me socket / user present hai and broad cast
-  //   // karta jayega sabhi ko whoever is just open WebSocket
-
-  //   // bar bar join karane se and leave conversation bhi hata diya hai to map me may be double entry 
-  //   // ban sakti hai socket/user ka, so when user click on chat-room on dashboard hit "join_conversation" for all
-  //   // and friend send message it will appear on both the side
-
-
-  //   console.log("Handler Chat--- ", chat);
-
-  //   setSelectedConversation(chat.conversationId);
-
-  //   const cached = messageByConversation[chat.conversationId];
-  //   if(!cached){
-  //     const payload = {
-  //       type : "history",
-  //       conversationId : chat.conversationId
-  //     }
-  //     socket.send(payload);
-  //     // chatHistory(socket, payload)
-  //   }
-
-  //   // // new join coversation
-  //   const payload = {    
-  //     type : "joinLiveUser" ,                     // uper laga diya jaise conversation update hoga waise hi all room active(dms, group)
-  //     conversationId : chat.conversationId,    
-  //   }
-  //   socket.send(payload);
-  //   // joinUser(socket, payload)
-  //   // socket.send(JSON.stringify({
-  //   //     type : "joinLiveUser",
-  //   //     ...payload
-  //   // }))
-    
-  //   conversationIdRef.current = chat.conversationId;
-
-  //   clearCount(chat.conversationId);
-
-  //   setSelectedChat(chat);
-
-  //   const removeUnreadCount = unreads.filter((id)=> id !== chat.conversationId);
-  //   setUnreads(removeUnreadCount);
-    
-  //   // hit backend if unreadMessage not zero
-  //   try{
-  //     await api.put("/clearCount", {conversationId : chat.conversationId})
-  //     console.log("count remove");
-  //   }
-  //   catch(e){
-  //     console.log("error:", e);
-  //   }
-  // }
-
-  // if(!socket){
-  //   return(
-  //     <div className="w-full flex justify-center items-center">
-  //       <Loader2 size={30}/>
-  //     </div>
-  //   )
-  // }
 
   return (
     <div className="h-screen bg-[#0B141A] text-white flex overflow-hidden">
@@ -298,7 +141,6 @@ export default function DevFlowChatUI() {
                     {
                       conversationOrderIds.map((ids : any) => {
                         const chat = sidebarDefaultConversation[ids];
-                        console.log("data: ", chat);
                         return(
                           <div key={chat?.conversationId || ids}>
                             <SidebarConversations chat={chat}

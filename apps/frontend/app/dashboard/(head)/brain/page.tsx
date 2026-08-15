@@ -52,7 +52,6 @@ export default function Brain(){
         try{
             setLoading(true);
             const response = await api.get("/allcontent");
-            console.log("getAllContent--- ", response.data);
 
             const allContent = response.data.allContent;
             const grouped : Record<string, ContentFormat[]> = {
@@ -65,7 +64,6 @@ export default function Brain(){
             }
 
             allContent.forEach((item:ContentFormat) => {
-                console.log("item-type--- ", item.type);
                 if(grouped[item.type]){
                     grouped[item.type]?.push(item);
                 }
@@ -109,8 +107,6 @@ export default function Brain(){
             document.body.appendChild(script)
         }
     }, []);
-
-    console.log("Content-- ", content);
 
     return(
         <>
@@ -203,7 +199,6 @@ export default function Brain(){
                     <div className="flex-1 overflow-y-auto p-5 columns-1 md:columns-2 lg:columns-3 gap-4 space-y-4">
                     {
                         content[slctButton]?.map((val)=>{
-                            console.log("val---", val);
                             return(
                                 <Card
                                     key={val.id}

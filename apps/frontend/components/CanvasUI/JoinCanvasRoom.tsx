@@ -28,15 +28,12 @@ export const JoinCanvasRoom = ({active, setActive}:{
         const roomId = data[data?.length-1];
         const adminId = data[data?.length-2];
         const randomLink = data[data.length-3];
-        console.log("Join-Message: ", randomLink + " " + adminId + " " + roomId);
         await new Promise((res)=>setTimeout(res, 2000));
         const response = await api.post(`/join_member/${randomLink}/${adminId}/${roomId}`)
-        console.log("JoinCanvasRoom res--- ", response.data);
         toast.success(response.data.message);
         router.push(`/dashboard/canvas/canvasroom/${adminId}/${roomId}`);
       }
       catch(e:any){
-        console.log(e);
         toast.error(e.response.data.message || "Something went wrong")
       }finally{
         setOpen(false);

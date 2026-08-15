@@ -372,7 +372,6 @@ export const Card = (props: ContentFormat) => {
 ========================================================= */
 
 function FallbackLink({ url }: { url: string }) {
-  console.log("Fallback me aaya--------");
   return (
     <a
       href={url}

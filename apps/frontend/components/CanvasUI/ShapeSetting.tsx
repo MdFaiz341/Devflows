@@ -43,8 +43,6 @@ export const  ShapeSetting = ({active, removeShape, currTool}:
     const [strokeWidthIdx, setStrokeWidthIdx] = useState<number>(-1);
     const [fontSizeIdx, setFontSizeIdx] = useState<number>(-1);
 
-
-    console.log("currToll---- ", currTool);
     
     function textSizeHandler(size:string){
         if(size === "S") setTextSize("10px");

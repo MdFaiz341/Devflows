@@ -34,7 +34,6 @@ export const CreateCanvasRoom = (props:PropsTye)=>{
         setActive(true);
         await new Promise((res)=>setTimeout(res, 4000));
         const response = await api.post("/createCanvasRoom", {name})
-        console.log(response.data.roomId);
 
         const payload = {
           type : "createCanvasRoom",
@@ -48,7 +47,6 @@ export const CreateCanvasRoom = (props:PropsTye)=>{
         props.setOpen(false);
       }
       catch(e:any){
-        console.log(e);
         toast.error(e.response.data.message || "Something went wrong")
       }finally{
         setActive(false)
