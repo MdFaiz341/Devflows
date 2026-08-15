@@ -15,15 +15,6 @@ export class CircleRenderer implements ShapeRender<Circle>{
 
         this.ctx.beginPath();
 
-        // const x = Math.min(shape.x, shape.x + shape.width);
-        // const y = Math.min(shape.y, shape.y + shape.height);
-    
-        // const width =  Math.abs(shape.width);
-        // const height = Math.abs(shape.height);
-
-        // const centerX = x + width/2;
-        // const centerY = y + height/2;
-        // this.ctx.ellipse(centerX, centerY, width/2, height/2, 0, 0, Math.PI * 2)
         this.ctx.ellipse(shape.centerX, shape.centerY, shape.width/2, shape.height/2, 0, 0, Math.PI * 2)
 
         this.ctx.strokeStyle = shape.stroke;
@@ -34,14 +25,11 @@ export class CircleRenderer implements ShapeRender<Circle>{
 
         this.ctx.stroke();
 
-        // this.ctx.restore();
     }
 
     hitTest(circle: Circle, x: number, y: number): boolean {
-        // const centerX = circle.x + circle.width/2;
         const dx = x - circle.centerX;
 
-        // const centerY = circle.y + circle.height/2;
         const dy = y - circle.centerY;
 
         const radiusX = circle.width/2;

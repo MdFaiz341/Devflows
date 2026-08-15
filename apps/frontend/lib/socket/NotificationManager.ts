@@ -12,7 +12,7 @@ export class NotificationManager{
 
     start(){
         if(this.started) return;
-        
+
         this.started = true;
 
         socketManager.subscribe(
@@ -30,7 +30,7 @@ export class NotificationManager{
             this.deletedShape
         )
     }
-    // notification receive nahi ho raha hai
+
     stop(){
         if(!this.started) return;
 

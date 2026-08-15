@@ -75,10 +75,6 @@ export const chatCreation = (
     payload : {
         conversationId : number,
         data : any,
-        // data : {
-        //     groupName : string,
-        //     memberIds : number[],
-        // }
     }
 )=>{
 

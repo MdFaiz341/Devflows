@@ -181,7 +181,6 @@ wss.on("connection", async(socket, request)=>{
                 }
 
                 const allUser = canvasRoomOnline.get(roomId)
-                // const filterActiveUser = allUser?.filter((val)=>val.userId !== user.userId);
 
                 allUser?.delete(user.userId);
 
@@ -191,7 +190,6 @@ wss.on("connection", async(socket, request)=>{
                     type : "canvasRoom_online",
                     message:{
                         roomId,
-                        // onlineUsers : filterActiveUser?.length,
                         users: [...allUser?.values()]
                     }
                 })
@@ -263,10 +261,6 @@ wss.on("connection", async(socket, request)=>{
                 }
 
                 onlineUsers.get(conversationId)?.add(user.userId);
-                // if(!conversation.has(conversationId)){
-                //     conversation.set(conversationId, new Set());
-                // }
-                // conversation.get(conversationId)?.add(socket);
 
                 const usersIdSet = onlineUsers.get(conversationId);
 
@@ -531,7 +525,6 @@ wss.on("connection", async(socket, request)=>{
                 const oldMessages = await client.message.findMany({
                     where:{
                         conversationId,
-                        // we can add pagination when user want old messages
                     },
                     include:{
                         sender:true,
@@ -606,7 +599,6 @@ wss.on("connection", async(socket, request)=>{
             }
 
             const canvasOnline = canvasRoomOnline.get(roomId);
-            // const filterActiveUser = canvasOnline?.filter((val)=>val.userId !== user.userId);
             canvasOnline?.delete(userId);
         })
     })
@@ -677,9 +669,6 @@ async function joinCanvasRoom(socket:WebSocket, roomId:number, userId:string) {
     })
 
     broadCastInCanvas(payload, roomId);
-
-    // 1. history hanlder add karo canvasSynmanager me so when user comes firt time it restore all shape
-    // 2. remove shape and update shape wala bhi add kar sakte ho
 
 
     const historyData = await client.page.findUnique({
@@ -769,54 +758,6 @@ async function joinConversation(conversationId : number, socket : WebSocket){
     broadCastConversation(payload, conversationId);
 }
 
-// async function createGroup(groupName:string, memberIds:number[], socket:WebSocket){
-//     const user = multiUsers.get(socket);
-//     if(!user) return;
-//     const group = await client.conversation.create({
-//                     data:{
-//                         type : "Group",
-//                         name : groupName,
-//                         image : `https://api.dicebear.com/5.x/initials/svg?seed=${groupName}`,
-                        
-//                         members:{
-//                             create: [
-//                                 {userId : user.userId},
-                                
-//                                 // other members
-//                                 ...memberIds.map((id: number) => ({
-//                                     userId: id,
-//                                 })),
-//                             ]
-//                         }
-//                     },
-//                     include:{
-//                         members : {
-//                             include:{
-//                                 user : {
-//                                     select:{
-//                                         id : true,
-//                                         createdAt : true,
-//                                         firstname : true,
-//                                         email : true,
-//                                         image : true,
-//                                     }
-//                                 }
-//                             }
-//                         },
-//                     }
-//                 })
-
-//                 await client.conversation.update({
-//                     where:{
-//                         id : group.id,
-//                     },
-//                     data:{
-//                         updatedAt : new Date(),
-//                     }
-//                 })
-    
-//                 return group;
-// }
 
 
 function broadCastConversation(payload : string, conversationId:number){

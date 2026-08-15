@@ -95,11 +95,6 @@ export class CanvasSyncManager{
             this.receiveUpdateShape
         );
 
-        // socketManager.unsubscribe(
-        //     "pointer_move",
-        //     this.handlePointerMoving
-        // );
-
         socketManager.unsubscribe(
             "delete_Shape",
             this.receiceDeleteShape

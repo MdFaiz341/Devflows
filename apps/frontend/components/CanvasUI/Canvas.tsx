@@ -99,7 +99,6 @@ export const Canvas = ({roomId, adminId}:{
                     {
                         Buttons.map((val)=>{
                             return(
-                                // onclick currentTool select 
                                 <div key={val.id} onClick={()=>{setCurrTool(val.shape as ToolType)}} className={`cursor-pointer p-2 rounded-lg transition-all duration-300 ${currTool === val.shape ? "bg-blue-500" : "hover:bg-gray-700"}`}>{val.btn}</div>
                             )
                         })
@@ -152,5 +151,4 @@ export const Canvas = ({roomId, adminId}:{
             
         </div>
     )
-    // kon kon join hai wo dikhao side me-> ADMIN, MEMBER
 }

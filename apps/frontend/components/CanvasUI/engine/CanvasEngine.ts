@@ -1,8 +1,6 @@
-import rough from "roughjs";
-import { useSocket } from "../../../providers/SocketProvider";
+
 import { RenderManager } from "./RenderManager";
 import { CanvasStore } from "../store/CanvasStore";
-import { ShapeRenderManager } from "./ShapeRenderManager";
 import { InputManager } from "./InputManager";
 import { ToolManager } from "../tools/ToolManager";
 import { RectangleTool } from "../tools/RectangleTool";
@@ -30,56 +28,14 @@ import { useCanvasStore } from "../../../Storage/useCanvasStore";
 
 
 
-// export type Shape = {
-//     type : "rectangle",
-//     x:number,
-//     y:number,
-//     width :number,
-//     height:number,
-// } | {
-//     type : "circle",
-//     centerX:number,
-//     centerY:number,
-//     radius : number
-// } | {
-//     type : "line",
-//     startX:number,
-//     startY:number,
-//     endX:number,
-//     endY:number,
-// } | {
-//     type : "arrow",
-//     startX:number,
-//     startY:number,
-//     endX:number,
-//     endY:number,
-//     angle:number
-// } | {
-//     type : "text",
-//     x:number,
-//     y:number,
-//     text:string,
-// }
-
-
-// export interface BaseShape{
-//     id : string,
-//     type : ShapeType,
-
-//     fill : string,
-//     stroke : string,
-
-//     strokeWidth : number,
-// }
-
 export class CanvasEngine{
-    // private pageShape : Record<number,Shape[]>;
+
     private currRoomId : number;
     private canvas : HTMLCanvasElement;
     private ctx : CanvasRenderingContext2D;
-    // private rc : HTMLCanvasElement;
+
     private renderer : RenderManager;
-    // private shapeRender : ShapeRenderManager;
+
     private inputManager : InputManager;
     private toolManager : ToolManager;
 
@@ -96,7 +52,7 @@ export class CanvasEngine{
         this.currRoomId = roomId;
         this.canvas = canvas;
         const ctx = canvas.getContext("2d");
-        // const socket = useSocket();
+        
         if(!ctx) throw new Error("canvas not supported");
         this.ctx = ctx;
         this.onToolChange = onToolChange;

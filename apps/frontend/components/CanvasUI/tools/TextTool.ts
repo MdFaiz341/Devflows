@@ -73,16 +73,16 @@ export class TextTool{
 
                 fontSize: parseInt(textSize),
                 fontFamily: "Arial",
-                fontWeight: "normal",       // "normal" | "bold";
-                fontStyle:  "normal",       // "normal" | "italic"
-                textAlign: "left",          // "left" | "center" | "right";
+                fontWeight: "normal",       
+                fontStyle:  "normal",       
+                textAlign: "left",       
                 color: stroke,
 
                 stroke : stroke,
                 fill : "transparent",
                 strokeWidth : strokeWidth,
             }
-            // this.store.addShape(preview);
+
             const currPage = this.store.getCurrentPage();
 
             this.store.addShape(currPage, preview, true);
@@ -132,12 +132,6 @@ export class TextTool{
         return;
     }
     pointerUp(e:PointerEvent){
-        // const previewShape = this.store.getPreview();
-        // if(!previewShape) return;
-
-        // this.store.addShape(previewShape);
-
-        // this.store.clearPreview();
 
         this.activeTextArea = null;
         return;

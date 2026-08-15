@@ -1,17 +1,11 @@
 
 
 
-import { IoMdAddCircleOutline } from "react-icons/io";
-// import image from "../assets/brain-generator-idea-svgrepo-com.svg";
-// import image from "../../Icons/brain-generator-idea-svgrepo-com.svg"
-import { useRouter } from "next/navigation";
+
 import { FaYoutube } from "react-icons/fa";
 import { RiTwitterFill } from "react-icons/ri";
-import { IoSettingsSharp } from "react-icons/io5";
 import { FaGithub } from "react-icons/fa6";
-import { Aperture, Globe, PlusCircle } from "lucide-react"
-import { Button } from "@repo/ui/button";
-import { Image } from "../../Icons/icon";
+import { Aperture, Globe } from "lucide-react"
 import { LuLinkedin } from "react-icons/lu";
 
 

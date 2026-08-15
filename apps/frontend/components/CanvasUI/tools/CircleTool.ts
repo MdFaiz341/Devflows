@@ -36,14 +36,11 @@ export class CircleTool{
         const centerX = x + width/2;
         const centerY = y + height/2;
 
-        // const radius = Math.sqrt(dx*dx + dy*dy);
-
         const preview : Circle = {
             id : "preview",
             type : "circle",
             x : this.startX,
             y : this.startY,
-            // radius : radius,
             width : width,
             height : height,
 

@@ -51,7 +51,6 @@ export class InputManager {
 
         if(this.toolManager.currentTool === "text") this.cursor.set("text");
         else if(this.toolManager.currentTool !== "select") this.cursor.set("crosshair")
-        // else this.cursor.set("crosshair");
     }
 
     private handlePointerUp = (e : PointerEvent)=>{

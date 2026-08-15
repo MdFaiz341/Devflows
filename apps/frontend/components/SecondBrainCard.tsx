@@ -92,7 +92,6 @@ export default function SecondBrainCard() {
 
         <div className="grid gap-6 sm:grid-cols-2">
           {cards.map((card) => {
-            // const Icon = card.icon;
 
             return (
               <div

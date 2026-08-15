@@ -1,7 +1,5 @@
 import {  } from "../../../lib/socket/CanvasSyncManager";
-import { useCanvasStore } from "../../../Storage/useCanvasStore";
 import { Shape } from "../shapeFormat/Shape";
-import { GetAllShapes } from "./GetAllShapes";
 
 
 
@@ -14,7 +12,6 @@ export type CanvasEvent = "shapeAdded" | "shapeUpdated" | "shapeDeleted" | "curr
 
 export class CanvasStore{
 
-    // private shape : Shape[];
     private currentPage = 1;
     private pageWithShape = new Map<number, Shape[]>();
     private listeners = new Set<() => void>();
@@ -144,18 +141,6 @@ export class CanvasStore{
         }
     }
 
-    // addShape(shape:Shape){
-
-    //     if(!this.pageWithShape.has(this.currentPage)){
-    //         this.pageWithShape.set(this.currentPage, []);
-    //     }
-    //     const allShapes = this.pageWithShape.get(this.currentPage);
-    //     allShapes?.push(shape);
-
-    //     // this.shape.push(shape);
-    //     this.notify()
-    // }
-
 
     on(
         event: CanvasEvent,
@@ -262,7 +247,6 @@ export class CanvasStore{
         this.notify();
     }
 
-    // for move the tool
     getShape(id:string){
         const allShapes = this.pageWithShape.get(this.currentPage);
         if(!allShapes) return null;
@@ -274,7 +258,6 @@ export class CanvasStore{
         const val = this.pageWithShape.get(this.currentPage);
         if(!val) return [];
         return [...val];
-        // return [...this.shape];
     }
 
 }

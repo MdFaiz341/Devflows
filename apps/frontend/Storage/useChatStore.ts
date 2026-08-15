@@ -33,19 +33,10 @@ interface sidebarConversationType {
             image : string,
         },
     }],
-    // member : {
-    //     senderId : number,
-    //     firstname : string,
-    //     image : string,
-    // }
     lastMessage : string,
     type : "DM" | "Group",
     name : string | null,
     updatedAt : string,
-
-    // conversationId:number,
-    // text : string,
-    // createdAt : string,
 }
 
 interface ChatStore {
@@ -62,7 +53,7 @@ interface ChatStore {
         conversationId:number,
         message : Message
     )=>void,
-                                // ConversationId2 : lastMessagess
+                                // < ConversationId2 : lastMessagess >
     sidebarDefaultConversation : Record<number, sidebarConversationType>,
     setSidebarDefaultConversation : (
         conversationId : number, 

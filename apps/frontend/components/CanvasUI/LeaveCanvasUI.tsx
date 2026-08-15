@@ -18,8 +18,6 @@ export const LeaveCanvasUI = ({showLeave, setShowLeave, roomId}:{
     const {active, setActive} = useHook();
     const router = useRouter();
 
-    // const canvasOrder = 
-
     async function leaveHandler(){
         try{
             setActive(true);

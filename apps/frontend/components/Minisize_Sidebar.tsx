@@ -22,7 +22,6 @@ export const Minisize_Sidebar = ({active, setActive}:{
                         <Dashboard_Sidebar/>
                     </div>
                 </div>
-                // isko hata simply new component banado for mobile UI ke liye jaha pura screen pe sidebar dikhe and top ke ek cross button dikhe
             }
         </>
     )

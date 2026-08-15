@@ -18,7 +18,7 @@ export default function ChangePassword() {
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const { loading, setLoading } = useHook();  // changed
+  const { loading, setLoading } = useHook();
 
   const oldRef = useRef<HTMLInputElement>(null);
   const newRef = useRef<HTMLInputElement>(null);
@@ -45,7 +45,6 @@ export default function ChangePassword() {
         });
         useStore.getState().logout();
 
-        // ============ MAY BE CREATE PROBLEM HERE WITHOUT DELETING COOKIE WE TRY TO GO SIGNIN=======================
         router.push("/signin");
         toast.success(response.data.message);
     }

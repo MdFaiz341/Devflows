@@ -27,16 +27,6 @@ class ChatManager{
 
 
 
-    // private listenSocket(){
-    //     this.socketManager.subscribe("new_message", this.handleChatMessage);
-    //     this.socketManager.subscribe("history", this.handleHistory);
-    //     this.socketManager.subscribe("totalUser", this.handleTotalUser);
-    //     this.socketManager.subscribe("typing", this.handleTyping);
-    //     this.socketManager.subscribe("stop_typing", this.handleStopTyping);
-    //     this.socketManager.subscribe("delete_chat", this.handleDeleteChat);
-    //     this.socketManager.subscribe("chatCreation", this.handleChatCreation);
-    // }
-
     start() {
         if (this.started) return;
         this.started = true;

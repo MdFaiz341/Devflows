@@ -4,13 +4,10 @@
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import { GiNightSleep } from "react-icons/gi";
 import { WiDaySunny } from "react-icons/wi";
-import { FiSidebar } from "react-icons/fi";
-import { History, Loader, PlusCircle, RefreshCcw, Sparkles } from "lucide-react";
+import { History, Loader, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
-// import { CreateContent } from "../../../../components/Brain/CreateContent";
 import { useHook } from "../../../../hook/useHook";
 import { Card } from "../../../../components/Brain/Card";
-import { SidebarDown } from "../../../../components/Brain/SidebarDown";
 import { useContent } from "../../../../hook/GetContent";
 import { useStore } from "../../../../Storage/useStore";
 import { Image } from "../../../../Icons/icon";
@@ -30,13 +27,10 @@ import { ContentFormat, useBrainStore } from "../../../../Storage/useBrainStore"
 
 
 export default function Brain(){
-    const { theme, setTheme, user } = useStore();
-    const [sidebar, setSidebar] = useState(true);
-    const contentHook = useContent();  // to keep only one instance for dashboard as well as sidebar
+    const { theme, setTheme } = useStore();
     const {open, setOpen, loading, setLoading} = useHook();
     const findRef = useRef<HTMLInputElement>(null);
     const [val, setVal] = useState<string>("");
-    // const [content, setContent] = useState([]);
     const setContent = useBrainStore((state)=>state.setContent);
     const content = useBrainStore((state)=>state.content);
     const clearMemory = useBrainStore((state)=>state.clearMemory);
@@ -95,9 +89,6 @@ export default function Brain(){
         }
     }, [theme]);
 
-    // useEffect(()=>{
-    //     contentHook.getContentApi();
-    // }, [contentHook.type]);
 
     useEffect(() => {
         if (!document.getElementById("twitter-script")) {
@@ -113,18 +104,11 @@ export default function Brain(){
         <CreateContent open={open} setOpen={setOpen} getContentApi={getContentApi}/>
         <div className="flex min-h-screen bg-white overflow-hidden dark:bg-[#020617]">
             {/* Sidebar */}
-            {/* <div  className={`fixed top-0 left-0 h-full w-52 md:block hidden shadow-lg transform transition-transform duration-300 
-                ${sidebar ? "translate-x-0" : "-translate-x-full"} dark:bg-linear-to-br from-black to-gray-700`}
-            >
-                <Sidebar setModalOpen={setModalOpen} contentHook={contentHook}/>
-            </div> */}
-            
 
             <div className={`flex-1 max-w-full flex flex-col justify-center transition-all duration-300   overflow-y-auto overflow-x-hidden`}>
                 {/* top */}
                 <div className="bg-gray-900 border-b border-slate-600 sticky top-0 z-40 w-full flex items-center justify-between py-3 px-5  dark:bg-linear-to-bl from-black to-gray-800 drop-shadow-xl backdrop-blur-2xl ">
                     <div className="flex gap-5 items-center justify-center">
-                        {/* <FiSidebar onClick={()=>setSidebar(v=>!v)} className="w-6 h-6 md:block hidden cursor-pointer dark:text-white"/> */}
                         <div className="w-8 h-8">
                             <Image/>
                         </div>
@@ -149,16 +133,7 @@ export default function Brain(){
                             autoFocus={true}
                             className={`px-4 py-1 md:w-xs w-20 rounded-lg bg-fuchsia-200 text-black outline-none focus:ring-2 focus:ring-purple-500`}
                         />
-                        
-                        {/* <Button
-                            type="button"
-                            text="Create"
-                            design="designedPrimary"
-                            className="px-3 shadow-[0_0_40px_rgba(99,102,241,0.55)] py-1 rounded-xl flex items-center gap-2 font-semibold dark:text-white text-lg cursor-pointer transition-all duration-300 ease-in-out"
-                            onClick={()=>{setOpen(true)}}
-                            icon={<PlusCircle size={20}/>}
-                            iconFirst={true}
-                        /> */}
+
                         <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}

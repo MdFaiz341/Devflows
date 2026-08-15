@@ -149,9 +149,7 @@ function detectUrl(url: string): UrlInfo {
     };
   }
 
-  /*
-    YOUTUBE
-  */
+  /* YOUTUBE */
 
   const youtubeId = getYoutubeVideoId(url);
 
@@ -163,17 +161,13 @@ function detectUrl(url: string): UrlInfo {
 
       videoId: youtubeId,
 
-      /*
-        plays inside iframe
-      */
+      /* plays inside iframe */
 
       embedUrl: `https://www.youtube.com/embed/${youtubeId}` + `?rel=0&modestbranding=1`,
     };
   }
 
-  /*
-    TWITTER / X
-  */
+  /* TWITTER / X */
 
   if (isTwitterUrl(url)) {
     return {
@@ -183,9 +177,7 @@ function detectUrl(url: string): UrlInfo {
     };
   }
 
-  /*
-    GITHUB
-  */
+  /* GITHUB */
 
   if (isGithubUrl(url)) {
     return {
@@ -201,9 +193,7 @@ function detectUrl(url: string): UrlInfo {
     };
   }
 
-  /*
-    EVERYTHING ELSE
-  */
+  /* EVERYTHING ELSE */
 
   return {
     type: "website",

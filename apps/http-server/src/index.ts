@@ -202,7 +202,7 @@ app.post("/join_member/:randomLink/:adminId/:roomId", middleware, async(req, res
             })
         }
 
-        // // Link expire
+        // Link expire
         const linkValExist = await client.linkDuration.findUnique({
             where:{
                 userId_roomId:{
@@ -235,7 +235,6 @@ app.post("/join_member/:randomLink/:adminId/:roomId", middleware, async(req, res
             })
         }
 
-        // find ki adminId exist karta hai and usne room create kiya bhi hai ki nahi
         const adminWithRoom = await client.canvasMember.findUnique({
             where:{
                 roomId_userId:{
@@ -309,14 +308,6 @@ app.post("/createCanvasRoom", middleware, async(req, res)=>{
                 }
             }
         });
-
-        // const member = await client.canvasMember.create({
-        //     data:{
-        //         userId : req.userId,
-        //         roomId : room.id,
-        //         role : "ADMIN"
-        //     }
-        // })
 
         return res.status(resStatus.Success).json({
             message:"Room created",
@@ -406,8 +397,6 @@ app.get("/getShapesAtpage/:roomId/:page", middleware, async(req, res)=>{
                 success : false,
             })
         }
-
-        // const roomId = Number(roomIdStr)
 
         const shapes = await client.page.findUnique({
             where:{

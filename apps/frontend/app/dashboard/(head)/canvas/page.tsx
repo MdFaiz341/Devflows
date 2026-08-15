@@ -1,16 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@repo/ui/button";
 import { CreateCanvasRoom } from "../../../../components/CanvasUI/CreateCanvasRoom";
 import { History, Loader, Loader2, Menu, PlusIcon, UserRoundPlus, UsersRound } from "lucide-react";
 import { useHook } from "../../../../hook/useHook";
 import { JoinCanvasRoom } from "../../../../components/CanvasUI/JoinCanvasRoom";
 import api from "../../../../API/Interceptor";
-// import { CanvasCardFormat, useCanvasStore } from "../../../../Storage/useCanvasStore";
 import { toast } from "sonner";
-import { useStore } from "../../../../Storage/useStore";
 import { CanvasRoomsCard } from "../../../../components/CanvasUI/CanvasRoomCard";
 import { useCanvasStore } from "../../../../Storage/useCanvasStore";
 
@@ -58,7 +55,7 @@ export default function CanvasRoomsPage() {
           roomId : val.id,
           image : val.image,
           name : val.name,
-          members: val.members //filteredFriend,
+          members: val.members
       }))
 
       setRooms(data);
@@ -151,50 +148,7 @@ export default function CanvasRoomsPage() {
       {/* Create Room Modal */}
       <CreateCanvasRoom open={open} setOpen={setOpen} setRommCreated={setRommCreated} getAllCanvas={getAllCanvas}/>
       <JoinCanvasRoom active={active} setActive={setActive}/>
-      {/* { 3 dot pe click karege to ek popUp open ho jisme URL generate hoga like http://localhost:3003/dashboard/canvas/{UserId_In_String}
-       In backend:-
-          jo bhi member add hona chahta hai wo link ko paste karega apne-apne canvas k join popup me then Backend checks
-          first get UserID from query and find user exist and also room exist with this userId means this User ne room create kiya hai ki nahi
-          then joiny member ko with same conversationId me join kardenege as a (member) } */}
 
     </div>
   );
 }
-
-// const rooms = [
-//   {
-//     id: 1,
-//     name: "Frontend Canvas",
-//     description: "Realtime UI collaboration and whiteboarding.",
-//     members: 12,
-//     online: 4,
-//   },
-//   {
-//     id: 2,
-//     name: "DevFlow Core",
-//     description: "Architecture discussions and backend planning.",
-//     members: 18,
-//     online: 6,
-//   },
-//   {
-//     id: 3,
-//     name: "Design Team",
-//     description: "Wireframes, flows, and design systems.",
-//     members: 9,
-//     online: 2,
-//   },
-//   {
-//     id: 4,
-//     name: "Realtime Engine",
-//     description: "WebSocket scaling and sync optimizations.",
-//     members: 14,
-//     online: 5,
-//   },
-//   {
-//     id: 5,
-//     name: "Product Ideas",
-//     description: "Brainstorming new features and roadmap.",
-//     members: 7,
-//     online: 3,
-//   },
-// ];

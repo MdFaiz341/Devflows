@@ -19,7 +19,7 @@ export const SidebarConversations = ({chat, unreads, setUnreads}:{
     setUnreads : (e: number[])=>void
     unreads : number[]
 })=>{
-    // const socket = useSocket();
+
     const user = useStore((state)=>state.user);
     const setSelectedConversation = useChatStore((state)=>state.setSelectedConversation);
     const conversationId = useChatStore((state)=>state.selectedConversation);
@@ -27,8 +27,7 @@ export const SidebarConversations = ({chat, unreads, setUnreads}:{
     const unreadMessage = useChatStore((state)=>state.unreadMessage);
     const messageByConversation = useChatStore((state)=>state.messageByConversation);
     const clearCount = useChatStore((state)=>state.clearCount);
-    // const conversationIdRef = useRef<number | null>(conversationId)
-    // const [prevId, setPrevId] = useState<number | null>(null);
+
 
     async function socketStartHandler(chat:any){
 
@@ -36,17 +35,15 @@ export const SidebarConversations = ({chat, unreads, setUnreads}:{
 
         const cached = messageByConversation[chat.conversationId];
         if(!cached){
-        const payload = {
-            type : "history",
-            conversationId : chat.conversationId
-        }
-        chatManager.sendMessage(payload);
-        // chatHistory(socket, payload)
+            const payload = {
+                type : "history",
+                conversationId : chat.conversationId
+            }
+            chatManager.sendMessage(payload);
         }
 
-        // // new join coversation
         const payload = {    
-        type : "joinLiveUser",                     // uper laga diya jaise conversation update hoga waise hi all room active(dms, group)
+        type : "joinLiveUser",                    
         conversationId : chat.conversationId,    
         }
         chatManager.sendMessage(payload);
@@ -71,7 +68,6 @@ export const SidebarConversations = ({chat, unreads, setUnreads}:{
 
     return(
         <motion.div
-            // when user send message conversation goes to top but not show details like image , name
             onClick={()=>socketStartHandler(chat)}
             className={`flex items-center gap-4 px-4 py-4 cursor-pointer border-b border-white/5 hover:bg-white/15 transition-all duration-200 ${
             conversationId === chat?.conversationId ? "bg-white/15" : ""

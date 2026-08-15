@@ -37,7 +37,6 @@ type UserDataFormat = {
 
 interface JoinedUserType{
     roomId : number,
-    // totalUser : number,
     users : UserDataFormat[]
 }
 
@@ -75,9 +74,6 @@ interface CanvasType{
     clearNotificationBar : ()=>void;
 }
 
-// stroke : "white",
-// fill : "yellow",
-// strokeWidth : 2,
 
 export const useCanvasStore = create<CanvasType>(
     (set)=>({

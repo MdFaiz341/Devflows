@@ -1,21 +1,16 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react";
-import { deleteConversation, sendUserTyping, userSendMessage } from "../../lib/socket/socket-emit";
 import { useChatStore } from "../../Storage/useChatStore"
 import {  motion } from "framer-motion"
 import { useStore } from "../../Storage/useStore";
 import TypingDots from "./TypingDots";
 import { GroupMembers } from "./GroupMembers";
 import { useHook } from "../../hook/useHook";
-import { InputField } from "@repo/ui/input";
 import { FormatMessageTime } from "../../formatter/FormatTime";
 import { Check, CheckCheck, Cross, Ellipsis, Loader2, Plus, PlusCircle, User, Users, X } from "lucide-react";
-import CreateGroupModal from "./CreateGroupModal";
 import { Button } from "@repo/ui/button";
-import api from "../../API/Interceptor";
 import { toast } from "sonner";
-import { useSocket } from "../../providers/SocketProvider";
 import { chatManager } from "../../lib/socket/ChatManager";
 
 
@@ -85,14 +80,12 @@ export const ChatArea = ()=>{
 
                 const payload = {
                     type : "new_message",
-                    conversationId,     // selectedChat?.conversationId
+                    conversationId,     
                     text : message,
                     clientID,
                 }
                 chatManager.sendMessage(payload);
-                // socket.send(payload);
-                // send message
-                // userSendMessage(socket, payload);
+
                 if(inputMessageRef.current){
                   inputMessageRef.current.value = "";
                 }
@@ -104,9 +97,7 @@ export const ChatArea = ()=>{
     }
 
     function userTypingInput(){
-      const val = inputMessageRef.current?.value
 
-      // if(!socket) return;
 
       if(conversationId){
 
@@ -115,8 +106,6 @@ export const ChatArea = ()=>{
           conversationId,
         }
         chatManager.sendMessage(payload);
-        // const type = "typing"
-        // sendUserTyping(socket, type, payload);
 
         // remove previous Timeout
         if(typingTimeOut.current){
@@ -129,17 +118,14 @@ export const ChatArea = ()=>{
             conversationId,
           }
           chatManager.sendMessage(payload);
-          // const type = "stop_typing";
-          // sendUserTyping(socket, type, payload);
+
         }, 2000);
 
       }
     }
 
-    // UI se delet nahi hua conversation after leaving room and text show nahi hua other user ke chat me ki (faiz left)
 
     async function leaveConversatioHandler(){
-      // if(!socket || socket.readyState !== WebSocket.OPEN) return;
       
       setLoading(true);
       const payload = {
@@ -150,7 +136,7 @@ export const ChatArea = ()=>{
 
       await new Promise((res)=>setTimeout(res, 2000));
 
-      const filterIds = sideConversationOrder.filter((ids)=> ids !== conversationId) // selectedChat?.conversationId
+      const filterIds = sideConversationOrder.filter((ids)=> ids !== conversationId)
       setSideConversationOrder(filterIds);
 
       setConversationId(null);
@@ -256,7 +242,6 @@ export const ChatArea = ()=>{
                       && <div className="flex gap-4 items-center relative">
                             {show && <span className="absolute text-xs -top-4 -left-6 text-orange-400 font-semibold">Add members</span>}
                             <div 
-                              // onClick={addMembersHandler}
                               className="cursor-pointer w-5 h-5 flex justify-center items-center" onMouseEnter={()=>setShow(true)} onMouseLeave={()=>setShow(false)}>
                               <PlusCircle size={20}/>
                             </div>

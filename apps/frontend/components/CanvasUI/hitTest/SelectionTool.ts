@@ -62,7 +62,5 @@ export class SelectionTool{
 
     pointerUp(e:PointerEvent){
         this.dragging = false;
-        // this.store.selectShape(null);
-        // this.cursor.set("default");
     }
 }

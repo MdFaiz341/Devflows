@@ -57,7 +57,7 @@ export class ShapeRenderManager{
     }
 
     private drawCircle(shape:Circle){
-        // this.ctx.save();
+   
         this.ctx.beginPath();
         
         const x = Math.min(shape.x, shape.x + shape.width);
@@ -68,17 +68,12 @@ export class ShapeRenderManager{
         
         this.ctx.ellipse(x+width/2, y+height/2, width/2, height/2, 0, 0, Math.PI * 2)
 
-        // this.ctx.arc(shape.x, shape.y, shape.radius, 0, Math.PI*2);
-
         this.ctx.strokeStyle = shape.stroke;
 
         this.ctx.lineWidth = shape.strokeWidth;
-        // this.ctx.fillStyle = shape.fill;
-        // this.ctx.fill();
 
         this.ctx.stroke();
 
-        // this.ctx.restore();
     }
 
     private drawArrow(shape:Arrow){

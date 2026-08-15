@@ -7,11 +7,9 @@ import { InputField } from "@repo/ui/input";
 import { Button } from "@repo/ui/button";
 import { useHook } from "../../hook/useHook";
 import { toast } from "sonner";
-import { Loader2, Plus } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useChatStore } from "../../Storage/useChatStore";
 import { useStore } from "../../Storage/useStore";
-import { useSocket } from "../../providers/SocketProvider";
-import { chatCreation } from "../../lib/socket/socket-emit";
 import { chatManager } from "../../lib/socket/ChatManager";
 
 interface PropsTye{
@@ -19,19 +17,13 @@ interface PropsTye{
     setAddContact : (e:boolean)=>void
 }
 
-  // notification pe jab click ho to defaultConversation ka data dikhe and user click kare to
-  // redirect ho jaye and count reduce ho jaye notification ka
 
 export const CreateDmModal = (props:PropsTye)=>{
 
     const user = useStore((state)=>state.user);
     const emailInput = useRef<HTMLInputElement>(null)
     const {loading, setLoading} = useHook();
-    const setSidebarDefaultConversation = useChatStore((state)=>state.setSidebarDefaultConversation);
-    const setSideConversationOrder = useChatStore((state)=>state.setSideConversationOrder);
-    const sideConversationOrder = useChatStore((state)=>state.sideConversationOrder);
-    // const { socket } = useSocket();
-    // const socket = useSocket();
+
 
     async function chatHandler(){
       const email = emailInput.current?.value
@@ -53,8 +45,6 @@ export const CreateDmModal = (props:PropsTye)=>{
           data : val,
         }
         chatManager.sendMessage(payload);
-        // socket.send(payload);
-        // chatCreation(socket, payload);
 
         await new Promise((res)=> setTimeout(res, 2000));
         toast.success(response.data.message);

@@ -2,8 +2,7 @@
 
 import { Button } from "@repo/ui/button";
 import { Brain, PencilRulerIcon, MessagesSquareIcon,
-        Users, Search, Sparkles, Bell, Clock4, LayoutGrid,
-        Settings,
+        Users, Search, Sparkles, Bell, Clock4,
         TextAlignJustify} from "lucide-react";
 
 import { useHook } from "../../hook/useHook";
@@ -17,33 +16,6 @@ import { Minisize_Sidebar } from "../../components/Minisize_Sidebar";
 import { NotificationUI } from "../../components/ChatsUI/NotificationUI";
 
 
-const sidebarItems = [
-  {
-    icon: LayoutGrid,
-    label: "Dashboard",
-    active:true,
-  },
-  {
-    icon: PencilRulerIcon,
-    label: "Canvas Rooms",
-    active:false,
-  },
-  {
-    icon: MessagesSquareIcon,
-    label: "Chat Rooms",
-    active:false,
-  },
-  {
-    icon: Brain,
-    label: "Second Brain",
-    active:false,
-  },
-  {
-    icon: Settings,
-    label: "Settings",
-    active:false,
-  },
-];
 
 
 const activityFeed = [
@@ -71,7 +43,6 @@ export default function DashboardPage() {
   const {open, setOpen} = useHook();
   const unreadMessage = useChatStore((state)=>state.unreadMessage);
   const conversationIds = useChatStore((state)=>state.sideConversationOrder);
-  // const {socket} = useSocket();
   const [openNotification,  setOpenNotification] = useState(false);
   const [active, setActive] = useState(false);
 
@@ -112,37 +83,6 @@ export default function DashboardPage() {
         </div>
 
         <div className="relative flex">
-          {/* <aside className="fixed left-0 top-0 z-50 hidden h-screen w-[290px] shrink-0 border-r border-white/10 bg-white/[0.02] backdrop-blur-xl lg:block">
-            <div className="flex h-full flex-col px-6 py-8">
-              <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-400 via-pink-500 to-purple-500 text-xl font-black text-black shadow-[0_0_40px_rgba(255,120,80,0.45)]">
-                  D
-                </div>
-
-                <div>
-                  <h1 className="text-xl font-bold tracking-tight">
-                    Devflow
-                  </h1>
-                  <p className="text-sm text-zinc-500">
-                    collaborative workspace
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-12 space-y-3">
-                {sidebarItems.map((item) => {
-                  return (
-                    <SidebarButton
-                      key={item.label}
-                      icon={item.icon}
-                      label={item.label}
-                      active={item.active}
-                    />
-                  )
-                })}
-              </div>
-            </div>
-          </aside> */}
           <div className="md:block hidden top-0">
             <Dashboard_Sidebar/>
           </div>

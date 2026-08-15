@@ -223,7 +223,7 @@ export const CreateContent = ({open, setOpen, getContentApi}:{
               
 
 
-            {/* // Submit Buttons */}
+            {/* Submit Buttons */}
             <div className="flex w-full items-center justify-between gap-2 mt-5">
                 <Button type="button" text="Cancle" icon={<Cross size={17} className=" rotate-45"/>} 
                 iconFirst={true} className="flex w-full gap-3 py-1 items-center justify-center rounded-lg"

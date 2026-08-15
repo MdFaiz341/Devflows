@@ -59,10 +59,7 @@ model CanvasRoom {
   id                    Int         @id @default(autoincrement())
   name                  String      @unique
   image                 String
-  // adminId               String
   createdAt             DateTime    @default(now())
-  // pages                 Page[]
-  // admin                 User        @relation(fields: [adminId], references: [id])
   members               CanvasMember[]
   @@index([createdAt])
 }

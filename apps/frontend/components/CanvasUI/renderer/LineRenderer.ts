@@ -37,10 +37,6 @@ export class LineRenderer implements ShapeRender<Line>{
         const py = line.startY + t * dy;
 
         const distance = Math.hypot(x - px, y - py);
-        // const distance = Math.sqrt(
-        //     (x - px) * (x - px) + 
-        //     (y - py) * (y - py)
-        // )
 
         return distance <= tolerance;
     }
