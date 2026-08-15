@@ -382,56 +382,6 @@ app.get("/allCanvasRooms", middleware, async(req, res)=>{
     }
 })
 
-// app.get("/allcanvasrooms", middleware, async(req, res)=>{
-//     try{
-//         const search = req.body.search?.trim();
-//         const userId = req.userId;
-
-//         let rooms;
-
-//         if(search != ""){
-//             rooms = await client.canvasRoom.findMany({
-//                 where:{
-//                     adminId:userId,
-//                     name: {contains:search, mode:"insensitive"}
-//                 }
-//             })
-//         }
-//         else{
-//             rooms = await client.canvasRoom.findMany({
-//                 where:{
-//                     adminId : userId,
-//                 },
-//                 orderBy:{
-//                     id : "desc"
-//                 },
-//                 select:{
-//                     createdAt:true,
-//                     name:true,
-//                 },
-//                 take: 20,
-//             });
-//         }
-        
-//         if(!rooms){
-//             return res.status(resStatus.NotFound).json({
-//                 message:"room not exist"
-//             })
-//         }
-    
-//         return res.status(resStatus.Success).json({
-//             rooms,
-//             message:"All room fetched"
-//         })
-//     }
-//     catch(e){
-//         console.log(e);
-//         return res.status(resStatus.Error).json({
-//             message:"Failed to fetched rooms"
-//         })
-//     }
-// })
-
 app.post("/leaveCanvasRoom", middleware, async(req, res)=>{
     try{
         const roomId = Number(req.body.roomId);
@@ -685,8 +635,6 @@ app.post("/dm/create", middleware, async(req, res)=>{
 
 app.get("/conversations", middleware, async(req, res)=>{
     try{
-        // ye user jis bhi room me hoga un sabhi room ko return karna hai 
-        // and jitna bhi dm kiya hai usnko bhi return karna hai
 
         const allConversation = await client.conversation.findMany({
             where:{
@@ -736,7 +684,6 @@ app.get("/conversations", middleware, async(req, res)=>{
     }
 })
 
-
 app.post("/leaveChat", middleware, async(req, res)=>{
     try{
         const conversationId = req.body.conversationId;
@@ -777,7 +724,6 @@ app.post("/leaveChat", middleware, async(req, res)=>{
     }
 })
 
-
 app.put("/clearCount", middleware, async(req, res)=>{
     try{
         const conversationId = req.body.conversationId;
@@ -805,7 +751,6 @@ app.put("/clearCount", middleware, async(req, res)=>{
         })
     }
 })
-
 
 app.post("/message/send", async(req, res)=>{
     try{
@@ -847,7 +792,6 @@ app.post("/message/send", async(req, res)=>{
     }
 })
 
-
 app.get("/messages/:conversationId", async(req, res)=>{
     try{
         const conversationId = Number(req.params.conversationId);
@@ -878,8 +822,6 @@ app.get("/messages/:conversationId", async(req, res)=>{
         });
     }
 })
-
-
 
 app.get("/allcontent", middleware, async(req, res)=>{
     try{
@@ -940,7 +882,6 @@ app.post("/content", middleware, async(req, res)=>{
     }
 })
 
-
 app.post("/deleteContent", async(req, res)=>{
     try{
         const id = req.body.id;
@@ -968,7 +909,6 @@ app.post("/deleteContent", async(req, res)=>{
         })
     }
 })
-
 
 app.get("/profile", middleware, async(req, res)=>{
     try{

@@ -1,24 +1,17 @@
 "use client";
 
 import { Button } from "@repo/ui/button";
-import { Menu, Brain, PencilRulerIcon, MessagesSquareIcon,
+import { Brain, PencilRulerIcon, MessagesSquareIcon,
         Users, Search, Sparkles, Bell, Clock4, LayoutGrid,
         Settings,
-        Loader2,
         TextAlignJustify} from "lucide-react";
-// import { SidebarButton } from "../../components/DashboardSidebar";
+
 import { useHook } from "../../hook/useHook";
 import { useStore } from "../../Storage/useStore";
-import api from "../../API/Interceptor";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 import { DropdownProfile } from "../../components/ProfileDown";
-import { useEffect, useState } from "react";
+import {useState } from "react";
 import "dotenv/config"
 import { useChatStore } from "../../Storage/useChatStore";
-import { chatHistory, joinUser } from "../../lib/socket/socket-emit";
-import { useSocket } from "../../providers/SocketProvider";
-import { eventHandler } from "../../lib/socket/socket-events";
 import { Dashboard_Sidebar } from "@repo/ui/Dashboard_Sidebar"
 import { Minisize_Sidebar } from "../../components/Minisize_Sidebar";
 import { NotificationUI } from "../../components/ChatsUI/NotificationUI";

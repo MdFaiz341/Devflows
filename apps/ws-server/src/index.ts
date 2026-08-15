@@ -10,7 +10,6 @@ const wss = new WebSocketServer({port:8080});
 
 type UserInfo = {
     userId : string,
-    // roomId : number,
     firstname : string,
     email : string,
     image : string,
@@ -18,32 +17,30 @@ type UserInfo = {
 }
 
 
+//======================================= socket1 -> {userId : A, room1} ================================================
+const multiUsers = new Map<WebSocket, UserInfo>();
 
-// type CanvasUserInfo = {
-//     userId : number,
-//     roomId
-// }
+//====================================== <conversationId, {socket1, socket2}> ================================
+const conversation = new Map<number, Set<WebSocket>>();
 
-const multiUsers = new Map<WebSocket, UserInfo>();    // socket1 -> {userId : A, room1}
+//====================================== <socket1, <{conversationId-1, conversationId-2}>> ==========================
+const socketRooms = new Map<WebSocket, Set<number>>(); 
 
-const rooms = new Map<number, Set<WebSocket>>();  // room1 -> {socket1, socket2}
+//====================================== <conversationId, <{user1, user2, user3}>> ==============================
+const onlineUsers = new Map<number, Set<string>>();   
 
-const conversation = new Map<number, Set<WebSocket>>();//  <conversationId, {socket1, socket2}>
+//====================================== <user1, <{socke1}>> =====================================================
+const groupUsers = new Map<string, WebSocket>();     
 
-const socketRooms = new Map<WebSocket, Set<number>>(); //<socket1, <{conversationId-1, conversationId-2}>>
+//====================================== <RoomId, <socket-1, socket-2>> ============================================
+const canvasConversation = new Map<number, Set<WebSocket>>(); 
 
-const onlineUsers = new Map<number, Set<string>>();   // <conversationId, <{user1, user2, user3}>>
+//====================================== <roomId, <{user-1, name, image}, {user-2}>> ===================================
+const canvasRoomOnline = new Map<number,  Map<string, UserInfo>>();   
 
-const groupUsers = new Map<string, WebSocket>();     // <user1, <{socke1}>>
+//====================================== <Socket, <room1, room2, room3 >> ============================================
+const canvasSocketRooms = new Map<WebSocket, Set<number>>();
 
-const canvasConversation = new Map<number, Set<WebSocket>>(); //<RoomId, <socket-1, socket-2>>
-
-const canvasRoomOnline = new Map<number,  Map<string, UserInfo>>();   // <roomId, <{user-1, name, image}, {user-2}>>
-
-const canvasSocketRooms = new Map<WebSocket, Set<number>>();// <Socket, <room1, room2..>>
-
-
-// const canvasUser = new Map<WebSocket, >();
 
 wss.on("connection", async(socket, request)=>{
     socket.on("error", console.error);
@@ -51,12 +48,6 @@ wss.on("connection", async(socket, request)=>{
 
     const cookie = parse(request.headers.cookie || "");
     const token = cookie.accessToken;
-
-    // const url = request.url;
-    // const tokenUrl = new URLSearchParams(url?.split('?')[1]);
-    // if(!tokenUrl) return;
-
-    // const token = tokenUrl.get("token");
 
     if(!token){
         socket.close();
@@ -72,7 +63,6 @@ wss.on("connection", async(socket, request)=>{
 
     
     const userId = userData.id;
-    console.log("userId--", userId);
     const firstname = userData.firstname;
     const email = userData.email;
     const image = userData.image;
@@ -81,10 +71,8 @@ wss.on("connection", async(socket, request)=>{
     
     if(!groupUsers.has(userId)){
         groupUsers.set(userId, socket);
-        console.log("user-->Socket set");
     }
 
-    console.log("All set");
 
     socket.on("message", async(data)=>{
         try{

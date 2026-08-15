@@ -51,15 +51,16 @@ export const CreateContent = ({open, setOpen, getContentApi}:{
             setLoading(true);
 
             const finalTitle = title.charAt(0).toUpperCase() + title.slice(1).toLowerCase()
-
+            
+            console.log(link, finalTitle, type, selectTags);
             const resposne = await api.post("/content", {
                 link,
                 finalTitle,
                 type,
-                selectTags
+                selectTags,
             });
         
-            // toast.success(resposne.data.message);
+            toast.success(resposne.data.message);
             getContentApi();
             // Clear form
             if (titleRef.current) {
@@ -72,8 +73,6 @@ export const CreateContent = ({open, setOpen, getContentApi}:{
             if (inputTagsRef.current) {
               inputTagsRef.current.value = "";
             }
-
-            setType("");
             
             // clear tags state too, if you have one
             setSelectTags([]);

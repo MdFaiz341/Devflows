@@ -68,12 +68,8 @@ export class NotificationManager{
     }
 
     private deletedShape = (data:any)=>{
-        const user = useStore((state)=>state.user);
-        console.log("Success Delete Shape----", data);
         const setNotificationBar = useCanvasStore.getState().setNotificationBar
-        if(data.userId !== user?.id){
-            setNotificationBar(data.message);
-        }
+        setNotificationBar(data.message);
     }
 
 
