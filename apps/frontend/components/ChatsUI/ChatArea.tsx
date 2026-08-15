@@ -158,7 +158,7 @@ export const ChatArea = ()=>{
         type : "delete_chat",
         conversationId,  // : selectedChat.conversationId,
       }
-      socket.send(payload);
+      chatManager.sendMessage(payload);
       // deleteConversation(socket, payload);
       console.log("delete-conversation", sideConversationOrder);
 

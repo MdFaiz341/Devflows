@@ -140,11 +140,16 @@ export const SocketProvider = ({children}:{children:React.ReactNode})=>{
     //     fetchDmsAnsGroupChat()
     // }, [])
 
-
+    // const [isSocketActive, setIsSocketActive] = useState<WebSocket | null>(null);
     useEffect(()=>{
         if(!user) return;
-
+        console.log("Uper ayya---");
         socketManager.connect();
+        // const socket = socketManager.getSocket();
+        // console.log("Result---", socket);
+        // if(socket){
+        //     setIsSocketActive(socket);
+        // }
         
         // if(fetchConversation.current || !socket){
         //     fetchDmsAnsGroupChat();
@@ -153,6 +158,7 @@ export const SocketProvider = ({children}:{children:React.ReactNode})=>{
 
         return ()=>{
             socketManager.disconnect();
+            // setIsSocketActive(null)
         }
 
         // test karke dekhlo sab thik chal raha hi ya nahi bcz all thing set in SocketManager
@@ -201,7 +207,16 @@ export const SocketProvider = ({children}:{children:React.ReactNode})=>{
     //     };
 
     // }, [user]);
-    
+    // console.log("isSocketActive---", isSocketActive);
+    // if(!isSocketActive){
+    //     return(
+    //         <div className="absolute inset-0 z-10 w-screen h-screen flex flex-col justify-center items-center backdrop-blur-xs">
+    //             <div className="connection w-20"></div>
+    //             <span className="mt-4 ml-2 text-white text-xl">Trying to connect with socket</span>
+    //         </div>
+    //     )
+    // }
+
     return(
         <SocketContext.Provider value={socketManager}>
             {children}

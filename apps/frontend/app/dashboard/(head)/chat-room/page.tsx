@@ -13,7 +13,6 @@ import CreateGroupModal from "../../../../components/ChatsUI/CreateGroupModal";
 import { CreateDmModal } from "../../../../components/ChatsUI/CreateDmModal";
 import { chatHistory, joinUser } from "../../../../lib/socket/socket-emit";
 import { useChatStore } from "../../../../Storage/useChatStore";
-import { eventHandler } from "../../../../lib/socket/socket-events";
 import { useStore } from "../../../../Storage/useStore";
 import { ChatArea } from "../../../../components/ChatsUI/ChatArea";
 import { SidebarConversations } from "../../../../components/ChatsUI/SidebarConversations";
@@ -299,7 +298,7 @@ export default function DevFlowChatUI() {
                     {
                       conversationOrderIds.map((ids : any) => {
                         const chat = sidebarDefaultConversation[ids];
-                        // console.log("data: ", chat);
+                        console.log("data: ", chat);
                         return(
                           <div key={chat?.conversationId || ids}>
                             <SidebarConversations chat={chat}

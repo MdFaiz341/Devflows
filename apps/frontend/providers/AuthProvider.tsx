@@ -67,8 +67,8 @@ export default function AuthProvider({children}:{
     if (loading) {
         return (
             <div className="absolute inset-0 z-10 w-screen h-screen flex flex-col justify-center items-center backdrop-blur-xs">
-                <div className="loaderCanvas w-32"></div>
-                <span className="mt-4 ml-2 text-white text-xl">Loading...</span>
+                <div className="loaderCanvas w-20"></div>
+                <span className="mt-4 ml-2 text-white text-lg">Loading...</span>
             </div>
         );
     }

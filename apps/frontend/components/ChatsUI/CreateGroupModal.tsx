@@ -11,6 +11,7 @@ import { useChatStore } from "../../Storage/useChatStore";
 import { useStore } from "../../Storage/useStore";
 import { useSocket } from "../../providers/SocketProvider";
 import { chatCreation } from "../../lib/socket/socket-emit";
+import { chatManager } from "../../lib/socket/ChatManager";
 
 
 
@@ -105,7 +106,7 @@ export default function CreateGroupModal({openGroupModal , setOpenGroupModalActi
             conversationId : val.conversationId,
             data : val,
         }
-        socket.send(payload);
+        chatManager.sendMessage(payload);
         // chatCreation(socket, payload);
 
         await new Promise((res)=> setTimeout(res, 2000));

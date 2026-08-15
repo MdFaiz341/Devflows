@@ -12,6 +12,7 @@ import { useChatStore } from "../../Storage/useChatStore";
 import { useStore } from "../../Storage/useStore";
 import { useSocket } from "../../providers/SocketProvider";
 import { chatCreation } from "../../lib/socket/socket-emit";
+import { chatManager } from "../../lib/socket/ChatManager";
 
 interface PropsTye{
     addContact : boolean,
@@ -46,13 +47,14 @@ export const CreateDmModal = (props:PropsTye)=>{
         console.log("response-DM: ", response.data.conversation);
 
         const val = response.data.conversation;
-
+        
         const payload = {
-            type : "chatCreation",
-            conversationId : val.conversationId,
-            data : val,
+          type : "chatCreation",
+          conversationId : val.conversationId,
+          data : val,
         }
-        socket.send(payload);
+        chatManager.sendMessage(payload);
+        // socket.send(payload);
         // chatCreation(socket, payload);
 
         await new Promise((res)=> setTimeout(res, 2000));

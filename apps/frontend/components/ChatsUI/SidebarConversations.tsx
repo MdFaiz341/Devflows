@@ -5,6 +5,8 @@ import { useRef } from "react";
 import { FormatMessageTime } from "../../formatter/FormatTime";
 import api from "../../API/Interceptor";
 import { useSocket } from "../../providers/SocketProvider";
+import { socketManager } from "../../lib/socket/SocketManager";
+import { chatManager } from "../../lib/socket/ChatManager";
 
 
 
@@ -33,11 +35,11 @@ export const SidebarConversations = ({chat, unreads, setUnreads}:{
 
         // leave previous room before joining new room
         if(conversationIdRef.current){
-        const payload = {
-            type : "leave_conversation",
-            conversationId : conversationIdRef.current
-        };
-        socket.send(payload);
+            const payload = {
+                type : "leave_conversation",
+                conversationId : conversationIdRef.current
+            };
+            chatManager.sendMessage(payload);
         }
 
 
@@ -59,7 +61,7 @@ export const SidebarConversations = ({chat, unreads, setUnreads}:{
             type : "history",
             conversationId : chat.conversationId
         }
-        socket.send(payload);
+        chatManager.sendMessage(payload);
         // chatHistory(socket, payload)
         }
 
@@ -68,7 +70,7 @@ export const SidebarConversations = ({chat, unreads, setUnreads}:{
         type : "joinLiveUser" ,                     // uper laga diya jaise conversation update hoga waise hi all room active(dms, group)
         conversationId : chat.conversationId,    
         }
-        socket.send(payload);
+        chatManager.sendMessage(payload);
         // joinUser(socket, payload)
         // socket.send(JSON.stringify({
         //     type : "joinLiveUser",
@@ -107,9 +109,9 @@ export const SidebarConversations = ({chat, unreads, setUnreads}:{
         >
             <div>
                 {
-                chat?.type === "DM" 
+                chat?.type === "DM"
                     ? <div>
-                        <img src={chat.member[0].user.image} className="rounded-full w-10 h-10 font-semibold"/>
+                        <img src={chat.member[0]?.user.image} className="rounded-full w-10 h-10 font-semibold"/>
                     </div>
                     : <div><img src={chat?.image} className="rounded-full w-10 h-10 font-semibold"/></div>
                 }

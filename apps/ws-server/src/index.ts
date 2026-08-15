@@ -45,7 +45,7 @@ const canvasSocketRooms = new Map<WebSocket, Set<number>>();// <Socket, <room1, 
 
 // const canvasUser = new Map<WebSocket, >();
 
-wss.on("connection", (socket, request)=>{
+wss.on("connection", async(socket, request)=>{
     socket.on("error", console.error);
     console.log("user connected-ws");
 
@@ -62,7 +62,7 @@ wss.on("connection", (socket, request)=>{
         socket.close();
         return;
     }
-    const userData = verifyToken(token);
+    const userData = await verifyToken(token);
     console.log("token")
 
     if(!userData || !userData.id){
@@ -70,13 +70,19 @@ wss.on("connection", (socket, request)=>{
         return;
     }
 
+    
     const userId = userData.id;
     console.log("userId--", userId);
     const firstname = userData.firstname;
     const email = userData.email;
     const image = userData.image;
-
+    
     multiUsers.set(socket, { userId, image, firstname, email});
+    
+    if(!groupUsers.has(userId)){
+        groupUsers.set(userId, socket);
+        console.log("user-->Socket set");
+    }
 
     console.log("All set");
 
@@ -265,7 +271,8 @@ wss.on("connection", (socket, request)=>{
                     if(usersIdSet?.size === 0){
                         onlineUsers.delete(conversationId);
                     }
-                    else{
+                    else    // leave karne pe message jana chahiye Or Shayad delete_chat se hoga
+                    
                         // totalUser ka set ko return karado bcz usme active user ka ID hai
                         // and frontend pe map chala kar check kar lenge jo bhi userid match wo online else offline
                         // and uska size bhi top pe dikhane ke liye
@@ -316,6 +323,8 @@ wss.on("connection", (socket, request)=>{
             if(parsed.type === "join_conversation"){
                 const {conversationId} = parsed;
                 if(!conversationId) return;
+
+                console.log("parsed---", parsed);
 
                 joinConversation(conversationId, socket);
             }
@@ -468,6 +477,11 @@ wss.on("connection", (socket, request)=>{
                     conversation.set(conversationId, new Set());
                 };
 
+                // if(!groupUsers.has(user.userId)){
+                //     console.log("Group User me set nahi tha----");
+                //     groupUsers.set(user.userId, socket);
+                // }
+
                 // friendDetails abhi nahi zustand me filter karna hoga Shayd bcz yaha filter kar diya faiz ko to sab ko bina faiz ke friend pahunchega like harkirat ko harkirat bhi pahunch jayega but faiz pahunchna chiye the 
                 // so i think UI pe member ko filter karna much better according to their user.id;
 
@@ -511,7 +525,7 @@ wss.on("connection", (socket, request)=>{
                 console.log("members: ", data.member);
 
                 data.member.forEach((ids:any)=>{
-                    console.log("broadcast to:",ids.userId, "socket:",!!groupUsers.get(ids.userId));
+                    console.log("broadcast to:",ids.userId, "socket:", groupUsers.get(ids.userId));
                     console.log("conversationId--- ", conversationId);
                     console.log("data==conversationId--- ", data.conversationId);
                     const clientSocket = groupUsers.get(ids.userId);
@@ -811,28 +825,28 @@ async function joinConversation(conversationId : number, socket : WebSocket){
 
     socketRooms.get(socket)?.add(conversationId);
 
-    // if(!onlineUsers.has(conversationId)){
-    //     onlineUsers.set(conversationId, new Set());
-    // }
+    if(!onlineUsers.has(conversationId)){
+        onlineUsers.set(conversationId, new Set());
+    }
 
-    // onlineUsers.get(conversationId)?.add(user.userId);
+    onlineUsers.get(conversationId)?.add(user.userId);
 
 
-    // const usersIdSet = onlineUsers.get(conversationId);
-    // if(!usersIdSet) return;
-    // const totalUserIDs = [...usersIdSet]
-    // const activeUser = usersIdSet?.size;
+    const usersIdSet = onlineUsers.get(conversationId);
+    if(!usersIdSet) return;
+    const totalUserIDs = [...usersIdSet]
+    const activeUser = usersIdSet?.size;
 
-    // const payload = JSON.stringify({
-    //     type : "totalUser",
-    //     message: {
-    //         activeUser,
-    //         totalUserIDs,
-    //         conversationId
-    //     },
-    // });
+    const payload = JSON.stringify({
+        type : "totalUser",
+        message: {
+            activeUser,
+            totalUserIDs,
+            conversationId
+        },
+    });
 
-    // broadCastConversation(payload, conversationId);
+    broadCastConversation(payload, conversationId);
 }
 
 // async function createGroup(groupName:string, memberIds:number[], socket:WebSocket){
@@ -940,7 +954,7 @@ function broadCastConversation(payload : string, conversationId:number){
 //     })
 // }
 
-function verifyToken(token:string):JwtPayload | null {
+async function verifyToken(token:string):Promise<JwtPayload | null> {
     try{
         const decode = jwt.verify(token, JWT_SECRET);
         if(!decode ||!(decode as JwtPayload).id){

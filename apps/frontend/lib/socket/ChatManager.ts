@@ -76,6 +76,7 @@ class ChatManager{
             this.handleChatCreation
         );
 
+        console.log("Start Hua----");
         this.joinAllChats();
 
     }
@@ -83,7 +84,7 @@ class ChatManager{
     stop() {
         if (!this.started) return;
         this.started = false;
-
+        console.log("Stop hua---");
         socketManager.unsubscribe(
             "new_message",
             this.handleChatMessage
@@ -123,7 +124,8 @@ class ChatManager{
 
     private joinAllChats(){
         const conversationIds = useChatStore.getState().sideConversationOrder
-    
+        console.log("CoversationIds-------", conversationIds);
+
         conversationIds.forEach((id)=>{
             const payload = {
                 type: "join_conversation",
