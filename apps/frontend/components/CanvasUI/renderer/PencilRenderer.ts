@@ -49,9 +49,9 @@ export class PencilRenderer implements ShapeRender<Pencil>{
             const b = pencil.points[i+1];
 
             // distance to segment
-            if(distanceToSegment(x,y,a,b) <= tolerance){
-                return true;
-            }
+            // if(distanceToSegment(x,y,a,b) <= tolerance){
+            //     return true;
+            // }
 
         }
 
